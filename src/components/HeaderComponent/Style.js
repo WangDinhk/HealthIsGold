@@ -22,7 +22,7 @@ export const WrapperHeaderAccount = styled.div`
     font-size: 13px;
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
-    text-align: center;   
+    text-align: left;   
     margin: 5px; 
     gap: 10px;       
 `
