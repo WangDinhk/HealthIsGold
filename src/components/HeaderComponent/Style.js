@@ -4,15 +4,17 @@ import styled from "styled-components";
 export const WrapperHeader = styled(Row)`
     padding: 10px 120px;
     background-color: rgb(33 103 221);
+    align-items: center;
+    gap : 16px;
+    flex-wrap: nowrap;
  `   
 export const WrapperHeaderText = styled.div`
-        color: white;
-        justify-content: left; 
-        font-size: 20px;
-        font-weight: bold;
-        margin: 10px;
-        font-family: 'Roboto', sans-serif;
-                
+    color: white;
+    justify-content: left; 
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px;
+            
 `
 export const WrapperHeaderAccount = styled.div`
     display: flex;
@@ -25,4 +27,10 @@ export const WrapperHeaderAccount = styled.div`
     text-align: left;   
     margin: 5px; 
     gap: 10px;       
+`
+
+export const WrapperHeaderSmall = styled.span`
+    font-size: 12px;
+    color: white;
+    white-space: nowrap;
 `
