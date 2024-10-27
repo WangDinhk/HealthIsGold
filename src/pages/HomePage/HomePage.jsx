@@ -15,6 +15,7 @@ import slider4 from "../../assets/images/slider4.png";
 import slider5 from "../../assets/images/slider5.png";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import NavBarComponent from "../../components/NavBarComponent/NavBarComponent";
+import NavBarComponentLeft from"../../components/NavBarComponentLeft/NavBarComponentLeft";
 
 const HomePage = () => {
   const arr = [
@@ -52,13 +53,16 @@ const HomePage = () => {
             position: "relative",
           }}
         >
+          <div style={{position:"relative"}}>
           <WrapperPanner
             src="https://cdn.nhathuoclongchau.com.vn/unsafe/320x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/san_pham_ban_chay_website_320x41_3x_88c599649c.png"
             alt="sanphambanchay"
           />
-          <WrapperPannerContent>Sản phẩm bán chạy</WrapperPannerContent>
-
+          <WrapperPannerContent >Sản phẩm bán chạy</WrapperPannerContent>
+          </div>
           <WrapperBody>
+            <NavBarComponentLeft/>
+
             <CardComponent />
           </WrapperBody>
         </div>

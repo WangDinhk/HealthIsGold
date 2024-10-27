@@ -18,14 +18,13 @@ const CardComponent = () => {
     <WrapperCardStyle
       hoverable
       bordered={false} // Tắt border mặc định
+      style={{ width: 200 }}
       styles={{
         head: {
           width: "200px",
           height: "200px",
         },
-      }}
-      style={{ width: 200 }}
-      styles={{
+
         body: {
           padding: "10px",
         },

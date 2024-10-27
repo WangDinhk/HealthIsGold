@@ -34,11 +34,14 @@ export const WrapperPannerContent = styled.h2`
   top: -1px;
   font-weight: 600;
   color: #fff;
+  margin-bo
 `;
 export const WrapperBody = styled.div`
   display: flex;
   gap: 20px;
   height: 4000px;
   margin: 0px 120px;
-  padding-top: 20px;
+  padding-top: 40px;
+  // Nếu để navbarleft sang page khác chứ không phải cố định homepage 
+  // thì để lại padding là 20px cho body không đụng panner
 `;
