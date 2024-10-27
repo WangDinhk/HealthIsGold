@@ -94,17 +94,23 @@ const getDetailsProduct = (id) => {
     })
 }
 
-const getAllProduct = () => {
+const getAllProduct = (limit=8,page=0) => {
     return new Promise(async (resolve, reject) => {
         try {
+            // Lấy tổng sản phẩm
+          const  totalProduct= await Product.countDocuments();
             //Tìm thông tin tất cả sản phẩm có trong cơ sở dữ liệu
-            const allProduct = await Product.find()
+            const allProduct = await Product.find().limit(limit).skip(page*limit);
 
             // Xuất thông tin tất cả sản phẩm
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: allProduct
+                data: allProduct,
+                total:totalProduct,
+                pageCurent : page +1,
+                totalPage:  Math.ceil(totalProduct/limit),
+
             })
 
         } catch (e) {

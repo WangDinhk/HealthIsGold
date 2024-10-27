@@ -65,7 +65,8 @@ const getDetailsProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const response = await ProductService.getAllProduct() // Lấy thông tin của tất cả sản phẩm 
+        const {limit,page}=req.query;
+        const response = await ProductService.getAllProduct(Number(limit),Number(page));// Lấy thông tin của tất cả sản phẩm 
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
