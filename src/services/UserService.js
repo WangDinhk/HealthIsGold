@@ -1,8 +1,7 @@
 require('dotenv').config();  // Nạp các biến môi trường từ file .env
 const bcrypt = require('bcrypt');
 const User = require("../models/UserModel");
-const { createToken, createRefreshToken, createAccessToken } = require('./JwtService');
-
+const token=require("./JWTService")
 const createUser = async ({ name, email, password, phone }) => {
     try {
         // Kiểm tra xem email đã tồn tại hay chưa
@@ -53,15 +52,22 @@ const signInUser = async ({ email, password }) => {
         }
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = bcrypt.compare(password, user.password);
         if (!isMatch) {
             return {
                 status: "ERR",
                 message: "Incorrect password"
             };
         }
-        const accessToken = createAccessToken(user._id, user.isAdmin);
-        const refreshToken = createRefreshToken(user._id, user.isAdmin);
+        const accessToken =token.genneralAccessToken({
+            id: user.id,
+            isAdmin:user.isAdmin
+        });
+
+        const refreshToken = token.genneralRefreshToken({
+            id: user.id,
+            isAdmin: user.isAdmin
+        });
         // Nếu thông tin đăng nhập hợp lệ, trả về thông tin người dùng (có thể bao gồm token nếu cần)
         return {
             status: "OK",
@@ -103,10 +109,70 @@ const updateUser = async (userId, userData) => {
         };
     }
 };
-
+const deleteUser =async(id) => {
+    try{
+      const checkUser=await User.findOne({
+        _id:id
+      })
+      if(!checkUser){
+        return {
+            status: "ERR",
+            message: "The user is not defined"
+        };
+      }
+      await User.findByIdAndDelete(id);
+      return {
+        status:"OK",
+        message:"Delete Success"
+      }
+    }
+    catch(e){
+        return {
+            status: "ERR",
+            message: e.message
+        };
+    }
+}
+const getAllUser =async () =>{
+    try{
+        const allUser=await User.find();
+        return {
+            status:"Ok",
+            message:"Succces",
+            data:allUser
+        }
+    }
+    catch(e){
+        return {
+            status: "ERR",
+            message: e.message
+        };
+    }
+}
+const getDetailUser=async(id) =>{
+    try{
+        const user=await User.findOne({
+            _id:id
+        })
+        return {
+            status:"Ok",
+            message:"Succces",
+            data:user
+        } 
+    }
+    catch(e){
+        return {
+            status: "ERR",
+            message: e.message
+        };
+    }
+}
 
 module.exports = {
     createUser,
     signInUser,
-    updateUser
+    updateUser,
+    deleteUser,
+    getAllUser,
+    getDetailUser
 };

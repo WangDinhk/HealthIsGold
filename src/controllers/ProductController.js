@@ -12,7 +12,6 @@ const createProduct = async (req, res) => {
                 message: 'The input is require.'
             })
         }
-        console.log('response: ', req.body)
         const response = await ProductService.createProduct(req.body) // Tạo sản phẩm
         return res.status(200).json(response)
     } catch (e) {

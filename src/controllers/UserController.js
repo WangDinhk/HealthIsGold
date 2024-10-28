@@ -1,8 +1,6 @@
 const UserService = require("../services/UserService");
-
+const JWTService=require("../services/JwtService");
 const createUser = async (req, res) => {
-    console.log(req.body);  // Ghi log để kiểm tra dữ liệu
-
     const { name, email, password, confirmPassword, phone } = req.body;  
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isMail = regex.test(email);
@@ -100,9 +98,75 @@ const updateUser = async (req, res) => {
         });
     }
 };
-
+const deleteUser=async (req,res) => {
+    try{
+        const userId=req.params.id; 
+        if(userId===null){
+            return res.status(400).json({
+                status:"ERR",
+                message:'The user ID is required'
+            })
+        }
+        const respond=await UserService.deleteUser(userId);
+        return res.status(200).json(respond);
+    }
+    catch(e){
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message
+        });
+    }
+}
+const getAllUser =async (req,res) =>{
+    try{
+        const respond=await UserService.getAllUser();
+        return res.status(200).json(respond);
+    }
+    catch(e){
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message 
+        });
+    }
+}
+const getDetailUser=async (req,res) =>{
+    try{
+        const id=req.params.id;
+        const respond=await UserService.getDetailUser(id);
+        return res.status(200).json(respond);
+    }
+    catch(e){
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message 
+        });
+    }
+}
+const refreshToken=(req,res)=>{
+    try{
+        const token=req.headers.token.split(' ')[1];
+        if(!token){
+            return res.status(200).json({
+                status:"ERR",
+                message:"The token is required"
+            })
+        }
+        const respond=JWTService.refreshToken(token);
+        res.status(200).json(respond);
+    }
+    catch(e){
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message 
+        });
+    }
+}
 module.exports = {
     createUser, 
     signInUser,
-    updateUser
+    updateUser,
+    deleteUser,
+    getAllUser,
+    getDetailUser,
+    refreshToken
 };
