@@ -3,28 +3,25 @@ import OrderPage from "../pages/OrderPage/OrderPage";
 import ProductsPage from "../pages/ProductsPage/ProductsPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage"; // import NotFoundPage
 
-
 export const routes = [
   {
     path: "/",
     page: HomePage,
-    isShowHeader: true
+    isShowHeader: true,
   },
   {
     path: "/order",
     page: OrderPage,
-    isShowHeader: true
-
+    isShowHeader: true,
   },
+
   {
     path: "/products",
     page: ProductsPage,
-    isShowHeader: true
-
+    isShowHeader: true,
   },
   {
     path: "*",
     page: NotFoundPage,
   },
- 
 ];

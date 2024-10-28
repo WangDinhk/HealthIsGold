@@ -32,7 +32,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div style={{ padding: "0 120px" }}>
+      <div style={{ padding: "0 120px"}}>
         <WrapperTypeProduct>
           {arr.map((item) => {
             return <TypeProduct name={item} key={item} />;
