@@ -1,5 +1,5 @@
 const UserService = require("../services/UserService");
-const JWTService=require("../services/JwtService");
+const JWTService=require("../services/JWTService");
 const createUser = async (req, res) => {
     const { name, email, password, confirmPassword, phone } = req.body;  
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,8 +35,6 @@ const createUser = async (req, res) => {
 };
 
 const signInUser = async (req, res) => {
-    console.log(req.body);  // Ghi log để kiểm tra dữ liệu
-
     const { email, password } = req.body;  
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isMail = regex.test(email);
@@ -67,8 +65,6 @@ const signInUser = async (req, res) => {
 
 // Hàm updateUser
 const updateUser = async (req, res) => {
-    console.log(req.body);  // Ghi log để kiểm tra dữ liệu
-
     const userId = req.params.id; // Lấy ID người dùng từ tham số URL
     const { name, email, phone } = req.body;  
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
