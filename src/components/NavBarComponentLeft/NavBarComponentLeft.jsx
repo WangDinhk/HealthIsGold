@@ -81,7 +81,6 @@ const NavBarComponentLeft = () => {
     borderRadius: token.borderRadiusLG,
     border: "none",
     background: "#FFF", //////CHỖ LỎ ĐÂY
-    marginBottom: "0",
   };
 
   const onChange = (checkedValues: any) => {

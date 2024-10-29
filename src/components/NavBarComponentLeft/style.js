@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { Radio, Checkbox } from "antd"; // Thêm dòng này
 
 export const WrapperNavBar = styled.div`
-  width: 290px;
-  max-height: 830px;
-  background-color: #faf3ea;
+  width: 100%;
+  height : 100%;
   border-radius: 20px;
+  padding: 10px; /* Add padding to ensure inner elements fit well */
+  box-sizing: border-box;
 `;
 
 export const WrapperHead = styled.div`
@@ -14,21 +15,17 @@ export const WrapperHead = styled.div`
   background-color: #fff;
   padding: 12px;
   font-size: 16px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-
-  font-weight: 600;
-  border-bottom: 1px solid #e5e8ec;
-  border-top: 1px solid #dadfe4; //KHUNG BAO QUANH MENU CHỌN
-  border-left: 1px solid #dadfe4; //KHUNG BAO QUANH MENU CHỌN
-  border-right: 1px solid #dadfe4; //KHUNG BAO QUANH MENU CHỌN
+  border : 1px solid #dadfe4;
+  border-radius: 9px;
+  width: calc(100% - 24px); /* Adjust width to fit within padding */
+  box-sizing: border-box;
 `;
 export const WrapperBody = styled.div`
   width: 100%;
-  border: 1px solid #dadfe4; //KHUNG BAO QUANH MENU CHỌN
   border-bottom-left-radius: 9px;
   border-bottom-right-radius: 9px;
-  border-top: 0;
+  width: calc(100% - 24px); /* Adjust width to fit within padding */
+  box-sizing: border-box;
 `;
 
 //RADIOBUTTON

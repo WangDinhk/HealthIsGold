@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrapperHeader, WrapperHeaderAccount, WrapperHeaderText } from './Style';
-import { Button, Col } from 'antd';
+import { Button, Col, Badge } from 'antd';
 import { UserOutlined,CaretDownOutlined,ShoppingCartOutlined  } from '@ant-design/icons';
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 const HeaderComponent = () => {
@@ -16,8 +16,6 @@ const HeaderComponent = () => {
                         textButton="Search"
                         placeHolder = "Input search text" 
                     />
-                
-                    
                 </Col>
                 <Col span={7} style ={{display:'flex', gap:'20px'}}>
                 
@@ -32,7 +30,9 @@ const HeaderComponent = () => {
                         </div>
                     </WrapperHeaderAccount>
                     <WrapperHeaderAccount>
-                        <ShoppingCartOutlined style={{fontSize: '30px'}} />
+                        <Badge count={5} size='small'>
+                            <ShoppingCartOutlined style={{fontSize: '30px', color: 'white'}} />
+                        </Badge>
                         <span>Giỏ hàng</span>
                     </WrapperHeaderAccount>
                 

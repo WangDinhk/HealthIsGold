@@ -1,11 +1,15 @@
 import React from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import {
-  SlideImageContainer,
-  WrapperTypeProduct,
-  WrapperPanner,
-  WrapperPannerContent,
-  WrapperBody,
+    SlideImageContainer,
+    WrapperTypeProduct,
+    WrapperPanner,
+    WrapperPannerContent,
+    WrapperBody,
+    WrapperNavBar,
+    WrapperCards,
+    WrapperButtonMore
 } from "./style";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slider1 from "../../assets/images/slider1.png";
@@ -30,15 +34,18 @@ const HomePage = () => {
     "Hệ thống nhà thuốc",
   ];
 
-  return (
-    <>
-      <div style={{ padding: "0 120px" }}>
+
+      /*<div style={{ padding: "0 120px" }}>
         <WrapperTypeProduct>
           {arr.map((item) => {
             return <TypeProduct name={item} key={item} />;
           })}
         </WrapperTypeProduct>
-      </div>
+      </div>*/    // Để dành nếu sau này dùng
+
+  return (
+    <>
+      
       <NavBarComponent />
 
       <div>
@@ -60,11 +67,31 @@ const HomePage = () => {
           />
           <WrapperPannerContent >Sản phẩm bán chạy</WrapperPannerContent>
           </div>
-          <WrapperBody>
-            <NavBarComponentLeft/>
 
-            <CardComponent />
+          <WrapperBody>
+            <WrapperCards>
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                <CardComponent />
+                
+                <div style = {{width:'100%', justifyContent:'center', display :'flex', marginBottom : '20px'}}>
+                  <WrapperButtonMore textButton="Xem thêm" type ="outline" styleButton={{
+                      border : ' 1px solid rgb(11,116,229)',
+                      color : 'rgb(11,116,229)',
+                      width : '240px',
+                      borderRadius : '5px',
+                  }} styleTextButton={{fontWeight : 500}} />
+                </div>
+            </WrapperCards>
           </WrapperBody>
+
         </div>
       </div>
     </>
