@@ -10,9 +10,9 @@ const TypeProductPage = () => {
         <div style={{backgroundColor :'#edf0f3', padding :'20px 120px'}}>
             
             <Fragment >
-                <Row style={{flexWrap : 'nowrap', padding:'20px 0'}}>
-                    <WrapperNavBar span={6}>
-                        <NavBarComponentLeft />
+                <Row style={{flexWrap : 'nowrap', padding:'20px 0',position:"relative"}}>
+                    <WrapperNavBar span={6} style={{position:"sticky",top:"0"}}>
+                        <NavBarComponentLeft/>
                     </WrapperNavBar>
                     <WrapperProducts span={18}>
                         <CardComponent />

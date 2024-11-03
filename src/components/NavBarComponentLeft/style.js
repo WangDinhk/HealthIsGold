@@ -5,8 +5,8 @@ export const WrapperNavBar = styled.div`
   width: 100%;
   height : 100%;
   border-radius: 20px;
-  padding: 10px; /* Add padding to ensure inner elements fit well */
   box-sizing: border-box;
+ 
 `;
 
 export const WrapperHead = styled.div`
