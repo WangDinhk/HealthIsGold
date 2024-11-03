@@ -1,11 +1,15 @@
 import React from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import {
   SlideImageContainer,
   WrapperTypeProduct,
   WrapperPanner,
   WrapperPannerContent,
   WrapperBody,
+  WrapperNavBar,
+  WrapperCards,
+  WrapperButtonMore,
 } from "./style";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slider1 from "../../assets/images/slider1.png";
@@ -15,7 +19,7 @@ import slider4 from "../../assets/images/slider4.png";
 import slider5 from "../../assets/images/slider5.png";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import NavBarComponent from "../../components/NavBarComponent/NavBarComponent";
-import NavBarComponentLeft from"../../components/NavBarComponentLeft/NavBarComponentLeft";
+import NavBarComponentLeft from "../../components/NavBarComponentLeft/NavBarComponentLeft";
 
 const HomePage = () => {
   const arr = [
@@ -30,16 +34,16 @@ const HomePage = () => {
     "Hệ thống nhà thuốc",
   ];
 
-  return (
-    <>
-      <div style={{ padding: "0 120px"}}>
+  /*<div style={{ padding: "0 120px" }}>
         <WrapperTypeProduct>
           {arr.map((item) => {
             return <TypeProduct name={item} key={item} />;
           })}
         </WrapperTypeProduct>
-      </div>
-      <NavBarComponent />
+      </div>*/ // Để dành nếu sau này dùng
+
+  return (
+    <>
 
       <div>
         <SlideImageContainer>
@@ -53,17 +57,48 @@ const HomePage = () => {
             position: "relative",
           }}
         >
-          <div style={{position:"relative"}}>
-          <WrapperPanner
-            src="https://cdn.nhathuoclongchau.com.vn/unsafe/320x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/san_pham_ban_chay_website_320x41_3x_88c599649c.png"
-            alt="sanphambanchay"
-          />
-          <WrapperPannerContent >Sản phẩm bán chạy</WrapperPannerContent>
+          <div style={{ position: "relative" }}>
+            <WrapperPanner
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/320x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/san_pham_ban_chay_website_320x41_3x_88c599649c.png"
+              alt="sanphambanchay"
+            />
+            <WrapperPannerContent>Sản phẩm bán chạy</WrapperPannerContent>
           </div>
-          <WrapperBody>
-            <NavBarComponentLeft/>
 
-            <CardComponent />
+          <WrapperBody>
+            <WrapperCards>
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+              <CardComponent />
+
+              <div
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                  marginBottom: "20px",
+                }}
+              >
+                <WrapperButtonMore
+                  textButton="Xem thêm"
+                  type="outline"
+                  styleButton={{
+                    border: " 1px solid rgb(11,116,229)",
+                    color: "rgb(11,116,229)",
+                    width: "240px",
+                    borderRadius: "5px",
+                  }}
+                  styleTextButton={{ fontWeight: 500 }}
+                />
+              </div>
+            </WrapperCards>
           </WrapperBody>
         </div>
       </div>

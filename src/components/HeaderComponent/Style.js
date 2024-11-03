@@ -7,11 +7,12 @@ export const WrapperHeader = styled(Row)`
     align-items: center;
     gap : 16px;
     flex-wrap: nowrap;
+    height : 80px;
  `   
 export const WrapperHeaderText = styled.div`
     color: white;
     justify-content: left; 
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     margin: 10px;
             

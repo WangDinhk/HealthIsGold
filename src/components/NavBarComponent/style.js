@@ -8,6 +8,7 @@ export const WrapperListDropdown = styled.ul`
   display: flex;
   flex-wrap: nowrap;
   padding: 0 120px;
+  padding-top: 5px;
   justify-content: space-between;
   align-items: center;
 `;
@@ -32,11 +33,12 @@ export const WrapperButton = styled(Link)`
   font-size: 15px;
   background: #fff;
   border: 1px solid #fff;
-  border-radius: 20px;
+  border-radius: 7px;
   height: 44px;
   display: flex;
   align-items: center;
   transition: box-shadow 0.3s ease, color 0.3s ease;
+  padding: 0 15px;
 
   &:hover {
     color: #265ade;
@@ -51,4 +53,6 @@ export const ItemImg = styled.img`
   width: 20px;
   margin-right: 5px;
   height: auto;
+  padding-bottom: 10px;
+  padding-top: 10px;
 `;
