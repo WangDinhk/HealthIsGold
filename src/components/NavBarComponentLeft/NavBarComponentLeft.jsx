@@ -119,7 +119,6 @@ const NavBarComponentLeft = () => {
       </WrapperHead>
       <WrapperBody>
         <Collapse
-          bordered={false}
           activeKey={activeKeys}
           expandIcon={({ isActive }) => (
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
