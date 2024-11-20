@@ -51,7 +51,7 @@ const signInUser = async ({ email, password }) => {
         }
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa
-        const isMatch = bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return {
                 status: "ERR",
