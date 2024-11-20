@@ -8,6 +8,10 @@ import {
   EyeFilled,
   EyeInvisibleFilled,
 } from "@ant-design/icons";
+import { useMutationHook } from "../../hooks/useMutationHook";
+import Loading from "../../components/LoadingComponent/Loading";
+import * as UserService from "../../service/UserService";
+
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -18,7 +22,10 @@ const SignUpPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
+  const [confirmPassword, setRetypePassword] = useState("");
+
+  const mutation = useMutationHook((data) => UserService.signupUser(data));
+  const {data, isLoading} = mutation;
 
   const handleOnchangeEmail = (e) => {
     setEmail(e.target.value);
@@ -31,7 +38,7 @@ const SignUpPage = () => {
   };
 
   const handleSignUp = () => {
-    console.log(email, password, retypePassword);
+    mutation.mutate({email, password, confirmPassword});
   };
 
   return (
@@ -57,14 +64,12 @@ const SignUpPage = () => {
         <WrapperContainer>
           <h2>Đăng ký</h2>
           <p>Đăng ký ngay để hưởng những đặc quyền dành cho thành viên</p>
-
           <InputForm
             style={{ marginBottom: "10px" }}
             placeholder="example@gmail.com"
             value={email}
-            onChange={handleOnchangeEmail}
+            handleOnchange={handleOnchangeEmail}
           />
-
           <div style={{ position: "relative", width: "100%" }}>
             <span
               onClick={() => setIsShowPassword(!isShowPassword)}
@@ -84,10 +89,9 @@ const SignUpPage = () => {
               placeholder="password"
               type={isShowPassword ? "text" : "password"}
               value={password}
-              onChange={handleOnchangePassword}
+              handleOnchange={handleOnchangePassword}
             />
           </div>
-
           <div style={{ position: "relative", width: "100%" }}>
             <span
               onClick={() => setIsShowRetypePassword(!isShowRetypePassword)}
@@ -106,31 +110,33 @@ const SignUpPage = () => {
               style={{ marginBottom: "10px" }}
               placeholder="retype password"
               type={isShowRetypePassword ? "text" : "password"}
-              value={retypePassword}
-              onChange={handleOnchangeRetypePassword}
+              value={confirmPassword}
+              handleOnchange={handleOnchangeRetypePassword}
             />
           </div>
 
-          <ButtonComponent
-            disabled={!(email && password && retypePassword)}
-            onClick={handleSignUp}
-            size={40}
-            styleButton={{
-              backgroundColor: "rgb(33, 112, 250)",
-              color: "white",
-              borderRadius: 20,
-              width: "100%",
-              height: 40,
-              fontSize: 20,
-              marginTop: 20,
-            }}
-            textButton={"Tiếp tục"}
-            styleTextButton={{
-              color: "white",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          />
+          {data?.status === 'ERR' &&
+          <span style={{ color: "red" }}>{data?.message}</span>}
+            <ButtonComponent
+              disabled={!(email && password && confirmPassword)}
+              onClick={handleSignUp}
+              size={40}
+              styleButton={{
+                backgroundColor: "rgb(33, 112, 250)",
+                color: "white",
+                borderRadius: 20,
+                width: "100%",
+                height: 40,
+                fontSize: 20,
+                marginTop: 20,
+              }}
+              textButton={"Tiếp tục"}
+              styleTextButton={{
+                color: "white",
+                fontSize: "15px",
+                fontWeight: "700",
+              }}
+            />
         </WrapperContainer>
         <div style={{ paddingLeft: "50px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
