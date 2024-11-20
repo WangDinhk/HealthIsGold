@@ -1,4 +1,4 @@
-require('dotenv').config();  // Nạp các biến môi trường từ file .env
+require('dotenv').config();  
 const bcrypt = require('bcrypt');
 const User = require("../models/UserModel");
 const token=require("./JwtService")
@@ -12,9 +12,8 @@ const createUser = async ({ name, email, password, phone }) => {
                 message: "Email already exists"
             };
         }
-
         // Lấy số lần salt từ biến môi trường
-        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10);  // Chuyển đổi thành số nguyên
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10); 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Tạo user trong database với mật khẩu đã mã hóa
