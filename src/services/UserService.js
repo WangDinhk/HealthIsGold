@@ -1,7 +1,7 @@
 require('dotenv').config();  // Nạp các biến môi trường từ file .env
 const bcrypt = require('bcrypt');
 const User = require("../models/UserModel");
-const token=require("./JWTService")
+const token=require("./JwtService")
 const createUser = async ({ name, email, password, phone }) => {
     try {
         // Kiểm tra xem email đã tồn tại hay chưa
