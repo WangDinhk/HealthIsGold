@@ -1,5 +1,5 @@
 const UserService = require("../services/UserService");
-const JWTService=require("../services/JWTService");
+const JWTService=require("../services/JwtService");
 const createUser = async (req, res) => {
     const { name, email, password, confirmPassword, phone } = req.body;  
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
