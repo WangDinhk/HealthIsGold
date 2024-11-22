@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { WrapperContainer, WrapperTextLight } from "./style";
 import InputForm from "../../components/InputForm/InputForm";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -7,9 +7,13 @@ import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import * as UserService from "../../service/UserService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
+import { jwtDecode } from "jwt-decode";
+import {useDispatch} from 'react-redux'
+import { updateUser } from "../../redux/slides/userSlide";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const dispatch = useDispatch();
   const handleNavigateSignUp = () => {
     navigate("/sign-up");
   };
@@ -17,8 +21,26 @@ const SignInPage = () => {
   const mutation = useMutationHook((data) => UserService.loginUser(data));
   
 
-  const {data, isLoading} = mutation;
+  const {data, isLoading, isSuccess} = mutation;
+  useEffect(()=>{
+    if(isSuccess){
+      navigate('/');
+      console.log('data',data);
+      localStorage.setItem('accessToken',data?.accessToken);
+      if(data?.accessToken){
+        const decoded = jwtDecode(data?.accessToken);
+        console.log('decoded',decoded);
+        if(decoded?.id){
+          handleGetDetailsUser(decoded?.id,data?.accessToken)
+        }
+      }
+    }
+  },[isSuccess])
 
+  const handleGetDetailsUser = async (id,token)=>{
+    const res= await UserService.getDetailsUser(id,token);
+    dispatch(updateUser({...res?.data,accessToken : token}))
+  }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
