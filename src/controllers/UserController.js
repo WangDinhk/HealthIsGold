@@ -1,5 +1,6 @@
 const UserService = require("../services/UserService");
 const JWTService=require("../services/JwtService");
+const { response } = require("express");
 const createUser = async (req, res) => {
     const { name, email, password, confirmPassword, phone } = req.body; 
     
@@ -56,8 +57,13 @@ const signInUser = async (req, res) => {
 
     // Đã kiểm tra xong, gọi service để đăng nhập người dùng
     try {
-        const resp = await UserService.signInUser(req.body);  
-        return res.status(200).json(resp); // Trả về thông tin người dùng hoặc token
+        const resp = await UserService.signInUser(req.body); 
+        const {refreshToken,...newReponse}=resp;
+        res.cookie('refreshToken',refreshToken,{
+            HttpOnly: true,
+            Secure:true,
+        });
+        return res.status(200).json(newReponse); // Trả về thông tin người dùng hoặc token
     } catch (e) {
         return res.status(500).json({
             status: "ERR",
@@ -143,7 +149,7 @@ const getDetailUser=async (req,res) =>{
 }
 const refreshToken=(req,res)=>{
     try{
-        const token=req.headers.token.split(' ')[1];
+        const token=req.cookies.refreshToken;
         if(!token){
             return res.status(200).json({
                 status:"ERR",

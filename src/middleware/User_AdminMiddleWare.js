@@ -17,7 +17,7 @@ const User_AdminMiddleWare =(req, res, next) => {
             })
         }
         const decoded =jwt.verify(token, process.env.ACCESS_TOKEN);
-        if(decoded.payload?.isAdmin||decoded.payload?.id==id){
+        if(decoded?.isAdmin||decoded?.id==id){
             next();
         }
         else{

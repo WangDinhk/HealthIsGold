@@ -3,6 +3,7 @@ const dotenv= require("dotenv");
 const { default: mongoose } = require("mongoose");
 const routes = require('./routes');
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser")
 const cors = require("cors");
 dotenv.config();
 
@@ -15,7 +16,7 @@ res.send('Hello World everyone');
 
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(cookieParser());
 routes(app);
 
 mongoose.connect(`${process.env.MONGO_DB}`)

@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const genneralAccessToken = (payload) => {
-    const accessToken = jwt.sign({ payload }, process.env.ACCESS_TOKEN, { expiresIn: '300s' });
+    const accessToken = jwt.sign({ 
+        ...payload 
+    }, process.env.ACCESS_TOKEN, { expiresIn: '5m' });
     return accessToken;
 };
 
@@ -21,7 +23,8 @@ const refreshToken= (token) =>{
         console.log(newAccessToken);
         return {
             status:"OK",
-            message:"Success"
+            message:"Success",
+            accessToken:newAccessToken
         }
     }
     catch(e){
