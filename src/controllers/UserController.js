@@ -61,8 +61,8 @@ const signInUser = async (req, res) => {
         const {refreshToken,...newReponse}=resp;
         res.cookie('refreshToken',refreshToken,{
             httpOnly: true,
-            secure:false,
-            samesite:'strict'
+            secure: false,
+            samesite: 'strict'
         });
         return res.status(200).json(newReponse); // Trả về thông tin người dùng hoặc token
     } catch (e) {
