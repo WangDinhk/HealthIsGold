@@ -10,6 +10,8 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { jwtDecode } from "jwt-decode";
 import {useDispatch} from 'react-redux'
 import { updateUser } from "../../redux/slides/userSlide";
+import * as message from '../../components/Message/Message'
+
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -21,7 +23,7 @@ const SignInPage = () => {
   const mutation = useMutationHook((data) => UserService.loginUser(data));
   
 
-  const {data, isLoading, isSuccess} = mutation;
+  const {data, isLoading, isSuccess,isError} = mutation;
   useEffect(()=>{
     if(isSuccess){
       navigate('/');
@@ -35,7 +37,10 @@ const SignInPage = () => {
         }
       }
     }
-  },[isSuccess])
+    else if(isError){
+      message.error();
+    }
+  },[isSuccess,isError])
 
   const handleGetDetailsUser = async (id,token)=>{
     const res= await UserService.getDetailsUser(id,token);
