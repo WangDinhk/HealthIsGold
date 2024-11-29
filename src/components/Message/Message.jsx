@@ -4,7 +4,7 @@ const success = (mes='Success') => {
     message.success(mes);
   };
 
-const error = (mes='Error') => {
+const error = (mes='Sai mật khẩu hoặc Email') => {
 message.error(mes);
 };
 
