@@ -4,7 +4,7 @@ import {
   WrapperHeaderAccount,
   WrapperHeaderText,
 } from "./Style";
-import { Button, Col, Badge } from "antd";
+import { Button, Col, Badge, Popover } from "antd";
 import {
   UserOutlined,
   CaretDownOutlined,
@@ -15,11 +15,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 const HeaderComponent = () => {
   const navigate = useNavigate();
-  const user  = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user)
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
-  console.log('user',user);
+  console.log('user', user);
   return (
     <div>
       <WrapperHeader gutter={16}>
@@ -36,20 +36,23 @@ const HeaderComponent = () => {
         <Col span={7} style={{ display: "flex", gap: "20px" }}>
           <WrapperHeaderAccount>
             <UserOutlined style={{ fontSize: "30px" }} />
-            {user?.name?(
-              <div style={{ cursor: "pointer" }}>{user.name}</div>
-            ):(
+            {user?.access_token ? (
+              <>
+                <Popover>
+                  <div style={{ cursor: "pointer" }}>{user?.name?.length ? user?.name : user?.email}</div>
+                </Popover>
+              </>
+            ) : (
               <div onClick={handleNavigateLogin} style={{ cursor: "pointer" }}>
-              <div>
-                <span>Đăng nhập</span>
                 <div>
-                  <span>Tài khoản</span>
-                  <CaretDownOutlined />
+                  <span>Đăng nhập</span>
+                  <div>
+                    <span>Tài khoản</span>
+                    <CaretDownOutlined />
+                  </div>
                 </div>
               </div>
-            </div>
             )}
-            
           </WrapperHeaderAccount>
           <WrapperHeaderAccount>
             <Badge count={5} size="small">
