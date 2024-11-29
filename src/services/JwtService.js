@@ -20,7 +20,6 @@ const refreshToken= (token) =>{
             id:decoded?.id,
             isAdmin:decoded?.isAdmin
         })
-        console.log(newAccessToken);
         return {
             status:"OK",
             message:"Success",
