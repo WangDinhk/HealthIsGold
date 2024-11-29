@@ -4,12 +4,28 @@ import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-
+import { isJsonString } from "./utils";
+import { jwtDecode } from "jwt-decode";
+import * as UserService from "./service/UserService";
+import { useDispatch } from "react-redux";
+import { updateUser } from "./redux/slides/userSlide";
 function App() {
-
-  // useEffect(() => {
-  //   fetchAPi();
-  // }, []);
+const dispatch=useDispatch();
+  useEffect(() => {
+    let storageData= localStorage.getItem('accessToken')
+    if (storageData && isJsonString(storageData)) {
+      storageData = JSON.parse(storageData);
+      const decoded = jwtDecode(storageData);
+      if (decoded?.id) {
+        handleGetDetailsUser(decoded?.id, storageData);
+      }
+    }
+    console.log("ac",storageData)
+  }, []);
+  const handleGetDetailsUser = async (id,token)=>{
+    const res= await UserService.getDetailsUser(id,token);
+    dispatch(updateUser({...res?.data,accessToken : token}))
+  }
   
   const fetchAPi = async () => {
     try {

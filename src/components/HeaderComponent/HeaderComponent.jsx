@@ -36,7 +36,7 @@ const HeaderComponent = () => {
         <Col span={7} style={{ display: "flex", gap: "20px" }}>
           <WrapperHeaderAccount>
             <UserOutlined style={{ fontSize: "30px" }} />
-            {user?.access_token ? (
+            {user?.accessToken ? (
               <>
                 <Popover>
                   <div style={{ cursor: "pointer" }}>{user?.name?.length ? user?.name : user?.email}</div>
