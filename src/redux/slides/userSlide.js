@@ -7,7 +7,7 @@ const initialState = {
   address: '',
   avatar: '',
   accessToken: '',
-  id: ''
+  id: '',
 }
 
 export const userSlide = createSlice({
@@ -34,11 +34,12 @@ export const userSlide = createSlice({
       state.avatar = '';
       state.id = '';
       state.accessToken = '';
+
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { updateUser } = userSlide.actions
+export const { updateUser, resetUser } = userSlide.actions
 
 export const userReducer = userSlide.reducer;

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+  WrapperContentPopup,
   WrapperHeader,
   WrapperHeaderAccount,
   WrapperHeaderText,
 } from "./Style";
-import { Button, Col, Badge, Popover } from "antd";
+import { Button, Col, Badge, Popover, Flex } from "antd";
 import {
   UserOutlined,
   CaretDownOutlined,
@@ -12,22 +13,44 @@ import {
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { click } from "@testing-library/user-event/dist/click";
+import * as UserService from "../../service/UserService";
+import { resetUser } from "../../redux/slides/userSlide";
+import Loading from "../LoadingComponent/Loading";
+
 const HeaderComponent = () => {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user)
-  const [userName, setUserName] = useState('')
-  const [userAvatar, setUserAvatar] = useState('')
+  const user = useSelector((state) => state.user);
+  const [userName, setUserName] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
 
-  useEffect(() => {
-    setUserName(user?.name)
-    setUserAvatar(user?.avatar)
-  }, [user?.name, user?.avatar])
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const handleLogout = async () => {
+    setLoading(true)
+    await UserService.logoutUser();
+    dispatch(resetUser());
+    setLoading(false)
+  };
 
-  console.log('user', user);
+  const content = (
+    <div>
+      <WrapperContentPopup onClick={handleLogout}>
+        Đăng xuất
+      </WrapperContentPopup>
+      <WrapperContentPopup>Thông tin người dùng</WrapperContentPopup>
+    </div>
+  );
+  useEffect(() => {
+    setUserName(user?.name);
+    setUserAvatar(user?.avatar);
+  }, [user?.name, user?.avatar]);
+
+  console.log("user", user);
   return (
     <div>
       <WrapperHeader gutter={16}>
@@ -42,21 +65,28 @@ const HeaderComponent = () => {
           />
         </Col>
         <Col span={7} style={{ display: "flex", gap: "20px" }}>
+        <Loading isLoading={loading}>
           <WrapperHeaderAccount>
             {userAvatar ? (
-              <img src={userAvatar} alter="avatar" style={{
-                height: '30px',
-                width: '30px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-            }}/>
+              <img
+                src={userAvatar}
+                alter="avatar"
+                style={{
+                  height: "30px",
+                  width: "30px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
             ) : (
-            <UserOutlined style={{ fontSize: "30px" }} />
+              <UserOutlined style={{ fontSize: "30px" }} />
             )}
             {user?.accessToken ? (
               <>
-                <Popover>
-                  <div style={{ cursor: "pointer" }}>{userName?.length ? userName : user?.email}</div>
+                <Popover content={content} trigger="click">
+                  <div style={{ cursor: "pointer" }}>
+                    {userName?.length ? userName : user?.email}
+                  </div>
                 </Popover>
               </>
             ) : (
@@ -71,6 +101,8 @@ const HeaderComponent = () => {
               </div>
             )}
           </WrapperHeaderAccount>
+          </Loading>
+ 
           <WrapperHeaderAccount>
             <Badge count={5} size="small">
               <ShoppingCartOutlined
@@ -79,6 +111,7 @@ const HeaderComponent = () => {
             </Badge>
             <span>Giỏ hàng</span>
           </WrapperHeaderAccount>
+
         </Col>
       </WrapperHeader>
     </div>
