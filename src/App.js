@@ -71,8 +71,12 @@ function App() {
   // );
   ///
   const handleGetDetailsUser = async (id, token) => {
-    const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, accessToken: token }));
+    try {
+      const res = await UserService.getDetailsUser(id, token);
+      dispatch(updateUser({ ...res?.data, accessToken: token }));
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
   };
 
   const fetchAPi = async () => {
