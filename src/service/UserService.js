@@ -45,7 +45,7 @@ export const refreshToken = async () => {
     {},
     {
       withCredentials: true, // Đảm bảo cookie được gửi cùng request
-      
+
     }
   );
   return res.data;
@@ -54,11 +54,12 @@ export const refreshToken = async () => {
 
 //
 
-export const UpdateUser = async (id, data) => {
-  const res = await axios.put(
-    `${process.env.REACT_APP_API_URL}/user/update-user/${id}`,
-    data
-  );
 
-  return res.data;
-};
+export const UpdateUser = async (id, data, accessToken) => {
+    const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/update-user/${id}`, data, {
+        headers: {
+            token: `Bearer ${accessToken}`,
+        }
+    });
+    return res.data;
+}

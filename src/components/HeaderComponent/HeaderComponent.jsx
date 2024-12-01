@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   WrapperHeader,
   WrapperHeaderAccount,
@@ -16,9 +16,17 @@ import { useSelector } from "react-redux";
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user)
+  const [userName, setUserName] = useState('')
+  const [userAvatar, setUserAvatar] = useState('')
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
+
+  useEffect(() => {
+    setUserName(user?.name)
+    setUserAvatar(user?.avatar)
+  }, [user?.name, user?.avatar])
+
   console.log('user', user);
   return (
     <div>
@@ -35,11 +43,20 @@ const HeaderComponent = () => {
         </Col>
         <Col span={7} style={{ display: "flex", gap: "20px" }}>
           <WrapperHeaderAccount>
+            {userAvatar ? (
+              <img src={userAvatar} alter="avatar" style={{
+                height: '30px',
+                width: '30px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+            }}/>
+            ) : (
             <UserOutlined style={{ fontSize: "30px" }} />
+            )}
             {user?.accessToken ? (
               <>
                 <Popover>
-                  <div style={{ cursor: "pointer" }}>{user?.name?.length ? user?.name : user?.email}</div>
+                  <div style={{ cursor: "pointer" }}>{userName?.length ? userName : user?.email}</div>
                 </Popover>
               </>
             ) : (
