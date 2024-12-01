@@ -10,39 +10,39 @@ import * as UserService from "./service/UserService";
 import { useDispatch } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 function App() {
-const dispatch=useDispatch();
+  const dispatch = useDispatch();
   useEffect(() => {
     // let storageData= localStorage.getItem('accessToken')
-    const {storageData,decoded}= handleDecoded()
- 
-      if (decoded?.id) {
-        handleGetDetailsUser(decoded?.id, storageData);
-      }
-    
-    console.log("ac",storageData)
+    const { storageData, decoded } = handleDecoded();
+    // console.log(`storageData:`, storageData, isJsonString(storageData),decoded);
+
+    if (decoded?.id) {
+      handleGetDetailsUser(decoded?.id, storageData);
+    }
   }, []);
   ///
-  const handleDecoded=()=>{
-    let storageData= localStorage.getItem('accessToken')
-    let decoded={}
+  const handleDecoded = () => {
+    let storageData = localStorage.getItem("accessToken");
+
+    let decoded = {};
     if (storageData && isJsonString(storageData)) {
       storageData = JSON.parse(storageData);
       decoded = jwtDecode(storageData);
-      
     }
-    return {decoded,storageData}
-  }
+    return { decoded, storageData };
+  };
   //
- UserService.axiosJWT.interceptors.request.use(
+  UserService.axiosJWT.interceptors.request.use(
     async (config) => {
       const currentTime = new Date();
       const { decoded } = handleDecoded();
-  
+
       if (decoded?.exp < currentTime.getTime() / 1000) {
         const data = await UserService.refreshToken();
-        config.headers['token'] = `Bearer ${data?.accessToken}`;
+        // console.log("Current Cookies:", document.cookie);
+        config.headers["token"] = `Bearer ${data?.accessToken}`;
       }
-  
+
       return config;
     },
     (err) => {
@@ -50,18 +50,18 @@ const dispatch=useDispatch();
       return Promise.reject(err);
     }
   );
-  
+
   // UserService.axiosJWT.interceptors.request.use(
   //   async (config) => {
   //     // Do something before request is sent
   //     const currentTime = new Date();
   //     const { decoded } = handleDecoded();
-  
+
   //     if (decoded?.exp < currentTime.getTime() / 1000) {
   //       const data = await UserService.refreshToken();
   //       config.headers['token'] = `Bearer ${data?.access_token}`;
   //     }
-  
+
   //     return config;
   //   },
   //   (err) => {
@@ -70,24 +70,23 @@ const dispatch=useDispatch();
   //   }
   // );
   ///
-  const handleGetDetailsUser = async (id,token)=>{
-    const res= await UserService.getDetailsUser(id,token);
-    dispatch(updateUser({...res?.data,accessToken : token}))
-  }
-  
+  const handleGetDetailsUser = async (id, token) => {
+    const res = await UserService.getDetailsUser(id, token);
+    dispatch(updateUser({ ...res?.data, accessToken: token }));
+  };
+
   const fetchAPi = async () => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL;
       const res = await axios.get(`${apiUrl}/product/get-all`);
       return res.data;
     } catch (error) {
-      console.error('Error fetching API:', error);
+      console.error("Error fetching API:", error);
     }
-  }
+  };
 
-  const query = useQuery({ queryKey: ['todos'], queryFn: fetchAPi })
-  console.log('query',query);
-
+  const query = useQuery({ queryKey: ["todos"], queryFn: fetchAPi });
+  console.log("query", query);
 
   return (
     <div>
