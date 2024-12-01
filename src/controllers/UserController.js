@@ -167,6 +167,23 @@ const refreshToken = (req, res) => {
     });
   }
 };
+
+
+const logoutUser = (req, res) => {
+  try {
+    res.clearCookie(`refreshToken`)
+    return res.status(200).json({
+      status: `OK`,
+      message:` Logout successfully`
+    })
+   
+    
+  } catch (e) {
+    return res.status(404).json({
+      message: e
+    });
+  }
+};
 module.exports = {
   createUser,
   signInUser,
@@ -175,4 +192,5 @@ module.exports = {
   getAllUser,
   getDetailUser,
   refreshToken,
+  logoutUser
 };
