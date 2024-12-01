@@ -1,0 +1,146 @@
+[33mcommit 1c4b4a1ef5fc2e31e24ce2bc1a82cabd9d71ca15[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mFrontend[m[33m)[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Sat Nov 30 12:54:53 2024 +0700
+
+    false
+
+[33mcommit b7e7fe2912537cfe6b21bc8778e0d9a334302cbd[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Sat Nov 30 01:22:41 2024 +0700
+
+    done reload
+
+[33mcommit 08c4a4a7697aa82f78ddaad08176f05ac7097f0e[m[33m ([m[1;31morigin/Frontend[m[33m)[m
+Author: thanhan06 <nguyenvanvu060104@gmail.com>
+Date:   Fri Nov 29 20:52:46 2024 +0700
+
+    Update Message.jsx
+
+[33mcommit ccff56647686b67a04d10f0422ca70aa26194acf[m
+Author: Truong-Duong-Anh-Tu <truongtu11747@gmail.com>
+Date:   Fri Nov 29 20:35:05 2024 +0700
+
+    Update profile user feature
+
+[33mcommit 30adcad70f158cf18920707127b51941076948b2[m
+Merge: c5dae0f 21ed115
+Author: thanhan06 <nguyenvanvu060104@gmail.com>
+Date:   Fri Nov 29 16:42:58 2024 +0700
+
+    Merge branch 'Frontend' of https://github.com/WangDinhk/HealthIsGold into Frontend
+
+[33mcommit c5dae0fcea968b242a40768ee49c438ec5b5d7a2[m
+Author: thanhan06 <nguyenvanvu060104@gmail.com>
+Date:   Fri Nov 29 16:42:54 2024 +0700
+
+    Update SignInPage.jsx
+
+[33mcommit 21ed115ad8ec164d9d8ca12adf552d6e7e2cae8a[m
+Author: Truong-Duong-Anh-Tu <truongtu11747@gmail.com>
+Date:   Fri Nov 29 14:40:07 2024 +0700
+
+    Create profile user page
+
+[33mcommit f65ec14b7f9c4c3e0db052a750833745dc5d5657[m
+Author: thanhan06 <nguyenvanvu060104@gmail.com>
+Date:   Fri Nov 22 20:06:07 2024 +0700
+
+    Xử lý sau khi đăng nhập/đki
+
+[33mcommit 801b99350cdf2cd84650c7c9fd7c6be78c18af7f[m
+Author: 22120433 <lequangvinh.127.2022@gmail.com>
+Date:   Wed Nov 20 15:42:43 2024 +0700
+
+    useMutation call API
+
+[33mcommit bb3d2277cc43271d5409fe0666741f71d26d8513[m
+Author: 22120433 <lequangvinh.127.2022@gmail.com>
+Date:   Tue Nov 19 22:14:30 2024 +0700
+
+    handle signIn, signUp in frontend
+
+[33mcommit f919075703a0373e341de981d31018294ad6f696[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Mon Nov 4 00:20:31 2024 +0700
+
+    product details
+
+[33mcommit ab816906bab947dee0bcfbbcf1b436f49c04aa25[m
+Merge: e1c7373 aca6c1c
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Mon Nov 4 00:07:04 2024 +0700
+
+    product details
+
+[33mcommit aca6c1c40745e1421827c11fa6f46279fb7ab506[m
+Author: 22120433 <lequangvinh.127.2022@gmail.com>
+Date:   Fri Nov 1 19:38:45 2024 +0700
+
+    sign-up & sign-in page
+
+[33mcommit d5720ff784aac6a178230a196264b3fafeb10e00[m
+Author: 22120433 <lequangvinh.127.2022@gmail.com>
+Date:   Tue Oct 29 19:36:32 2024 +0700
+
+    Update homepage and typeproductpage
+
+[33mcommit e1c737371a2ff90f2113bff9b446289ec792ee60[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Mon Oct 28 19:31:22 2024 +0700
+
+    wrapper img
+
+[33mcommit 79894b08a406e62981dcfd2f9c1c1d4312a5d38d[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Sun Oct 27 18:57:51 2024 +0700
+
+    navbar left
+
+[33mcommit 5b5a2eeeae652baf49dc2ecdd3a8b9cd62a7e588[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Fri Oct 25 22:34:28 2024 +0700
+
+    add style.js for CardComponent
+
+[33mcommit 0931c27e69d9030b828f8e16695258895c3eab3f[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Fri Oct 25 22:29:18 2024 +0700
+
+     add NavBar Card Product component and update Homepage
+
+[33mcommit 8a354955d100942fc259894579b592da8b1809ef[m
+Author: 22120433 <lequangvinh.127.2022@gmail.com>
+Date:   Tue Oct 22 14:39:42 2024 +0700
+
+    HomePage Header,Type Product and Slide Img
+
+[33mcommit 1b5b1be05ff69d3f48e5cbcec13e84591c29debd[m
+Author: QuavyTwo <lequangvinh.127.2022@gmail.com>
+Date:   Sat Oct 19 15:39:51 2024 +0700
+
+    type product and divide component
+
+[33mcommit c844179c84e7475bf862e94b9f669bce5d0aaa9b[m
+Author: QuavyTwo <lequangvinh.127.2022@gmail.com>
+Date:   Sat Oct 19 10:57:25 2024 +0700
+
+    Header
+
+[33mcommit 3319552b2199b7f4700ad20a2ea0ced8fe30b514[m
+Merge: b3297ad a49e80f
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Fri Oct 18 09:06:04 2024 +0700
+
+    Resolve merge conflict in README.md
+
+[33mcommit a49e80f405aeafd8139daa55ee81d9205aec9c2b[m[33m ([m[1;32mmaster[m[33m)[m
+Author: quocviett0123 <22120432@student.hcmus.edu.vn>
+Date:   Fri Oct 18 08:52:18 2024 +0700
+
+    init frontend
+
+[33mcommit b3297ad83b7cc8473eb181e43828f51dddf8d7ac[m[33m ([m[1;31morigin/release_01[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Vinh Le Quang <22120433@student.hcmus.edu.vn>
+Date:   Sun Oct 6 08:53:22 2024 +0700
+
+    Initial commit
