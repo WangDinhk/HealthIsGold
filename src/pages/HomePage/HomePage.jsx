@@ -1,13 +1,9 @@
 import React from "react";
-import TypeProduct from "../../components/TypeProduct/TypeProduct";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import {
   SlideImageContainer,
-  WrapperTypeProduct,
   WrapperPanner,
   WrapperPannerContent,
   WrapperBody,
-  WrapperNavBar,
   WrapperCards,
   WrapperButtonMore,
 } from "./style";
@@ -18,8 +14,8 @@ import slider3 from "../../assets/images/slider3.png";
 import slider4 from "../../assets/images/slider4.png";
 import slider5 from "../../assets/images/slider5.png";
 import CardComponent from "../../components/CardComponent/CardComponent";
-import NavBarComponent from "../../components/NavBarComponent/NavBarComponent";
-import NavBarComponentLeft from "../../components/NavBarComponentLeft/NavBarComponentLeft";
+import { useQuery } from "@tanstack/react-query";
+import * as ProductService from "../../service/ProductService";
 
 const HomePage = () => {
   const arr = [
@@ -34,17 +30,18 @@ const HomePage = () => {
     "Hệ thống nhà thuốc",
   ];
 
-  /*<div style={{ padding: "0 120px" }}>
-        <WrapperTypeProduct>
-          {arr.map((item) => {
-            return <TypeProduct name={item} key={item} />;
-          })}
-        </WrapperTypeProduct>
-      </div>*/ // Để dành nếu sau này dùng
+  const fetchProductAll = async () => {
+    const res = await ProductService.getAllProduct();
+    return res;
+  };
+  const { isLoading, data } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProductAll,
+  });
+  console.log("data", data);
 
   return (
     <>
-
       <div>
         <SlideImageContainer>
           <SliderComponent
@@ -67,17 +64,30 @@ const HomePage = () => {
 
           <WrapperBody>
             <WrapperCards>
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
-              <CardComponent />
+              {data?.data?.map((product) => {
+                return (
+                  <CardComponent
+                    key={product._id}
+                    countInStock={product.countInStock}
+                    description={product.description}
+                    image={product.image}
 
+                    name={product.name}
+                    price={product.price}
+                    type={product.type}
+                    manufacturer={product.manufacturer}
+
+                    discount={product.discount}
+                    unit={product.unit}
+                    country={product.country}
+                    target={product.target}
+                    
+                    quantity={product.quantity}
+                    ingredient={product.ingredient}
+
+                  />
+                );
+              })}
               <div
                 style={{
                   width: "100%",

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
@@ -7,11 +7,15 @@ import { useQuery } from "@tanstack/react-query";
 import { isJsonString } from "./utils";
 import { jwtDecode } from "jwt-decode";
 import * as UserService from "./service/UserService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
+import Loading from "./components/LoadingComponent/Loading";
 function App() {
+  const user = useSelector((state) => state.user);
+  const { isLoading, setIsLoading } = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
+    setIsLoading(true);
     // let storageData= localStorage.getItem('accessToken')
     const { storageData, decoded } = handleDecoded();
     // console.log(`storageData:`, storageData, isJsonString(storageData),decoded);
@@ -74,8 +78,9 @@ function App() {
     try {
       const res = await UserService.getDetailsUser(id, token);
       dispatch(updateUser({ ...res?.data, accessToken: token }));
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching user details:', error);
+      console.error("Error fetching user details:", error);
     }
   };
 
@@ -94,25 +99,28 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          {routes.map((route) => {
-            const Page = route.page;
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <Layout>
-                    <Page />
-                  </Layout>
-                }
-              />
-            );
-          })}
-        </Routes>
-      </Router>
+      <Loading isLoading={isLoading}>
+        <Router>
+          <Routes>
+            {routes.map((route) => {
+              const Page = route.page;
+              const ischeckAuth = !route.isPrivate || user.isAdmin;
+              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+              return (
+                <Route
+                  key={route.path}
+                  path={ischeckAuth && route.path}
+                  element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  }
+                />
+              );
+            })}
+          </Routes>
+        </Router>
+      </Loading>
     </div>
   );
 }

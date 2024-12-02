@@ -13,7 +13,23 @@ import {
 } from "./style";
 const { Meta } = Card;
 
-const CardComponent = () => {
+const CardComponent = (props) => {
+  const {
+    key,
+    name,
+    image,
+    type,
+    price,
+    discount,
+    countInStock,
+    manufacturer,
+    description,
+    unit,
+    country,
+    target,
+    quantity,
+    ingredient,
+  } = props;
   return (
     <WrapperCardStyle
       hoverable
@@ -38,19 +54,17 @@ const CardComponent = () => {
       }
     >
       <WrapperDiscountText>
-        <span>-5%</span>
+        <span>-{discount}%</span>
       </WrapperDiscountText>
 
-      <StyleNameProduct>Viên uống Rocket 1h</StyleNameProduct>
-      <WrapperReportText>
-        <span>Đã bán 20</span>
-      </WrapperReportText>
+      <StyleNameProduct>{name}</StyleNameProduct>
+      
       <WrapperPriceText>
-        <span>500.000đ</span>
-        <span style={{ fontWeight: "350" }}>/Hộp</span>
+      <span>{(price - price * discount / 100).toFixed(2)} đ</span>
+        <span style={{ fontWeight: "350" }}>/{unit}</span>
       </WrapperPriceText>
-      <WrapperOldPrice>7000.000đ</WrapperOldPrice>
-      <WrapperQuantity>Hộp 5 viên</WrapperQuantity>
+      <WrapperOldPrice>{price} đ</WrapperOldPrice>
+      <WrapperQuantity>{quantity}</WrapperQuantity>
       <WrapperBuyButton type="primary">Chọn mua</WrapperBuyButton>
     </WrapperCardStyle>
   );
