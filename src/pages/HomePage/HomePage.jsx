@@ -38,7 +38,7 @@ const HomePage = () => {
     queryKey: ['products'],
     queryFn: fetchProductAll,
   });
-  console.log("data", data);
+  
 
   return (
     <>

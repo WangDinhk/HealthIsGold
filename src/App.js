@@ -10,9 +10,10 @@ import * as UserService from "./service/UserService";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 import Loading from "./components/LoadingComponent/Loading";
+import { Navigate } from 'react-router-dom';
 function App() {
   const user = useSelector((state) => state.user);
-  const { isLoading, setIsLoading } = useState(false);
+  const [ isLoading, setIsLoading ] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     setIsLoading(true);
@@ -23,6 +24,8 @@ function App() {
     if (decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
+    setIsLoading(false);
+
   }, []);
   ///
   const handleDecoded = () => {
@@ -78,7 +81,6 @@ function App() {
     try {
       const res = await UserService.getDetailsUser(id, token);
       dispatch(updateUser({ ...res?.data, accessToken: token }));
-      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -95,8 +97,9 @@ function App() {
   };
 
   const query = useQuery({ queryKey: ["todos"], queryFn: fetchAPi });
-  console.log("query", query);
+ 
 
+  
   return (
     <div>
       <Loading isLoading={isLoading}>
@@ -104,12 +107,21 @@ function App() {
           <Routes>
             {routes.map((route) => {
               const Page = route.page;
-              const ischeckAuth = !route.isPrivate || user.isAdmin;
               const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+              
+              if (route.isPrivate && !user?.isAdmin) {
+                return (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<Navigate to="/" />}
+                  />
+                );
+              }
               return (
                 <Route
                   key={route.path}
-                  path={ischeckAuth && route.path}
+                  path={route.path}
                   element={
                     <Layout>
                       <Page />
