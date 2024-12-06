@@ -63,8 +63,8 @@ const ProfilePage = () => {
     const handleOnchangeAddress = (value) => {
         setAddress(value)
     }
-    const handleOnchangeAvatar = async  (filelist) => {
-        const file = filelist[0]
+    const handleOnchangeAvatar = async  ({fileList}) => {
+        const file = fileList[0]
         console.log(file)
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
