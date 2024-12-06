@@ -180,7 +180,7 @@ const ProfilePage = () => {
                 {/* Avatar người dùng */}
                 <WrapperInput>
                     <WrapperLabel htmlFor='avatar'>Avatar</WrapperLabel>
-                    <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
+                    <WrapperUploadFile  ploadFile onChange={handleOnchangeAvatar} maxCount={1}>
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
                     </WrapperUploadFile>
                     {avatar && (
