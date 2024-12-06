@@ -15,6 +15,6 @@ export const WrapperUploadFile = styled(Upload)`
         display: none
     }
     & .ant-upload-list-item{
-        display:none;   
+        display:none !important;   
     }
 `

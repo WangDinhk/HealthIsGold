@@ -13,6 +13,7 @@ import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../LoadingComponent/Loading";
 import * as message from "../Message/Message"
 import { useEffect } from "react";
+import imageCompression from 'browser-image-compression';
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stateProduct,setStateProduct] = useState({
@@ -57,8 +58,8 @@ const AdminProduct = () => {
 const {data,isLoading,isSuccess,isError}= mutation;
 
 useEffect(()=>{
-  message.success();
   if(isSuccess && data?.status === 'OK'){
+  message.success();
     handleCancel()
   } else if(isError){
     message.error();
@@ -96,29 +97,32 @@ useEffect(()=>{
       [e.target.name]:e.target.value
     })
   }
-  const handleOnchangeAvatar = async (filelist) => {
-    const file = filelist[0];
 
-    if (!file) {
-        console.error("Không có file nào được chọn.");
-        return;
-    }
-
+  const handleOnchangeAvatar = async (fileList) => {
+    const file = fileList[0];
+    
+    if (!file) return;
+  
     try {
-        // Kiểm tra và tạo preview từ file
-        const preview = await getBase64(file.originFileObj);
-        
-        // Cập nhật state
-        setStateProduct({
-            ...stateProduct,
-            image: preview, // Lưu preview vào state
-        });
-
-        console.log("Preview của hình ảnh:", preview);
+      // Cấu hình nén
+      const options = {
+        maxSizeMB: 1, // Giới hạn kích thước ảnh (MB)
+        maxWidthOrHeight: 1920, // Kích thước tối đa
+        useWebWorker: true,
+      };
+  
+      const compressedFile = await imageCompression(file.originFileObj, options);
+      const preview = await getBase64(compressedFile);
+  
+      setStateProduct({
+        ...stateProduct,
+        image: preview, // Lưu base64 đã được nén
+      });
     } catch (error) {
-        console.error("Lỗi khi xử lý file:", error);
+      console.error("Lỗi khi nén ảnh:", error);
     }
-};
+  };
+  
 
   return (
     <div>
