@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined ,DeleteOutlined} from "@ant-design/icons";
 import { Button, Modal, Form} from "antd";
 import React from "react";
 import { WrapperHeader, WrapperUploadFile } from "./style";
@@ -14,6 +14,8 @@ import Loading from "../LoadingComponent/Loading";
 import * as message from "../Message/Message"
 import { useEffect } from "react";
 import imageCompression from 'browser-image-compression';
+import { use } from "react";
+import { useQuery } from "@tanstack/react-query";
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stateProduct,setStateProduct] = useState({
@@ -55,7 +57,51 @@ const AdminProduct = () => {
     const res= ProductService.createProduct( data);
     return res;
 })
+ const getAllProducts= async ()=>{
+   const res=await ProductService.getAllProduct();
+   return res;
+ }
+
 const {data,isLoading,isSuccess,isError}= mutation;
+const { isLoading: isLoadingProducts, data: products } = useQuery({
+  queryKey: ['products'],
+  queryFn: getAllProducts,
+});
+const renderAction=()=>{
+  return(
+    <div>
+      <DeleteOutlined />
+      <EditOutlined/>
+    </div>
+  )
+}
+console.log("data",products);
+  const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            render: (text) => <a>{text}</a>,
+            },
+            {
+            title: 'Price',
+            dataIndex: 'price',
+            },
+            {
+            title: 'Rating',
+            dataIndex: 'rating',
+        },{
+            title: 'Type',
+            dataIndex: 'type',
+            },
+            {
+                title: 'Action',
+                dataIndex: 'action',
+                render:renderAction
+                },
+    ];
+    const dataTable = products?.data?.length&&products?.data?.map((product) => {
+        return { ...product, key: product._id };
+      });
 
 useEffect(()=>{
   if(isSuccess && data?.status === 'OK'){
@@ -141,18 +187,15 @@ useEffect(()=>{
         </Button>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <TableComponent />
+        <TableComponent columns={columns} isLoading={isLoadingProducts} data={dataTable}/>
       </div>
-      <Modal title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={[
-                      <Button key="cancel" onClick={handleCancel}>Hủy</Button>
-      ]}  >
+      <Modal title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={null}  >
         <Loading isLoading={isLoading}>
         <Form
           name="basic"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
           style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           form={form}
         >
