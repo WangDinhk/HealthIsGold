@@ -89,11 +89,13 @@ const mutationUpdate = useMutationHook(
   const res= ProductService.updateProduct(
     id,
     token,
-    rests
+    {...rests}
   );
   console.log("Kết quả trả về từ API:", res);
   return res;
-})
+},
+
+)
  const getAllProducts= async ()=>{
    const res=await ProductService.getAllProduct();
    return res;
@@ -135,24 +137,18 @@ useEffect(() => {
   }
 }, [stateProductDetails, form]);
 
-useEffect(()=>{
-  if(rowSelected){
-    console.log("rowSelected",rowSelected)
-    fetchGetDetailsProduct(rowSelected);
-    setIsOpenDrawer(true);
-  }
-},[rowSelected])
-console.log("stateProductDetails",stateProductDetails);
+
 
 
 
 const {data,isLoading,isSuccess,isError}= mutation;
 const {data: dataUpdated,isLoading: isLoadingUpdated,isSuccess: isSuccessUpdated,isError:isErrorUpdated}= mutationUpdate;
 console.log("dataUpdated",dataUpdated);
-const { isLoading: isLoadingProducts, data: products } = useQuery({
+const queryProduct= useQuery({
   queryKey: ['products'],
   queryFn: getAllProducts,
 });
+const { isLoading: isLoadingProducts, data: products } =queryProduct;
 const renderAction=()=>{
   return(
     <div>
@@ -188,6 +184,7 @@ console.log("data",products);
     const dataTable = products?.data?.length&&products?.data?.map((product) => {
         return { ...product, key: product._id };
       });
+
 
 useEffect(()=>{
   if(isSuccess && data?.status === 'OK'){
@@ -246,8 +243,10 @@ useEffect(()=>{
   };
 
   const onFinish = () =>{
-   mutation.mutate(stateProduct)
-    console.log('Finish',stateProduct);
+   mutation.mutate(stateProduct,{onSettled : ()=>{
+
+    queryProduct.refetch()
+  }})
   }
 
   const handleOnchange=(e)=>{
@@ -262,13 +261,20 @@ useEffect(()=>{
       [e.target.name]:e.target.value
     })
   }
-  const handleDetailsProduct=()=>{
+  useEffect(()=>{
     if(rowSelected){
+      setIsOpenDrawer(true);
+
+      console.log("rowSelected",rowSelected)
       setisLoadingUpdate(true);
-      fetchGetDetailsProduct();
+
+      fetchGetDetailsProduct(rowSelected);
+
     }
+  },[rowSelected])
+  // console.log("stateProductDetails",stateProductDetails);
+  const handleDetailsProduct=()=>{
     setIsOpenDrawer(true);
-    console.log('rowSelected ',rowSelected);
    }
   const handleOnchangeAvatar = async (fileList) => {
     const file = fileList[0];
@@ -335,7 +341,12 @@ useEffect(()=>{
       onError: (error) => {
         console.error("Mutation thất bại:", error);
       },
+      onSettled : ()=>{
+
+        queryProduct.refetch()
+      }
     });
+
   };
   
   return (
@@ -498,7 +509,7 @@ useEffect(()=>{
         </Loading>
       </Modal>
       <DrawerComponent title='Chi tiết sản phẩm' isOpen={isOpenDrawer} onClose={()=>setIsOpenDrawer(false)} width="60%">
-      <Loading isLoading={isLoadingUpdate}>
+      <Loading isLoading={isLoadingUpdate || isLoadingUpdated}>
         <Form
           name="basic"
           labelCol={{ span: 6 }}
