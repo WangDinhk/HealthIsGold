@@ -18,12 +18,14 @@ import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useSelector } from "react-redux";
+import ModalComponent from "../ModalComponent/ModalComponent";
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelected,setRowSelected]= useState('');
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-  const [isLoadingUpdate,setisLoadingUpdate] = useState(false);
+  const [isLoadingUpdate,setIsLoadingUpdate] = useState(false);
   const user = useSelector((state)=>state?.user)
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [stateProduct,setStateProduct] = useState({
     name: "",
     image:"",
@@ -96,6 +98,14 @@ const mutationUpdate = useMutationHook(
 },
 
 )
+const mutationDeleted = useMutationHook(
+  (data) => {
+    const { id, token } = data;
+    const res = ProductService.deleteProduct(id, token);
+    return res;
+  }
+);
+
  const getAllProducts= async ()=>{
    const res=await ProductService.getAllProduct();
    return res;
@@ -128,7 +138,7 @@ const mutationUpdate = useMutationHook(
   } catch (error) {
     console.error("Failed to fetch product details:", error);
   }
-   setisLoadingUpdate(false);
+   setIsLoadingUpdate(false);
 };
 
 useEffect(() => {
@@ -143,6 +153,8 @@ useEffect(() => {
 
 const {data,isLoading,isSuccess,isError}= mutation;
 const {data: dataUpdated,isLoading: isLoadingUpdated,isSuccess: isSuccessUpdated,isError:isErrorUpdated}= mutationUpdate;
+const {data: dataDeleted,isLoading: isLoadingDeleted,isSuccess: isSuccessDeleted,isError:isErrorDeleted}= mutationUpdate;
+
 console.log("dataUpdated",dataUpdated);
 const queryProduct= useQuery({
   queryKey: ['products'],
@@ -151,9 +163,14 @@ const queryProduct= useQuery({
 const { isLoading: isLoadingProducts, data: products } =queryProduct;
 const renderAction=()=>{
   return(
-    <div>
-      <DeleteOutlined />
-      <EditOutlined onClick={handleDetailsProduct}/>
+    <div style={{display:'flex'}} >
+      <div >
+<DeleteOutlined 
+  style={{ color: 'red', fontSize: '24px', cursor: 'pointer', paddingRight:'20px' }} 
+  onClick={() => setIsModalOpenDelete(true)} 
+/>
+</div>
+      <EditOutlined onClick={handleDetailsProduct} style={{ color: 'blue', fontSize: '24px', cursor: 'pointer', paddingRight:'10px' }} />
     </div>
   )
 }
@@ -190,10 +207,23 @@ useEffect(()=>{
   if(isSuccess && data?.status === 'OK'){
   message.success();
     handleCancel()
+
   } else if(isError){
     message.error();
   }
 },[isSuccess])
+
+
+useEffect(() => {
+  if (isSuccessDeleted && dataDeleted?.status === 'OK') {
+    message.success();
+    handleCloseDrawer()
+
+  } else if (isErrorDeleted) {
+    message.error();
+  }
+}, [isSuccessDeleted]);
+
 const handleCloseDrawer = () => {
   setIsOpenDrawer(false);
   setStateProductDetails({
@@ -221,6 +251,25 @@ useEffect(()=>{
     message.error();
   }
 },[isSuccessUpdated])
+
+const handleCancelDelete =()=>{
+  setIsModalOpenDelete(false);
+}
+const handleDeleteProduct = () => {
+  mutationDeleted.mutate(
+    {
+      id: rowSelected,
+      token: user?.access_token,
+    },
+    {
+      onSettled: () => {
+        setIsModalOpenDelete(false); // Đóng popup sau khi xóa thành công
+        queryProduct.refetch(); // Làm mới danh sách sản phẩm
+      },
+    }
+  );
+};
+
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -266,7 +315,7 @@ useEffect(()=>{
       setIsOpenDrawer(true);
 
       console.log("rowSelected",rowSelected)
-      setisLoadingUpdate(true);
+      setIsLoadingUpdate(true);
 
       fetchGetDetailsProduct(rowSelected);
 
@@ -377,7 +426,7 @@ useEffect(()=>{
         />
     
       </div>
-      <Modal title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={null}  >
+      <ModalComponent title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={null}  >
         <Loading isLoading={isLoading}>
         <Form
           name="basic"
@@ -507,7 +556,7 @@ useEffect(()=>{
           </Form.Item>
         </Form>
         </Loading>
-      </Modal>
+      </ModalComponent>
       <DrawerComponent title='Chi tiết sản phẩm' isOpen={isOpenDrawer} onClose={()=>setIsOpenDrawer(false)} width="60%">
       <Loading isLoading={isLoadingUpdate || isLoadingUpdated}>
         <Form
@@ -639,6 +688,14 @@ useEffect(()=>{
         </Form>
         </Loading>
       </DrawerComponent>
+
+      
+      <ModalComponent title="Xóa sản phẩm" open={isModalOpenDelete}  onCancel={handleCancelDelete} onOk={handleDeleteProduct} >
+        <Loading isLoading={isLoadingDeleted}>
+          <div>Bạn có chắc xóa sản phẩm này không</div>
+       
+        </Loading>
+      </ModalComponent>
     </div>
   );
 };
