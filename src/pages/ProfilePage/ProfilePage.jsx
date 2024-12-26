@@ -51,17 +51,17 @@ const ProfilePage = () => {
         dispatch(updateUser({ ...res?.data, accessToken: token }))
     }
 
-    const handleOnchangeEmail = (value) => {
-        setEmail(value)
+    const handleOnchangeEmail = (e) => {
+        setEmail(e.target.value)
     }
-    const handleOnchangeName = (value) => {
-        setName(value)
+    const handleOnchangeName = (e) => {
+        setName(e.target.value)
     }
-    const handleOnchangePhone = (value) => {
-        setPhone(value)
+    const handleOnchangePhone = (e) => {
+        setPhone(e.target.value)
     }
-    const handleOnchangeAddress = (value) => {
-        setAddress(value)
+    const handleOnchangeAddress = (e) => {
+        setAddress(e.target.value)
     }
     const handleOnchangeAvatar = async  ({fileList}) => {
         const file = fileList[0]
