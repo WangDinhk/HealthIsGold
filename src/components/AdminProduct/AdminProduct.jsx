@@ -113,36 +113,7 @@ const mutationDeleted = useMutationHook(
    const res=await ProductService.getAllProduct();
    return res;
  }
- const fetchGetDetailsProduct = async (rowSelected) => {
-  if (!rowSelected) {
-    console.warn("No rowSelected to fetch product details.");
-    return;
-  }
-  
-  try {
-    const res = await ProductService.getDetailsProduct(rowSelected);
-    if (res?.data) {
-      setStateProductDetails({
-        name: res.data.name || "",
-        image: res.data.image || "",
-        type: res.data.type || "",
-        price: res.data.price || "",
-        discount: res.data.discount || "",
-        countInStock: res.data.countInStock || "",
-        manufacturer: res.data.manufacturer || "",
-        description: res.data.description || "",
-        unit: res.data.unit || "",
-        country: res.data.country || "",
-        target: res.data.target || "",
-        quantity: res.data.quantity || "",
-        ingredient: res.data.ingredient || "",
-      });
-    }
-  } catch (error) {
-    console.error("Failed to fetch product details:", error);
-  }
-   setIsLoadingUpdate(false);
-};
+
 
 useEffect(() => {
   if (stateProductDetails) {
@@ -370,7 +341,7 @@ const handleCloseDrawer = () => {
 };
 useEffect(()=>{
   if(isSuccessUpdated && dataUpdated?.status === 'OK'){
-  message.success();
+  // message.success();
   handleCloseDrawer()
   } else if(isErrorUpdated){
     message.error();
@@ -435,21 +406,54 @@ const handleDeleteProduct = () => {
       [e.target.name]:e.target.value
     })
   }
+  const fetchGetDetailsProduct = async (rowSelected) => {
+    if (!rowSelected) {
+      console.warn("No rowSelected to fetch product details.");
+      return;
+    }
+    
+    try {
+      const res = await ProductService.getDetailsProduct(rowSelected);
+      if (res?.data) {
+        setStateProductDetails({
+          name: res.data.name || "",
+          image: res.data.image || "",
+          type: res.data.type || "",
+          price: res.data.price || "",
+          discount: res.data.discount || "",
+          countInStock: res.data.countInStock || "",
+          manufacturer: res.data.manufacturer || "",
+          description: res.data.description || "",
+          unit: res.data.unit || "",
+          country: res.data.country || "",
+          target: res.data.target || "",
+          quantity: res.data.quantity || "",
+          ingredient: res.data.ingredient || "",
+        });
+      }
+      setIsLoadingUpdate(false);
+
+    } catch (error) {
+      console.error("Failed to fetch product details:", error);
+    }
+  };
   useEffect(()=>{
     if(rowSelected){
-      setIsOpenDrawer(true);
-
-      console.log("rowSelected",rowSelected)
-      setIsLoadingUpdate(true);
 
       fetchGetDetailsProduct(rowSelected);
 
     }
+
   },[rowSelected])
   // console.log("stateProductDetails",stateProductDetails);
-  const handleDetailsProduct=()=>{
+  const handleDetailsProduct = () => {
+    if (rowSelected) {
+        setIsLoadingUpdate(true);
+        fetchGetDetailsProduct(); // Gọi hàm để lấy thông tin chi tiết sản phẩm
+    }
+    console.log('chetchet'); // In ra console cho mục đích debug
     setIsOpenDrawer(true);
-   }
+};
   const handleOnchangeAvatar = async (fileList) => {
     const file = fileList[0];
   
@@ -551,7 +555,7 @@ const handleDeleteProduct = () => {
         />
     
       </div>
-      <ModalComponent title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={null}  >
+      <ModalComponent forceRender title="Tạo sản phẩm" open={isModalOpen}  onCancel={handleCancel} footer={null}  >
         <Loading isLoading={isLoading}>
         <Form
           name="basic"
@@ -813,8 +817,6 @@ const handleDeleteProduct = () => {
         </Form>
         </Loading>
       </DrawerComponent>
-
-      
       <ModalComponent title="Xóa sản phẩm" open={isModalOpenDelete}  onCancel={handleCancelDelete} onOk={handleDeleteProduct} >
         <Loading isLoading={isLoadingDeleted}>
           <div>Bạn có chắc xóa sản phẩm này không</div>

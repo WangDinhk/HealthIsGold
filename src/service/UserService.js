@@ -59,7 +59,7 @@ export const logoutUser = async () => {
   return res.data
 };
 
-export const UpdateUser = async (id, data, accessToken) => {
+export const UpdateUser = async (id, accessToken,data) => {
     const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/update-user/${id}`, data, {
         headers: {
             token: `Bearer ${accessToken}`,
@@ -67,3 +67,19 @@ export const UpdateUser = async (id, data, accessToken) => {
     });
     return res.data;
 }
+export const deleteUser = async (id) => {
+  const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/delete-user/${id}`);
+  return res.data;
+}
+export const getAllUser = async (accessToken) => {
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/user/getAllUser`,
+    {
+      headers: {
+        token: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  return res.data;
+};
+
