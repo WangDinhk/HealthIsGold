@@ -312,7 +312,7 @@ useEffect(()=>{
 
 useEffect(() => {
   if (isSuccessDeleted && dataDeleted?.status === 'OK') {
-    message.success();
+    // message.success();
     handleCloseDrawer()
 
   } else if (isErrorDeleted) {
@@ -339,14 +339,17 @@ const handleCloseDrawer = () => {
     })
     form.resetFields();
 };
-useEffect(()=>{
-  if(isSuccessUpdated && dataUpdated?.status === 'OK'){
-  // message.success();
-  handleCloseDrawer()
-  } else if(isErrorUpdated){
+useEffect(() => {
+  if (isSuccessUpdated && dataUpdated?.status === 'OK') {
+    message.success();
+    setIsLoadingUpdate(false); // Reset trạng thái tải
+    handleCloseDrawer();
+  } else if (isErrorUpdated) {
     message.error();
+    setIsLoadingUpdate(false); // Reset trạng thái tải khi có lỗi
   }
-},[isSuccessUpdated])
+}, [isSuccessUpdated, isErrorUpdated]);
+
 
 const handleCancelDelete =()=>{
   setIsModalOpenDelete(false);
@@ -407,11 +410,6 @@ const handleDeleteProduct = () => {
     })
   }
   const fetchGetDetailsProduct = async (rowSelected) => {
-    if (!rowSelected) {
-      console.warn("No rowSelected to fetch product details.");
-      return;
-    }
-    
     try {
       const res = await ProductService.getDetailsProduct(rowSelected);
       if (res?.data) {
@@ -431,12 +429,13 @@ const handleDeleteProduct = () => {
           ingredient: res.data.ingredient || "",
         });
       }
-      setIsLoadingUpdate(false);
-
+      setIsLoadingUpdate(false); // Dừng tải sau khi hoàn tất
     } catch (error) {
       console.error("Failed to fetch product details:", error);
+      setIsLoadingUpdate(false); // Dừng tải nếu có lỗi
     }
   };
+  
   useEffect(()=>{
     if(rowSelected){
 
@@ -448,12 +447,12 @@ const handleDeleteProduct = () => {
   // console.log("stateProductDetails",stateProductDetails);
   const handleDetailsProduct = () => {
     if (rowSelected) {
-        setIsLoadingUpdate(true);
-        fetchGetDetailsProduct(); // Gọi hàm để lấy thông tin chi tiết sản phẩm
+      setIsLoadingUpdate(true);
+      fetchGetDetailsProduct(rowSelected); // Truyền rowSelected vào hàm
     }
-    console.log('chetchet'); // In ra console cho mục đích debug
     setIsOpenDrawer(true);
-};
+  };
+  
   const handleOnchangeAvatar = async (fileList) => {
     const file = fileList[0];
   
