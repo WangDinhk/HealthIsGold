@@ -29,6 +29,7 @@ export const getDetailsUser = async (id, accessToken) => {
   return res.data;
 };
 
+
 //
 
 // export const refreshToken = async () => {
@@ -59,7 +60,11 @@ export const logoutUser = async () => {
   return res.data
 };
 
-export const UpdateUser = async (id, accessToken,data) => {
+export const UpdateUser = async (id, data,accessToken) => {
+  console.log("Dữ liệu đầu vào của API:");
+  console.log("ID:", id);
+  console.log("Data:", data);
+  console.log("AccessToken:", accessToken);
     const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/update-user/${id}`, data, {
         headers: {
             token: `Bearer ${accessToken}`,
@@ -67,10 +72,15 @@ export const UpdateUser = async (id, accessToken,data) => {
     });
     return res.data;
 }
-export const deleteUser = async (id) => {
-  const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/delete-user/${id}`);
+
+export const deleteUser = async (id, access_token) => {
+  const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/delete-user/${id}`, {
+    headers: {
+      token: `Bearer ${access_token}`,
+    },
+  });
   return res.data;
-}
+};
 export const getAllUser = async (accessToken) => {
   const res = await axiosJWT.get(
     `${process.env.REACT_APP_API_URL}/user/getAllUser`,
