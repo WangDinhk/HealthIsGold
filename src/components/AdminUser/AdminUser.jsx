@@ -529,6 +529,13 @@ console.log("dataTable:", dataTable);
     console.log("stateUserDetails:", stateUserDetails);
     console.log("AccessToken:", user?.accessToken);
     console.log("Dữ liệu gửi vào mutationUpdate.mutate:");
+    const res = await UserService.getDetailsUser(rowSelected,user?.accessToken);
+    console.log("dữ liệu thằng cần sửa:", res);
+    // const isAdmin = res?.data?.isAdmin;
+    // console.log("IS ADMIN? :", isAdmin);
+
+
+
     console.log({
         id: rowSelected,
         ...stateUserDetails,
@@ -536,7 +543,7 @@ console.log("dataTable:", dataTable);
     });
     const dataToSend = {
       ...stateUserDetails,
-      isAdmin: stateUserDetails.isAdmin || false, // Cung cấp giá trị mặc định nếu rỗng
+      isAdmin: res?.data?.isAdmin, // Cung cấp giá trị mặc định nếu rỗng
     };
     mutationUpdate.mutate(
       {
@@ -544,33 +551,42 @@ console.log("dataTable:", dataTable);
         ...dataToSend,
         token: user?.accessToken,
       },
-        {
-            onSuccess: (data) => {
-                console.log("Mutation thành công, dữ liệu trả về:", data);
-            },
-            onError: (error) => {
-                console.error("Mutation thất bại:", error);
-            },
-        }
+      {
+        onMutate: async (updatedUser) => {
+          // Tạm ngừng refetch trong React Query
+          await queryUser.cancelQueries();
+    
+          // Lưu lại dữ liệu trước đó để khôi phục nếu xảy ra lỗi
+          const previousUsers = queryUser.getQueryData();
+    
+          // Cập nhật ngay giao diện
+          queryUser.setQueryData((old) =>
+            old.map((user) =>
+              user._id === updatedUser.id ? { ...user, ...dataToSend } : user
+            )
+          );
+    
+          return { previousUsers }; // Trả về để rollback khi cần
+        },
+        onError: (err, variables, context) => {
+          // Khôi phục dữ liệu cũ nếu lỗi
+          queryUser.setQueryData(context.previousUsers);
+          message.error("Cập nhật thất bại!");
+        },
+        onSettled: () => {
+          // Refetch lại để đồng bộ chính xác từ API
+          queryUser.refetch();
+        },
+      }
     );
+    
 };
 
 
   return (
     <div>
       <WrapperHeader> Quản Lí Người Dùng </WrapperHeader>
-      <div style={{ marginTop: "20px" }}>
-        <Button
-          style={{
-            height: "150px",
-            width: "150px",
-            borderRadius: "6px",
-            borderStyle: "dashed",
-          }}
-        >
-          <PlusOutlined style={{ fontSize: "60px" }} />{" "}
-        </Button>
-      </div>
+      
       <div style={{ marginTop: "20px" }}>
         <TableComponent
           columns={columns}
