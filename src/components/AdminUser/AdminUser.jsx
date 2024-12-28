@@ -1,25 +1,19 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { Button, Form, Space } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Form, message, Space } from "antd";
 import React, { useEffect, useRef, useState } from "react";
-import { WrapperHeader } from "./style";
+import { WrapperHeader, WrapperUploadFile } from "./style";
 import TableComponent from "../TableComponent/TableComponent";
 import InputComponent from "../InputComponent/InputComponent";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import Loading from "../LoadingComponent/Loading";
-import { WrapperUploadFile } from "../AdminProduct/style";
 import ModalComponent from "../ModalComponent/ModalComponent";
 import { getBase64 } from "../../utils";
-import * as message from "../Message/Message";
 import { useSelector } from "react-redux";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import * as UserService from "../../service/UserService";
 import { useQuery } from "@tanstack/react-query";
 import imageCompression from "browser-image-compression";
+
 
 const AdminUser = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,7 +25,7 @@ const AdminUser = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
-  const [stateUser, setStateUser] = useState({
+  const [stateProduct, setStateProduct] = useState({
     name: "",
     email: "",
     phone: "",
@@ -81,54 +75,20 @@ const AdminUser = () => {
     console.log("Kết quả trả về từ API:", res);
     return res;
   });
-  const mutationDeleted = useMutationHook(async (id) => { 
-    const res = await UserService.deleteUser(id); 
+  const mutationDeleted = useMutationHook((data) => {
+    const { id, token } = data;
+    const res = UserService.deleteUser(id, token);
     return res;
   });
-  
-  //  const getAllUsers= async ()=>{
-  //    const res=await UserService.getAllUser();
-  //    return res;
-  //  }
 
-const getAllUsers = async () => {
-  try {
-    const response = await UserService.getAllUser(user?.access_token); // Giả sử API yêu cầu accessToken
-    return response?.data || []; // Đảm bảo trả về mảng, ngay cả khi không có dữ liệu
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-    throw error; // Để React Query xử lý lỗi
-  }
-};
-  const fetchGetDetailsProduct = async (rowSelected) => {
-    if (!rowSelected) {
-      console.warn("No rowSelected to fetch product details.");
-      return;
-    }
-
+  const getAllUsers = async () => {
     try {
-      const res = await UserService.getDetailsUser(rowSelected);
-      if (res?.data) {
-        setStateProductDetails({
-          name: res.data.name || "",
-          image: res.data.image || "",
-          type: res.data.type || "",
-          price: res.data.price || "",
-          discount: res.data.discount || "",
-          countInStock: res.data.countInStock || "",
-          manufacturer: res.data.manufacturer || "",
-          description: res.data.description || "",
-          unit: res.data.unit || "",
-          country: res.data.country || "",
-          target: res.data.target || "",
-          quantity: res.data.quantity || "",
-          ingredient: res.data.ingredient || "",
-        });
-      }
+      const response = await UserService.getAllUser(user?.accessToken); // Giả sử API yêu cầu accessToken
+      return response?.data || []; // Đảm bảo trả về mảng, ngay cả khi không có dữ liệu
     } catch (error) {
-      console.error("Failed to fetch product details:", error);
+      console.error("Failed to fetch users:", error);
+      throw error; // Để React Query xử lý lỗi
     }
-    setIsLoadingUpdate(false);
   };
 
   useEffect(() => {
@@ -152,50 +112,38 @@ const getAllUsers = async () => {
   } = mutationUpdate;
 
   console.log("dataUpdated", dataUpdated);
+  //////////////////////////////////
   const queryUser = useQuery({
-    queryKey: ["user"],
+    queryKey: ["users"],
     queryFn: getAllUsers,
   });
   const { isLoading: isLoadingUsers, data: users } = queryUser;
-
-  // Xử lý xóa
-const handleDelete = (rowId) => {
-  setRowSelected(rowId); // Lưu dòng được chọn để xóa
-  setIsModalOpenDelete(true); // Mở Modal xóa
-};
-
-// Xử lý cập nhật
-const handleEdit = (rowId) => {
-  setRowSelected(rowId); // Lưu dòng được chọn để cập nhật
-  setIsOpenDrawer(true); // Mở Drawer cập nhật
-  fetchGetDetailsProduct(rowId); // Gọi API lấy chi tiết sản phẩm
-};
-
-
-  const renderAction = (rowId) => {
+  const renderAction = () => {
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <DeleteOutlined
-          style={{
-            color: "red",
-            fontSize: "24px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleDelete(rowId)} // Gọi hàm xử lý xóa
-        />
+      <div style={{ display: "flex" }}>
+        <div>
+          <DeleteOutlined
+            style={{
+              color: "red",
+              fontSize: "24px",
+              cursor: "pointer",
+              paddingRight: "20px",
+            }}
+            onClick={() => setIsModalOpenDelete(true)}
+          />
+        </div>
         <EditOutlined
+          onClick={handleDetailsProduct}
           style={{
             color: "blue",
             fontSize: "24px",
             cursor: "pointer",
+            paddingRight: "10px",
           }}
-          onClick={() => handleEdit(rowId)} // Gọi hàm xử lý cập nhật
         />
       </div>
     );
   };
-  
-  
   //==================================
 
   const handleSearch = (
@@ -213,8 +161,15 @@ const handleEdit = (rowId) => {
     // setSearchText('');
   };
 
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <InputComponent
           ref={searchInput}
@@ -223,19 +178,21 @@ const handleEdit = (rowId) => {
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)} // Loại bỏ as string[]
           style={{ marginBottom: 8, display: "block" }}
         />
+
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)} // Loại bỏ as string[]
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
+
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
@@ -246,14 +203,37 @@ const handleEdit = (rowId) => {
         </Space>
       </div>
     ),
+    // filterIcon: (filtered: boolean) => (
+    //   <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    // ),
     onFilter: (value, record) => {
-      const data = record[dataIndex] || ""; // Gán giá trị mặc định nếu undefined
-      return data.toString().toLowerCase().includes(value.toString().toLowerCase());
+      const cellValue = record[dataIndex];
+      return cellValue
+        ? cellValue.toString().toLowerCase().includes(value.toString().toLowerCase())
+        : false;
     },
+    
+
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: text =>
+    //   searchedColumn === dataIndex ? (
+    //     <Highlighter
+    //       highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+    //       searchWords={[searchText]}
+    //       autoEscape
+    //       textToHighlight={text ? text.toString() : ''}
+    //     />
+    //   ) : (
+    //     text
+    //   ),
   });
-  
+
   // ==================================
-  console.log("tất cả người dùng: ", users);
+  console.log("data", users);
   const columns = [
     {
       title: "Name",
@@ -289,18 +269,18 @@ const handleEdit = (rowId) => {
       ...getColumnSearchProps("phone"),
     },
     {
-      title: "Hành động",
-      dataIndex: "actions",
-      key: "actions",
-      render: (_, record) => renderAction(record.id), // Truyền ID của dòng
+      title: "Action",
+      dataIndex: "action",
+      render: renderAction,
     },
   ];
-  
+
   const dataTable =
   Array.isArray(users) && users.length > 0
     ? users.map((product) => ({ ...product, key: product._id }))
     : [];
 
+console.log("dataTable:", dataTable);
   console.log("dataTable:", dataTable);
 
   useEffect(() => {
@@ -314,7 +294,7 @@ const handleEdit = (rowId) => {
 
   useEffect(() => {
     if (isSuccessDeleted && dataDeleted?.status === "OK") {
-      message.success();
+      // message.success();
       handleCloseDrawer();
     } else if (isErrorDeleted) {
       message.error();
@@ -343,11 +323,13 @@ const handleEdit = (rowId) => {
   useEffect(() => {
     if (isSuccessUpdated && dataUpdated?.status === "OK") {
       message.success();
+      setIsLoadingUpdate(false); // Reset trạng thái tải
       handleCloseDrawer();
     } else if (isErrorUpdated) {
       message.error();
+      setIsLoadingUpdate(false); // Reset trạng thái tải khi có lỗi
     }
-  }, [isSuccessUpdated]);
+  }, [isSuccessUpdated, isErrorUpdated]);
 
   const handleCancelDelete = () => {
     setIsModalOpenDelete(false);
@@ -369,18 +351,26 @@ const handleEdit = (rowId) => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setStateUser({
+    setStateProduct({
       name: "",
-      email: "",
-      phone: "",
-      isAdmin: false,
-    
+      image: "",
+      type: "",
+      price: "",
+      discount: "",
+      countInStock: "",
+      manufacturer: "",
+      description: "",
+      unit: "",
+      country: "",
+      target: "",
+      quantity: "",
+      ingredient: "",
     });
     form.resetFields();
   };
 
   const onFinish = () => {
-    mutation.mutate(stateUser, {
+    mutation.mutate(stateProduct, {
       onSettled: () => {
         queryUser.refetch();
       },
@@ -388,8 +378,8 @@ const handleEdit = (rowId) => {
   };
 
   const handleOnchange = (e) => {
-    setStateUser({
-      ...stateUser,
+    setStateProduct({
+      ...stateProduct,
       [e.target.name]: e.target.value,
     });
   };
@@ -399,20 +389,47 @@ const handleEdit = (rowId) => {
       [e.target.name]: e.target.value,
     });
   };
+  const fetchGetDetailsProduct = async (rowSelected) => {
+    try {
+      const res = await UserService.getDetailsUser(rowSelected);
+      if (res?.data) {
+        setStateProductDetails({
+          name: res.data.name || "",
+          image: res.data.image || "",
+          type: res.data.type || "",
+          price: res.data.price || "",
+          discount: res.data.discount || "",
+          countInStock: res.data.countInStock || "",
+          manufacturer: res.data.manufacturer || "",
+          description: res.data.description || "",
+          unit: res.data.unit || "",
+          country: res.data.country || "",
+          target: res.data.target || "",
+          quantity: res.data.quantity || "",
+          ingredient: res.data.ingredient || "",
+        });
+      }
+      setIsLoadingUpdate(false); // Dừng tải sau khi hoàn tất
+    } catch (error) {
+      console.error("Failed to fetch product details:", error);
+      setIsLoadingUpdate(false); // Dừng tải nếu có lỗi
+    }
+  };
+
   useEffect(() => {
     if (rowSelected) {
-      setIsOpenDrawer(true);
-
-      console.log("rowSelected", rowSelected);
-      setIsLoadingUpdate(true);
-
       fetchGetDetailsProduct(rowSelected);
     }
   }, [rowSelected]);
   // console.log("stateProductDetails",stateProductDetails);
   const handleDetailsProduct = () => {
+    if (rowSelected) {
+      setIsLoadingUpdate(true);
+      fetchGetDetailsProduct(rowSelected); // Truyền rowSelected vào hàm
+    }
     setIsOpenDrawer(true);
   };
+
   const handleOnchangeAvatar = async (fileList) => {
     const file = fileList[0];
 
@@ -432,8 +449,8 @@ const handleEdit = (rowId) => {
       );
       const preview = await getBase64(compressedFile);
 
-      setStateUser({
-        ...stateUser,
+      setStateProduct({
+        ...stateProduct,
         image: preview, // Lưu base64 đã được nén
       });
     } catch (error) {
@@ -507,7 +524,6 @@ const handleEdit = (rowId) => {
           <PlusOutlined style={{ fontSize: "60px" }} />{" "}
         </Button>
       </div>
-      {/* ////////////////// */}
       <div style={{ marginTop: "20px" }}>
         <TableComponent
           columns={columns}
@@ -544,7 +560,7 @@ const handleEdit = (rowId) => {
               rules={[{ required: true, message: "Please input your name!" }]}
             >
               <InputComponent
-                value={stateUser.name}
+                value={stateProduct.name}
                 onChange={handleOnchange}
                 name="name"
               />
@@ -555,7 +571,7 @@ const handleEdit = (rowId) => {
               rules={[{ required: true, message: "Please input your type!" }]}
             >
               <InputComponent
-                value={stateUser.type}
+                value={stateProduct.type}
                 onChange={handleOnchange}
                 name="type"
               />
@@ -567,7 +583,7 @@ const handleEdit = (rowId) => {
               rules={[{ required: true, message: "Please input your price!" }]}
             >
               <InputComponent
-                value={stateUser.price}
+                value={stateProduct.price}
                 onChange={handleOnchange}
                 name="price"
               />
@@ -580,7 +596,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.discount}
+                value={stateProduct.discount}
                 onChange={handleOnchange}
                 name="discount"
               />
@@ -593,7 +609,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.countInStock}
+                value={stateProduct.countInStock}
                 onChange={handleOnchange}
                 name="countInStock"
               />
@@ -606,7 +622,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.manufacturer}
+                value={stateProduct.manufacturer}
                 onChange={handleOnchange}
                 name="manufacturer"
               />
@@ -619,7 +635,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.description}
+                value={stateProduct.description}
                 onChange={handleOnchange}
                 name="description"
               />
@@ -630,7 +646,7 @@ const handleEdit = (rowId) => {
               rules={[{ required: true, message: "Please input your unit!" }]}
             >
               <InputComponent
-                value={stateUser.unit}
+                value={stateProduct.unit}
                 onChange={handleOnchange}
                 name="unit"
               />
@@ -643,7 +659,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.country}
+                value={stateProduct.country}
                 onChange={handleOnchange}
                 name="country"
               />
@@ -654,7 +670,7 @@ const handleEdit = (rowId) => {
               rules={[{ required: true, message: "Please input your target!" }]}
             >
               <InputComponent
-                value={stateUser.target}
+                value={stateProduct.target}
                 onChange={handleOnchange}
                 name="target"
               />
@@ -667,7 +683,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.quantity}
+                value={stateProduct.quantity}
                 onChange={handleOnchange}
                 name="quantity"
               />
@@ -680,7 +696,7 @@ const handleEdit = (rowId) => {
               ]}
             >
               <InputComponent
-                value={stateUser.ingredient}
+                value={stateProduct.ingredient}
                 onChange={handleOnchange}
                 name="ingredient"
               />
@@ -695,9 +711,9 @@ const handleEdit = (rowId) => {
                 maxCount={3}
               >
                 <Button>Click to Upload</Button>
-                {stateUser?.image && (
+                {stateProduct?.image && (
                   <img
-                    src={stateUser?.image} // Đúng thuộc tính `src`
+                    src={stateProduct?.image} // Đúng thuộc tính `src`
                     style={{
                       height: "60px",
                       width: "60px",
@@ -768,7 +784,7 @@ const handleEdit = (rowId) => {
                 name="phone"
               />
             </Form.Item>
-           
+
             <Form.Item
               label="Image"
               name="image"
