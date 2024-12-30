@@ -186,10 +186,35 @@ const deleteProduct = (id) => {
   });
 };
 
+const getProductsByType = (type) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const products = await Product.find({ type: type });
+      
+      if (!products || products.length === 0) {
+        resolve({
+          status: "OK",
+          message: "No products found for this type",
+          data: []
+        });
+      }
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: products
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createProduct,
   updateProduct,
   getDetailsProduct,
   deleteProduct,
   getAllProduct,
+  getProductsByType // Add this new export
 };

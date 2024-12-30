@@ -115,10 +115,29 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const getProductsByType = async (req, res) => {
+    try {
+        const type = req.params.type;
+        if (!type) {
+            return res.status(200).json({
+                status: "ERR",
+                message: "Product type is required"
+            });
+        }
+        const response = await ProductService.getProductsByType(type);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
     deleteProduct,
     getAllProduct,
+    getProductsByType // Add this new export
 };
