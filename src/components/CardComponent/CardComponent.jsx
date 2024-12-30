@@ -1,80 +1,90 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
-import { Card, Button } from "antd";
+import { Card } from "antd";
 import {
   StyleNameProduct,
   WrapperDiscountText,
   WrapperPriceText,
-  WrapperReportText,
   WrapperCardStyle,
   WrapperOldPrice,
   WrapperBuyButton,
   WrapperQuantity,
+  WrapperImageContainer,
 } from "./style";
-const { Meta } = Card;
 
 const CardComponent = (props) => {
   const navigate = useNavigate();
   const {
     _id,
-    key,
     name,
     image,
     type,
     price,
     discount,
     countInStock,
-    manufacturer,
-    description,
     unit,
-    country,
-    target,
     quantity,
-    ingredient,
   } = props;
 
   const handleCardClick = () => {
     navigate(`/product/${_id}`);
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', { 
+      style: 'currency', 
+      currency: 'VND' 
+    }).format(price);
+  };
+
+  const discountedPrice = price - (price * discount / 100);
+
   return (
     <WrapperCardStyle
       hoverable
-      bordered={false} // Tắt border mặc định
-      style={{ width: 200, cursor: 'pointer' }}
-      styles={{
-        head: {
-          width: "200px",
-          height: "200px",
-        },
-
-        body: {
-          padding: "10px",
-        },
-      }}
+      bordered={false}
+      style={{ width: 200, cursor: 'pointer', position: 'relative' }}
       cover={
-        <img
-          alt="example"
-          src="https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00006403_rocket_tang_cuong_sinh_ly_nam_gioi_2459_5f7d_large_9695ba7122.JPG"
-          style={{ padding: "20px" }}
-        />
+        <WrapperImageContainer>
+          <img
+            alt={name}
+            src={image || "https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033041_vien_uong_bo_sung_vitamin_d3_k2_mk7_pharmekal_d3k2_60v_7485_63b7_large_ee46593def.jpg"}
+            style={{ padding: "10px", height: "200px", objectFit: "contain" }}
+          />
+        </WrapperImageContainer>
       }
       onClick={handleCardClick}
     >
-      <WrapperDiscountText>
-        <span>-{discount}%</span>
-      </WrapperDiscountText>
+      {discount > 0 && (
+        <WrapperDiscountText>
+          <span>-{discount}%</span>
+        </WrapperDiscountText>
+      )}
 
-      <StyleNameProduct>{name}</StyleNameProduct>
+      <StyleNameProduct title={name}>{name}</StyleNameProduct>
       
       <WrapperPriceText>
-      <span>{(price - price * discount / 100).toFixed(2)} đ</span>
-        <span style={{ fontWeight: "350" }}>/{unit}</span>
+        <span>{formatPrice(discountedPrice)}</span>
+        {unit && <span style={{ fontWeight: "350" }}>/{unit}</span>}
       </WrapperPriceText>
-      <WrapperOldPrice>{price} đ</WrapperOldPrice>
-      <WrapperQuantity>{quantity}</WrapperQuantity>
-      <WrapperBuyButton type="primary">Chọn mua</WrapperBuyButton>
+
+      {discount > 0 && (
+        <WrapperOldPrice>{formatPrice(price)}</WrapperOldPrice>
+      )}
+
+      {quantity && (
+        <WrapperQuantity>Số lượng: {quantity}</WrapperQuantity>
+      )}
+
+      {countInStock === 0 ? (
+        <WrapperBuyButton type="primary" disabled>
+          Hết hàng
+        </WrapperBuyButton>
+      ) : (
+        <WrapperBuyButton type="primary">
+          Thêm vào giỏ
+        </WrapperBuyButton>
+      )}
     </WrapperCardStyle>
   );
 };
