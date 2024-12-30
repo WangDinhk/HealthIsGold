@@ -30,5 +30,9 @@ export const deleteProduct = async (id, access_token) => {
       },
     });
     return res.data;
-  };
-  
+};
+
+export const getProductsByType = async (type) => {
+  const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-by-type/${type}`);
+  return res.data;
+}

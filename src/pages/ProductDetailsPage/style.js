@@ -23,16 +23,17 @@ export const WrapperInfoContainer = styled.div`
 `;
 
 export const ProductName = styled.h1`
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
+  font-size: 32px;
+  margin-bottom: 24px;
+  color: #111;
+  font-weight: 600;
 `;
 
 export const ProductPrice = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   
   .current-price {
-    font-size: 28px;
+    font-size: 36px;
     color: #ee4d2d;
     font-weight: bold;
   }
@@ -51,20 +52,66 @@ export const ProductPrice = styled.div`
 `;
 
 export const ProductDetail = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   
   h3 {
-    font-size: 18px;
-    margin-bottom: 16px;
-    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #111;
+    font-weight: 500;
   }
   
   p {
-    margin-bottom: 12px;
-    color: #666;
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: #444;
     
     strong {
-      color: #333;
+      color: #222;
+      min-width: 160px;
+      display: inline-block;
     }
+  }
+`;
+
+export const QuantityWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+
+  label {
+    font-size: 16px;
+    color: #222;
+    min-width: 100px;
+  }
+`;
+
+export const RelatedProducts = styled.div`
+  margin: 40px auto;
+  max-width: 1270px;
+  padding: 0 15px;
+
+  .related-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    h2 {
+      font-size: 24px;
+      margin: 0;
+      margin-right: 10px;
+    }
+
+    span {
+      color: #666;
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
   }
 `;
