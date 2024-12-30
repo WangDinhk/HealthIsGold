@@ -37,6 +37,10 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
     setLoading(false);
   };
 
+  const handleNavigateHome = () => {
+    navigate('/');
+  };
+
   const content = (
     <div>
       <WrapperContentPopup onClick={handleLogout}>
@@ -62,7 +66,12 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
     <div>
       <WrapperHeader gutter={16} style={{ justifyContent: "space-between" }}>
         <Col span={5}>
-          <WrapperHeaderText>HEALTH IS GOLD</WrapperHeaderText>
+          <WrapperHeaderText 
+            onClick={handleNavigateHome}
+            style={{ cursor: 'pointer' }}
+          >
+            HEALTH IS GOLD
+          </WrapperHeaderText>
         </Col>
 
         {!isHiddenSearch && (

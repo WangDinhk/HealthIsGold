@@ -16,8 +16,10 @@ import slider5 from "../../assets/images/slider5.png";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import { useQuery } from "@tanstack/react-query";
 import * as ProductService from "../../service/ProductService";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const arr = [
     "Thực phẩm chức năng",
     "Dược mỹ phẩm",
@@ -39,6 +41,9 @@ const HomePage = () => {
     queryFn: fetchProductAll,
   });
   
+  const handleNavigateType = () => {
+    navigate('/:type'); // or any specific type you want to navigate to
+  };
 
   return (
     <>
@@ -68,23 +73,20 @@ const HomePage = () => {
                 return (
                   <CardComponent
                     key={product._id}
+                    _id={product._id}  // Add this line
                     countInStock={product.countInStock}
                     description={product.description}
                     image={product.image}
-
                     name={product.name}
                     price={product.price}
                     type={product.type}
                     manufacturer={product.manufacturer}
-
                     discount={product.discount}
                     unit={product.unit}
                     country={product.country}
                     target={product.target}
-                    
                     quantity={product.quantity}
                     ingredient={product.ingredient}
-
                   />
                 );
               })}
@@ -99,11 +101,13 @@ const HomePage = () => {
                 <WrapperButtonMore
                   textButton="Xem thêm"
                   type="outline"
+                  onClick={handleNavigateType}
                   styleButton={{
                     border: " 1px solid rgb(11,116,229)",
                     color: "rgb(11,116,229)",
                     width: "240px",
                     borderRadius: "5px",
+                    cursor: "pointer"
                   }}
                   styleTextButton={{ fontWeight: 500 }}
                 />

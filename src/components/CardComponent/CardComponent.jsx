@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Card, Button } from "antd";
 import {
@@ -14,7 +15,9 @@ import {
 const { Meta } = Card;
 
 const CardComponent = (props) => {
+  const navigate = useNavigate();
   const {
+    _id,
     key,
     name,
     image,
@@ -30,11 +33,16 @@ const CardComponent = (props) => {
     quantity,
     ingredient,
   } = props;
+
+  const handleCardClick = () => {
+    navigate(`/product/${_id}`);
+  };
+
   return (
     <WrapperCardStyle
       hoverable
       bordered={false} // Tắt border mặc định
-      style={{ width: 200 }}
+      style={{ width: 200, cursor: 'pointer' }}
       styles={{
         head: {
           width: "200px",
@@ -52,6 +60,7 @@ const CardComponent = (props) => {
           style={{ padding: "20px" }}
         />
       }
+      onClick={handleCardClick}
     >
       <WrapperDiscountText>
         <span>-{discount}%</span>

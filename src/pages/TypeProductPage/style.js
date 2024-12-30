@@ -9,7 +9,13 @@ export const WrapperNavBar = styled(Col)`
 `
 
 export const WrapperProducts = styled(Col)`
-    display : flex;
-    flex-wrap : wrap;
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-left: 20px;
+    
+    & > div {
+        flex: 0 0 calc(20% - 15px);
+        max-width: calc(20% - 15px);
+    }
 `
