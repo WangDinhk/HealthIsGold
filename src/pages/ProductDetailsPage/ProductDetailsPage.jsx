@@ -43,20 +43,37 @@ const ProductDetailsPage = () => {
     }
 
     try {
+      // Check quantity against stock
+      if (quantity > productData?.data?.countInStock) {
+        message.error(`Chỉ còn ${productData.data.countInStock} sản phẩm trong kho`);
+        return;
+      }
+
       dispatch(setLoadingCart(true));
-      const res = await CartService.addToCart(user.id, id, quantity);
+      const res = await CartService.addToCart(
+        user.id, 
+        id, 
+        quantity, 
+        productData.data.countInStock
+      );
+      
       if (res.status === "OK") {
         dispatch(addToCartSuccess(res.data));
         message.success("Thêm vào giỏ hàng thành công");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra");
+      message.error(error.message || "Có lỗi xảy ra");
     } finally {
       dispatch(setLoadingCart(false));
     }
   };
 
+  // Add validation for quantity input
   const handleQuantityChange = (value) => {
+    if (value > productData?.data?.countInStock) {
+      message.error(`Chỉ còn ${productData.data.countInStock} sản phẩm trong kho`);
+      return;
+    }
     setQuantity(value);
   };
 
@@ -102,7 +119,7 @@ const ProductDetailsPage = () => {
                 <label>Số lượng:</label>
                 <InputNumber 
                   min={1} 
-                  max={productData.data.countInStock} 
+                  //max={productData.data.countInStock} 
                   value={quantity}
                   onChange={handleQuantityChange}
                 />

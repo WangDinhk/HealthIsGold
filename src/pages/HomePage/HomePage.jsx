@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import Loading from "../../components/LoadingComponent/Loading";
 import {
   SlideImageContainer,
   WrapperPanner,
@@ -32,15 +33,19 @@ const HomePage = () => {
     "Hệ thống nhà thuốc",
   ];
 
-  const fetchProductAll = async () => {
-    const res = await ProductService.getAllProduct();
-    return res;
-  };
-  const { isLoading, data } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProductAll,
+  const [page, setPage] = useState(1);
+  const limit = 12; // items per page
+
+  const { isLoading, data, isFetching } = useQuery({
+    queryKey: ['products', page],
+    queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Keep cache for 30 minutes
   });
-  
+
+  const memoizedProducts = useMemo(() => data?.data || [], [data]);
+
   const handleNavigateType = () => {
     navigate('/:type'); // or any specific type you want to navigate to
   };
@@ -68,51 +73,43 @@ const HomePage = () => {
           </div>
 
           <WrapperBody>
-            <WrapperCards>
-              {data?.data?.map((product) => {
-                return (
-                  <CardComponent
-                    key={product._id}
-                    _id={product._id}  // Add this line
-                    countInStock={product.countInStock}
-                    description={product.description}
-                    image={product.image}
-                    name={product.name}
-                    price={product.price}
-                    type={product.type}
-                    manufacturer={product.manufacturer}
-                    discount={product.discount}
-                    unit={product.unit}
-                    country={product.country}
-                    target={product.target}
-                    quantity={product.quantity}
-                    ingredient={product.ingredient}
-                  />
-                );
-              })}
-              <div
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  display: "flex",
-                  marginBottom: "20px",
-                }}
-              >
-                <WrapperButtonMore
-                  textButton="Xem thêm"
-                  type="outline"
-                  onClick={handleNavigateType}
-                  styleButton={{
-                    border: " 1px solid rgb(11,116,229)",
-                    color: "rgb(11,116,229)",
-                    width: "240px",
-                    borderRadius: "5px",
-                    cursor: "pointer"
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <WrapperCards>
+                {memoizedProducts.map((product) => {
+                  return (
+                    <CardComponent
+                      key={product._id}
+                      {...product}
+                    />
+                  );
+                })}
+                {isFetching && <Loading />}
+                <div
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    display: "flex",
+                    marginBottom: "20px",
                   }}
-                  styleTextButton={{ fontWeight: 500 }}
-                />
-              </div>
-            </WrapperCards>
+                >
+                  <WrapperButtonMore
+                    textButton="Xem thêm"
+                    type="outline"
+                    onClick={handleNavigateType}
+                    styleButton={{
+                      border: " 1px solid rgb(11,116,229)",
+                      color: "rgb(11,116,229)",
+                      width: "240px",
+                      borderRadius: "5px",
+                      cursor: "pointer"
+                    }}
+                    styleTextButton={{ fontWeight: 500 }}
+                  />
+                </div>
+              </WrapperCards>
+            )}
           </WrapperBody>
         </div>
       </div>
@@ -120,4 +117,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default React.memo(HomePage);

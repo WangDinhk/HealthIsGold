@@ -1,21 +1,95 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Form, Input, Select, Table } from 'antd';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button, Form, Input, Select, Table, InputNumber, Popconfirm, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import { WrapperOrder, OrderInfo, CartItems, PaymentInfo } from './style';
 import * as CartService from '../../service/CartService';
 import Loading from '../../components/LoadingComponent/Loading';
+import { updateQuantitySuccess, removeFromCartSuccess } from '../../redux/slides/cartSlide';
 
 const OrderPage = () => {
   const [form] = Form.useForm();
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const { isLoading, data: cartData } = useQuery({
     queryKey: ['cart', user?.id],
     queryFn: () => CartService.getUserCart(user?.id),
     enabled: !!user?.id
   });
-  
+
+  const updateQuantityMutation = useMutation({
+    mutationFn: ({ productId, quantity }) => 
+      CartService.updateCartItemQuantity(user?.id, productId, quantity),
+    onSuccess: (_, variables) => {
+      dispatch(updateQuantitySuccess(variables));
+      queryClient.invalidateQueries(['cart', user?.id]);
+    }
+  });
+
+  const removeItemMutation = useMutation({
+    mutationFn: (productId) => 
+      CartService.removeCartItem(user?.id, productId),
+    onSuccess: (_, productId) => {
+      dispatch(removeFromCartSuccess(productId));
+      queryClient.invalidateQueries(['cart', user?.id]);
+    }
+  });
+
+  const [localCartItems, setLocalCartItems] = useState([]);
+
+  useEffect(() => {
+    if (cartData?.data?.items) {
+      setLocalCartItems(cartData.data.items);
+    }
+  }, [cartData?.data?.items]);
+
+  const totalAmount = useMemo(() => {
+    return localCartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }, [localCartItems]);
+
+  const handleQuantityChange = async (productId, quantity) => {
+    const product = localCartItems.find(item => item.product._id === productId);
+    if (!product) return;
+
+    try {
+      if (quantity > product.product.countInStock) {
+        message.error(`Chỉ còn ${product.product.countInStock} sản phẩm trong kho`);
+        return;
+      }
+
+      if (quantity <= 0) {
+        message.error('Số lượng phải lớn hơn 0');
+        return;
+      }
+
+      setLocalCartItems(prev => prev.map(item => 
+        item.product._id === productId 
+          ? { ...item, quantity }
+          : item
+      ));
+
+      await updateQuantityMutation.mutateAsync({ 
+        productId, 
+        quantity,
+        countInStock: product.product.countInStock 
+      });
+
+    } catch (error) {
+      message.error('Không thể cập nhật số lượng: ' + error.message);
+      // Reset to previous state on error
+      setLocalCartItems(cartData?.data?.items || []);
+    }
+  };
+
+  const handleRemoveItem = (productId) => {
+    setLocalCartItems(prev => prev.filter(item => item.product._id !== productId));
+    
+    removeItemMutation.mutate(productId);
+  };
+
   const columns = [
     {
       title: 'Sản phẩm',
@@ -38,13 +112,51 @@ const OrderPage = () => {
       title: 'Số lượng',
       dataIndex: 'quantity',
       key: 'quantity',
+      render: (_, record) => (
+        <div>
+          <InputNumber
+            min={1}
+            max={record.countInStock}
+            value={record.quantity}
+            onChange={(value) => handleQuantityChange(record.key, value)}
+          />
+          <div style={{ fontSize: '12px', color: '#888' }}>
+            Còn {record.countInStock} sản phẩm
+          </div>
+        </div>
+      ),
     },
     {
       title: 'Thành tiền',
       dataIndex: 'total',
       key: 'total',
-      render: (_, record) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(record.price * record.quantity),
+      render: (_, record) => {
+        const item = localCartItems.find(item => item.product._id === record.key);
+        const total = item ? item.price * item.quantity : 0;
+        return new Intl.NumberFormat('vi-VN', { 
+          style: 'currency', 
+          currency: 'VND' 
+        }).format(total);
+      },
     },
+    {
+      title: 'Thao tác',
+      key: 'action',
+      render: (_, record) => (
+        <Popconfirm
+          title="Bạn có chắc muốn xóa sản phẩm này?"
+          onConfirm={() => handleRemoveItem(record.key)}
+          okText="Có"
+          cancelText="Không"
+        >
+          <Button 
+            type="text" 
+            danger 
+            icon={<DeleteOutlined />}
+          />
+        </Popconfirm>
+      ),
+    }
   ];
 
   const handleSubmitOrder = (values) => {
@@ -108,28 +220,31 @@ const OrderPage = () => {
           <h2>Giỏ hàng</h2>
           <Table 
             columns={columns}
-            dataSource={cartData?.data?.items?.map(item => ({
+            dataSource={localCartItems.map(item => ({
               key: item.product._id,
               name: item.product.name,
               image: item.product.image,
               price: item.price,
               quantity: item.quantity,
-              total: item.totalPrice
+              countInStock: item.product.countInStock,
+              total: item.price * item.quantity
             }))}
             pagination={false}
-            summary={(pageData) => {
-              const total = cartData?.data?.totalAmount || 0;
-              return (
-                <Table.Summary.Row>
-                  <Table.Summary.Cell colSpan={3}><strong>Tổng cộng</strong></Table.Summary.Cell>
-                  <Table.Summary.Cell>
-                    <strong>
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)}
-                    </strong>
-                  </Table.Summary.Cell>
-                </Table.Summary.Row>
-              );
-            }}
+            summary={() => (
+              <Table.Summary.Row>
+                <Table.Summary.Cell colSpan={3}>
+                  <strong>Tổng cộng</strong>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                  <strong>
+                    {new Intl.NumberFormat('vi-VN', { 
+                      style: 'currency', 
+                      currency: 'VND' 
+                    }).format(totalAmount)}
+                  </strong>
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            )}
           />
 
           <PaymentInfo>

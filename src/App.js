@@ -11,23 +11,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 import Loading from "./components/LoadingComponent/Loading";
 import { Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      cacheTime: 30 * 60 * 1000, // 30 minutes
+    },
+  },
+});
+
 function App() {
   const user = useSelector((state) => state.user);
-  const [ isLoading, setIsLoading ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    setIsLoading(true);
-    // let storageData= localStorage.getItem('accessToken')
-    const { storageData, decoded } = handleDecoded();
-    // console.log(`storageData:`, storageData, isJsonString(storageData),decoded);
+    const initializeUser = async () => {
+      setIsLoading(true);
+      try {
+        const { storageData, decoded } = handleDecoded();
+        if (decoded?.id) {
+          await handleGetDetailsUser(decoded?.id, storageData);
+        }
+      } catch (error) {
+        console.error('Error initializing user:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (decoded?.id) {
-      handleGetDetailsUser(decoded?.id, storageData);
-    }
-    setIsLoading(false);
-
+    initializeUser();
   }, []);
-  ///
+
   const handleDecoded = () => {
     let storageData = localStorage.getItem("accessToken");
 
@@ -38,7 +56,7 @@ function App() {
     }
     return { decoded, storageData };
   };
-  //
+
   UserService.axiosJWT.interceptors.request.use(
     async (config) => {
       const currentTime = new Date();
@@ -46,37 +64,16 @@ function App() {
 
       if (decoded?.exp < currentTime.getTime() / 1000) {
         const data = await UserService.refreshToken();
-        // console.log("Current Cookies:", document.cookie);
         config.headers["token"] = `Bearer ${data?.accessToken}`;
       }
 
       return config;
     },
     (err) => {
-      // Handle request error
       return Promise.reject(err);
     }
   );
 
-  // UserService.axiosJWT.interceptors.request.use(
-  //   async (config) => {
-  //     // Do something before request is sent
-  //     const currentTime = new Date();
-  //     const { decoded } = handleDecoded();
-
-  //     if (decoded?.exp < currentTime.getTime() / 1000) {
-  //       const data = await UserService.refreshToken();
-  //       config.headers['token'] = `Bearer ${data?.access_token}`;
-  //     }
-
-  //     return config;
-  //   },
-  //   (err) => {
-  //     // Handle request error
-  //     return Promise.reject(err);
-  //   }
-  // );
-  ///
   const handleGetDetailsUser = async (id, token) => {
     try {
       const res = await UserService.getDetailsUser(id, token);
@@ -86,54 +83,37 @@ function App() {
     }
   };
 
-  const fetchAPi = async () => {
-    try {
-      const apiUrl = process.env.REACT_APP_API_URL;
-      const res = await axios.get(`${apiUrl}/product/get-all`);
-      return res.data;
-    } catch (error) {
-      console.error("Error fetching API:", error);
-    }
-  };
-
-  const query = useQuery({ queryKey: ["todos"], queryFn: fetchAPi });
- 
-
-  
   return (
-    <div>
-      <Loading isLoading={isLoading}>
-        <Router>
-          <Routes>
-            {routes.map((route) => {
-              const Page = route.page;
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-              
-              if (route.isPrivate && !user?.isAdmin) {
+    <QueryClientProvider client={queryClient}>
+      <div>
+        <Loading isLoading={isLoading}>
+          <Router>
+            <Routes>
+              {routes.map((route) => {
+                const Page = route.page;
+                const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+                
                 return (
                   <Route
                     key={route.path}
                     path={route.path}
-                    element={<Navigate to="/" />}
+                    element={
+                      route.isPrivate && !user?.isAdmin ? (
+                        <Navigate to="/" />
+                      ) : (
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      )
+                    }
                   />
                 );
-              }
-              return (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <Layout>
-                      <Page />
-                    </Layout>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </Router>
-      </Loading>
-    </div>
+              })}
+            </Routes>
+          </Router>
+        </Loading>
+      </div>
+    </QueryClientProvider>
   );
 }
 

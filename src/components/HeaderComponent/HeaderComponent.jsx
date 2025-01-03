@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   WrapperContentPopup,
   WrapperHeader,
@@ -18,6 +18,8 @@ import { click } from "@testing-library/user-event/dist/click";
 import * as UserService from "../../service/UserService";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
+import { useQuery } from "@tanstack/react-query";
+import * as CartService from "../../service/CartService";
 
 const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
   const navigate = useNavigate();
@@ -44,6 +46,17 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
   const handleNavigateCart = () => {
     navigate('/order');
   };
+
+  const { data: cartData } = useQuery({
+    queryKey: ['cart', user?.id],
+    queryFn: () => CartService.getUserCart(user?.id),
+    enabled: !!user?.id && !isHiddenCart,
+    refetchOnWindowFocus: true
+  });
+  
+  const cartItemCount = useMemo(() => {
+    return cartData?.data?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+  }, [cartData?.data?.items]);
 
   const content = (
     <div>
@@ -132,7 +145,7 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
 
           {!isHiddenCart && (
             <WrapperHeaderAccount onClick={handleNavigateCart} style={{ cursor: 'pointer' }}>
-              <Badge count={5} size="small">
+              <Badge count={cartItemCount} size="small">
                 <ShoppingCartOutlined
                   style={{ fontSize: "30px", color: "white" }}
                 />
