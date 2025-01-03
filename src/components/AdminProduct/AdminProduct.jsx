@@ -125,8 +125,12 @@ const AdminProduct = () => {
 
   console.log("dataUpdated", dataUpdated);
   const queryProduct = useQuery({
-    queryKey: ["products"],
+    queryKey: ['products-admin'],
     queryFn: getAllProducts,
+    staleTime: 2 * 60 * 1000, // Cache 2 phút cho admin
+    cacheTime: 5 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false
   });
   const { isLoading: isLoadingProducts, data: products } = queryProduct;
   const renderAction = () => {

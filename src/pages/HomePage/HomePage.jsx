@@ -40,8 +40,9 @@ const HomePage = () => {
     queryKey: ['products', page],
     queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
     keepPreviousData: true,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    cacheTime: 30 * 60 * 1000, // Keep cache for 30 minutes
+    staleTime: 5 * 60 * 1000, // Cache 5 phút
+    cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
+    retry: 1
   });
 
   const memoizedProducts = useMemo(() => data?.data || [], [data]);

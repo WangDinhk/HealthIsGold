@@ -5,6 +5,10 @@ import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
 import { getItem } from "../../utils";
 import AdminUser from "../../components/AdminUser/AdminUser";
 import AdminProduct from "../../components/AdminProduct/AdminProduct";
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import * as AdminService from '../../service/AdminService';
+import Loading from '../../components/LoadingComponent/Loading';
 
 const AdminPage = () => {
   const items = [
@@ -13,6 +17,17 @@ const AdminPage = () => {
   ];
 
   const [keySelected, setKeySelected] = useState("");
+
+  const user = useSelector((state) => state.user);
+  
+  const { isLoading, data: adminData } = useQuery({
+    queryKey: ['admin-dashboard'],
+    queryFn: () => AdminService.getDashboardData(),
+    staleTime: 2 * 60 * 1000, // Cache 2 phút cho admin
+    cacheTime: 5 * 60 * 1000,
+    retry: 1,
+    enabled: !!user?.isAdmin // Only fetch if user is admin
+  });
 
   const renderPage = (key) => {
     switch (key) {
@@ -30,6 +45,8 @@ const AdminPage = () => {
   };
 
   console.log("keySelected", keySelected);
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
