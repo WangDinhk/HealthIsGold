@@ -5,6 +5,7 @@ const routes = require('./routes');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")
 const cors = require("cors");
+const Cart = require('./models/CartModel');
 dotenv.config();
 
 const app=express();
