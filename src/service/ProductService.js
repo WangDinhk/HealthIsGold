@@ -39,3 +39,13 @@ export const getProductsByType = async (type) => {
   const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-by-type/${type}`);
   return res.data;
 }
+
+export const prefetchProduct = async (id) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-details/${id}`);
+    return res.data;
+}
+
+export const prefetchProductsByType = async (type) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-by-type/${type}`);
+    return res.data;
+}

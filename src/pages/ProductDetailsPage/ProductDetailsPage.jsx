@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ProductService from '../../service/ProductService';
 import * as CartService from '../../service/CartService';
@@ -24,16 +24,21 @@ const ProductDetailsPage = () => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const queryClient = useQueryClient(); // Add this
   
   const { isLoading, data: productData } = useQuery({
     queryKey: ['product', id],
     queryFn: () => ProductService.getDetailsProduct(id),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
   });
 
   const { data: relatedProducts } = useQuery({
     queryKey: ['related-products', productData?.data?.type],
     enabled: !!productData?.data?.type,
     queryFn: () => ProductService.getProductsByType(productData?.data?.type),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
   });
 
   const handleAddToCart = async () => {
@@ -60,6 +65,12 @@ const ProductDetailsPage = () => {
       if (res.status === "OK") {
         dispatch(addToCartSuccess(res.data));
         message.success("Thêm vào giỏ hàng thành công");
+        // Immediately invalidate and refetch cart data
+        await queryClient.invalidateQueries({
+          queryKey: ['cart', user.id],
+          refetchType: 'active',
+          exact: true
+        });
       }
     } catch (error) {
       message.error(error.message || "Có lỗi xảy ra");

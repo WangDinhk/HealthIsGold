@@ -15,7 +15,8 @@ const TypeProductPage = () => {
         queryKey: ['products', page],
         queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
         keepPreviousData: true,
-        staleTime: 5 * 60 * 1000,
+        staleTime: 5 * 60 * 1000, // Cache 5 phút
+        cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
     });
 
     const onChange = (newPage) => {

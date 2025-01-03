@@ -18,7 +18,9 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      cacheTime: 30 * 60 * 1000, // 30 minutes
+      staleTime: 5 * 60 * 1000, // Cache trong 5 phút
+      cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
+      refetchInterval: false, // Tắt auto refetch
     },
   },
 });

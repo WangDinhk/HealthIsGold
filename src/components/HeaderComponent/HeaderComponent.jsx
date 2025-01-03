@@ -51,7 +51,9 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
     queryKey: ['cart', user?.id],
     queryFn: () => CartService.getUserCart(user?.id),
     enabled: !!user?.id && !isHiddenCart,
-    refetchOnWindowFocus: true
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache the data
   });
   
   const cartItemCount = useMemo(() => {

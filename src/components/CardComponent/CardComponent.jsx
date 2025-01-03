@@ -5,6 +5,7 @@ import { message } from "antd";
 import * as CartService from "../../service/CartService";
 import { addToCartSuccess, setLoadingCart } from "../../redux/slides/cartSlide";
 import { Card } from "antd";
+import * as ProductService from "../../service/ProductService";
 import {
   StyleNameProduct,
   WrapperDiscountText,
@@ -15,8 +16,10 @@ import {
   WrapperQuantity,
   WrapperImageContainer,
 } from "./style";
+import { useQueryClient } from '@tanstack/react-query';
 
 const CardComponent = (props) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -57,6 +60,22 @@ const CardComponent = (props) => {
     }
   };
 
+  const handleMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['product', _id],
+      queryFn: () => ProductService.prefetchProduct(_id),
+      staleTime: 5 * 60 * 1000,
+    });
+
+    if (type) {
+      queryClient.prefetchQuery({
+        queryKey: ['related-products', type],
+        queryFn: () => ProductService.prefetchProductsByType(type),
+        staleTime: 5 * 60 * 1000,
+      });
+    }
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', { 
       style: 'currency', 
@@ -81,6 +100,7 @@ const CardComponent = (props) => {
         </WrapperImageContainer>
       }
       onClick={handleCardClick}
+      onMouseEnter={handleMouseEnter}
     >
       {discount > 0 && (
         <WrapperDiscountText>
