@@ -1,5 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { message } from "antd";
+import * as CartService from "../../service/CartService";
+import { addToCartSuccess, setLoadingCart } from "../../redux/slides/cartSlide";
 import { Card } from "antd";
 import {
   StyleNameProduct,
@@ -14,6 +18,8 @@ import {
 
 const CardComponent = (props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const {
     _id,
     name,
@@ -28,6 +34,27 @@ const CardComponent = (props) => {
 
   const handleCardClick = () => {
     navigate(`/product/${_id}`);
+  };
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
+    if (!user.id) {
+      message.warning("Vui lòng đăng nhập để thêm vào giỏ hàng");
+      return;
+    }
+
+    try {
+      dispatch(setLoadingCart(true));
+      const res = await CartService.addToCart(user.id, _id, 1);
+      if (res.status === "OK") {
+        dispatch(addToCartSuccess(res.data));
+        message.success("Thêm vào giỏ hàng thành công");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra");
+    } finally {
+      dispatch(setLoadingCart(false));
+    }
   };
 
   const formatPrice = (price) => {
@@ -81,7 +108,7 @@ const CardComponent = (props) => {
           Hết hàng
         </WrapperBuyButton>
       ) : (
-        <WrapperBuyButton type="primary">
+        <WrapperBuyButton type="primary" onClick={handleAddToCart}>
           Thêm vào giỏ
         </WrapperBuyButton>
       )}

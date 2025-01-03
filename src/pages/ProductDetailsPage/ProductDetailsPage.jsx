@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import * as ProductService from '../../service/ProductService';
+import * as CartService from '../../service/CartService';
+import { addToCartSuccess, setLoadingCart } from '../../redux/slides/cartSlide';
 import Loading from '../../components/LoadingComponent/Loading';
 import { 
   WrapperContainer, 
@@ -19,6 +22,8 @@ import CardComponent from '../../components/CardComponent/CardComponent';
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   
   const { isLoading, data: productData } = useQuery({
     queryKey: ['product', id],
@@ -31,9 +36,24 @@ const ProductDetailsPage = () => {
     queryFn: () => ProductService.getProductsByType(productData?.data?.type),
   });
 
-  const handleAddToCart = () => {
-    message.success('Đã thêm vào giỏ hàng');
-    // TODO: Implement add to cart logic
+  const handleAddToCart = async () => {
+    if (!user.id) {
+      message.warning("Vui lòng đăng nhập để thêm vào giỏ hàng");
+      return;
+    }
+
+    try {
+      dispatch(setLoadingCart(true));
+      const res = await CartService.addToCart(user.id, id, quantity);
+      if (res.status === "OK") {
+        dispatch(addToCartSuccess(res.data));
+        message.success("Thêm vào giỏ hàng thành công");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra");
+    } finally {
+      dispatch(setLoadingCart(false));
+    }
   };
 
   const handleQuantityChange = (value) => {

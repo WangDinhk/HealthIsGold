@@ -41,6 +41,10 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
     navigate('/');
   };
 
+  const handleNavigateCart = () => {
+    navigate('/order');
+  };
+
   const content = (
     <div>
       <WrapperContentPopup onClick={handleLogout}>
@@ -127,7 +131,7 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
           </Loading>
 
           {!isHiddenCart && (
-            <WrapperHeaderAccount>
+            <WrapperHeaderAccount onClick={handleNavigateCart} style={{ cursor: 'pointer' }}>
               <Badge count={5} size="small">
                 <ShoppingCartOutlined
                   style={{ fontSize: "30px", color: "white" }}
