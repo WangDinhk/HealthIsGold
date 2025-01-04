@@ -65,6 +65,8 @@ const AdminProduct = () => {
     ingredient: "",
   });
   const [form] = Form.useForm();
+  const [page, setPage] = useState(1);
+  const limit = 8;
 
   const mutation = useMutationHook((data) => {
     const {
@@ -125,8 +127,8 @@ const AdminProduct = () => {
 
   console.log("dataUpdated", dataUpdated);
   const queryProduct = useQuery({
-    queryKey: ['products-admin'],
-    queryFn: getAllProducts,
+    queryKey: ['products-admin', page, limit],
+    queryFn: () => ProductService.getAllProduct(page, limit),
     staleTime: 2 * 60 * 1000, // Cache 2 phút cho admin
     cacheTime: 5 * 60 * 1000,
     retry: 1,
@@ -517,6 +519,10 @@ const AdminProduct = () => {
     );
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <div>
       <WrapperHeader> Quản Lí Sản Phẩm </WrapperHeader>
@@ -544,6 +550,12 @@ const AdminProduct = () => {
                 setRowSelected(record._id);
               }, // click row
             };
+          }}
+          pagination={{
+            current: page,
+            pageSize: limit,
+            total: products?.total || 0,
+            onChange: handlePageChange
           }}
         />
       </div>

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { axiosJWT } from "./UserService";
 
-export const getAllProduct = async (page = 1, limit = 12, signal) => {
+export const getAllProduct = async (page = 1, limit = 8, signal) => {
     const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/product/get-all?page=${page}&limit=${limit}`, 
+        `${process.env.REACT_APP_API_URL}/product/get-all?page=${page}&limit=${limit}`,
         { signal }
     );
     return res.data;

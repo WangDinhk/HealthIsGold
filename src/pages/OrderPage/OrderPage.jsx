@@ -47,7 +47,11 @@ const OrderPage = () => {
   }, [cartData?.data?.items]);
 
   const totalAmount = useMemo(() => {
-    return localCartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return localCartItems.reduce((total, item) => {
+      // Tính giá sau khi giảm giá
+      const discountedPrice = item.price * (1 - (item.product.discount || 0) / 100);
+      return total + (discountedPrice * item.quantity);
+    }, 0);
   }, [localCartItems]);
 
   const handleQuantityChange = async (productId, quantity) => {
@@ -106,7 +110,29 @@ const OrderPage = () => {
       title: 'Đơn giá',
       dataIndex: 'price',
       key: 'price',
-      render: (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price),
+      render: (price, record) => {
+        const discountedPrice = price * (1 - (record.discount || 0) / 100);
+        return (
+          <div>
+            <div>{new Intl.NumberFormat('vi-VN', { 
+              style: 'currency', 
+              currency: 'VND' 
+            }).format(discountedPrice)}</div>
+            {record.discount > 0 && (
+              <div style={{ 
+                textDecoration: 'line-through', 
+                color: '#999',
+                fontSize: '12px'
+              }}>
+                {new Intl.NumberFormat('vi-VN', { 
+                  style: 'currency', 
+                  currency: 'VND' 
+                }).format(price)}
+              </div>
+            )}
+          </div>
+        )
+      },
     },
     {
       title: 'Số lượng',
@@ -132,7 +158,11 @@ const OrderPage = () => {
       key: 'total',
       render: (_, record) => {
         const item = localCartItems.find(item => item.product._id === record.key);
-        const total = item ? item.price * item.quantity : 0;
+        if (!item) return null;
+        
+        const discountedPrice = item.price * (1 - (item.product.discount || 0) / 100);
+        const total = discountedPrice * item.quantity;
+        
         return new Intl.NumberFormat('vi-VN', { 
           style: 'currency', 
           currency: 'VND' 
@@ -225,6 +255,7 @@ const OrderPage = () => {
               name: item.product.name,
               image: item.product.image,
               price: item.price,
+              discount: item.product.discount,
               quantity: item.quantity,
               countInStock: item.product.countInStock,
               total: item.price * item.quantity

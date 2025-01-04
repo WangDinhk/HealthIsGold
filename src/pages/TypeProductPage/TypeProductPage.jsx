@@ -9,18 +9,17 @@ import { WrapperNavBar, WrapperProducts } from './style';
 
 const TypeProductPage = () => {
     const [page, setPage] = useState(1);
-    const limit = 20;
+    const limit = 10;
 
     const { isLoading, data: products } = useQuery({
-        queryKey: ['products', page],
+        queryKey: ['products', page, limit],
         queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
-        keepPreviousData: true,
-        staleTime: 5 * 60 * 1000, // Cache 5 phút
-        cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 10 * 60 * 1000,
     });
 
-    const onChange = (newPage) => {
-        setPage(newPage);
+    const onChange = (currentPage) => {
+        setPage(currentPage);
     }
 
     return (
@@ -45,8 +44,8 @@ const TypeProductPage = () => {
                             <Pagination 
                                 current={page}
                                 total={products?.total || 0}
-                                onChange={onChange}
                                 pageSize={limit}
+                                onChange={onChange}
                                 style={{ margin: '30px 0', textAlign: 'center' }}
                             />
                         </>
