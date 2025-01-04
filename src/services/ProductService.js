@@ -119,37 +119,36 @@ const getDetailsProduct = (id) => {
   });
 };
 
-const getAllProduct = async (currentPage, sortOption, filter) => {
+const getAllProduct = async (currentPage, limit = 10, sortOption, filter) => {
   try {
-    const limit = 8;
+    const skip = (currentPage - 1) * limit;
     const totalProduct = await Product.countDocuments();
-    const totalPage = Math.ceil(totalProduct / limit);
-    if (currentPage > totalPage) {
-      return {
-        status: "Ok",
-        message: "Don't have product",
-      };
-    }
+    
     const filterOptions = {};
     if (filter) {
       const regex = new RegExp(filter, "i");
       filterOptions.name = regex;
     }
+    
     const allProduct = sortOption
       ? await Product.find(filterOptions)
+          .skip(skip)
           .limit(limit)
-          .skip((currentPage - 1) * limit)
           .sort({
             [sortOption[0]]: sortOption[1],
           })
       : await Product.find(filterOptions)
-          .limit(limit)
-          .skip((currentPage - 1) * limit);
+          .skip(skip)
+          .limit(limit);
+          
     return {
       status: "Ok",
-      message: "Success",
+      message: "Success", 
       data: allProduct,
-      totalPage: totalPage,
+      total: totalProduct,
+      currentPage,
+      totalPages: Math.ceil(totalProduct / limit),
+      pageSize: limit
     };
   } catch (e) {
     return {
@@ -158,6 +157,7 @@ const getAllProduct = async (currentPage, sortOption, filter) => {
     };
   }
 };
+
 const deleteProduct = (id) => {
   return new Promise(async (resolve, reject) => {
     try {

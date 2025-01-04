@@ -79,14 +79,13 @@ const getDetailsProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const currentPage = Number(req.query.page) ? req.query.page : 1;
-        const sortOption = req.query.sort;
-        const filter = req.query.filter;
+        const { page = 1, limit = 10, sort, filter } = req.query; // Thay đổi từ 8 thành 10
         const response = await ProductService.getAllProduct(
-            Number(currentPage),
-            sortOption,
+            Number(page),
+            Number(limit),
+            sort,
             filter
-        ); // Lấy thông tin của tất cả sản phẩm
+        );
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
