@@ -132,11 +132,33 @@ const getProductsByType = async (req, res) => {
     }
 };
 
+const getFilterOptions = async (req, res) => {
+    try {
+        const response = await ProductService.getFilterOptions();
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e.message
+        });
+    }
+};
+
+const testFilters = async (req, res) => {
+    try {
+        const data = await ProductService.testFilterOptions();
+        res.json(data);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
     deleteProduct,
     getAllProduct,
-    getProductsByType // Add this new export
+    getProductsByType, // Add this new export
+    getFilterOptions,
+    testFilters
 };

@@ -119,27 +119,38 @@ const getDetailsProduct = (id) => {
   });
 };
 
-const getAllProduct = async (currentPage, limit = 10, sortOption, filter) => {
+const getAllProduct = async (currentPage, limit = 10, sortOption, filters = {}) => {
   try {
     const skip = (currentPage - 1) * limit;
-    const totalProduct = await Product.countDocuments();
     
-    const filterOptions = {};
-    if (filter) {
-      const regex = new RegExp(filter, "i");
-      filterOptions.name = regex;
+    // Build filter query
+    const filterQuery = {};
+    
+    if (filters.target?.length) {
+      filterQuery.target = { $in: filters.target.split(',') };
     }
     
-    const allProduct = sortOption
-      ? await Product.find(filterOptions)
-          .skip(skip)
-          .limit(limit)
-          .sort({
-            [sortOption[0]]: sortOption[1],
-          })
-      : await Product.find(filterOptions)
-          .skip(skip)
-          .limit(limit);
+    if (filters.manufacturer?.length) {
+      filterQuery.manufacturer = { $in: filters.manufacturer.split(',') };
+    }
+    
+    if (filters.country?.length) {
+      filterQuery.country = { $in: filters.country.split(',') };
+    }
+    
+    if (filters.priceRange) {
+      const [min, max] = filters.priceRange.split('-');
+      filterQuery.price = {};
+      if (min !== '0') filterQuery.price.$gte = Number(min);
+      if (max !== 'max') filterQuery.price.$lte = Number(max);
+    }
+
+    const totalProduct = await Product.countDocuments(filterQuery);
+    
+    const allProduct = await Product.find(filterQuery)
+      .skip(skip)
+      .limit(limit)
+      .sort(sortOption ? { [sortOption[0]]: sortOption[1] } : {});
           
     return {
       status: "Ok",
@@ -210,11 +221,53 @@ const getProductsByType = (type) => {
   });
 };
 
+const getFilterOptions = async () => {
+  try {
+    // Get unique manufacturers
+    const manufacturers = await Product.distinct('manufacturer');
+    
+    // Get unique countries
+    const countries = await Product.distinct('country');
+    
+    // Get price range
+    const priceStats = await Product.aggregate([
+      {
+        $group: {
+          _id: null,
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' }
+        }
+      }
+    ]);
+
+    console.log('Filter options:', { manufacturers, countries }); // Add this debug log
+
+    return {
+      status: "OK",
+      data: {
+        manufacturers,
+        countries,
+        priceRange: priceStats[0] 
+          ? [priceStats[0].minPrice, priceStats[0].maxPrice] 
+          : [0, 1000000]
+      }
+    };
+  } catch (e) {
+    console.error('Error getting filter options:', e); // Add error logging
+    return {
+      status: "ERR",
+      message: e.message
+    };
+  }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
   getDetailsProduct,
   deleteProduct,
   getAllProduct,
-  getProductsByType // Add this new export
+  getProductsByType, // Add this new export
+  getFilterOptions ,
 };
+  
