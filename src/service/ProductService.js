@@ -1,9 +1,18 @@
 import axios from "axios";
 import { axiosJWT } from "./UserService";
 
-export const getAllProduct = async (page = 1, limit = 8, signal) => {
+export const getAllProduct = async (page = 1, limit = 8, signal, filters = {}) => {
+    const queryParams = new URLSearchParams({
+        page,
+        limit,
+        ...(filters.target?.length && { target: filters.target.join(',') }),
+        ...(filters.manufacturer?.length && { manufacturer: filters.manufacturer.join(',') }),
+        ...(filters.country?.length && { country: filters.country.join(',') }),
+        ...(filters.priceRange && { priceRange: filters.priceRange })
+    });
+
     const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/product/get-all?page=${page}&limit=${limit}`,
+        `${process.env.REACT_APP_API_URL}/product/get-all?${queryParams.toString()}`,
         { signal }
     );
     return res.data;
@@ -47,5 +56,10 @@ export const prefetchProduct = async (id) => {
 
 export const prefetchProductsByType = async (type) => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-by-type/${type}`);
+    return res.data;
+}
+
+export const getFilterOptions = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/filter-options`);
     return res.data;
 }

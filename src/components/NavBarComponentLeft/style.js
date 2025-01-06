@@ -83,3 +83,24 @@ export const LabelStyled = styled.span`
   font-size: 16px;
   font-weight: 500;
 `;
+
+export const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const FilterItem = styled.div`
+  padding: 4px 0;
+`;
+
+export const PriceRangeInput = styled.div`
+  padding: 10px;
+  
+  .price-range-display {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    color: #666;
+  }
+`;

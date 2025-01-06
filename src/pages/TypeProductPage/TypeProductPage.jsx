@@ -9,14 +9,25 @@ import { WrapperNavBar, WrapperProducts } from './style';
 
 const TypeProductPage = () => {
     const [page, setPage] = useState(1);
+    const [filters, setFilters] = useState({
+        target: [],
+        manufacturer: [],
+        country: [],
+        priceRange: null
+    });
     const limit = 10;
 
     const { isLoading, data: products } = useQuery({
-        queryKey: ['products', page, limit],
-        queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
+        queryKey: ['products', page, limit, filters],
+        queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal, filters),
         staleTime: 5 * 60 * 1000,
         cacheTime: 10 * 60 * 1000,
     });
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+        setPage(1); // Reset to first page when filters change
+    };
 
     const onChange = (currentPage) => {
         setPage(currentPage);
@@ -26,7 +37,7 @@ const TypeProductPage = () => {
         <div style={{width: '100%', background: '#edf0f3', padding: '20px 120px'}}>
             <Row style={{ flexWrap: 'nowrap' }}>
                 <WrapperNavBar span={6}>
-                    <NavBarComponentLeft />
+                    <NavBarComponentLeft onFilterChange={handleFilterChange} />
                 </WrapperNavBar>
                 <Col span={18}>
                     {isLoading ? (
