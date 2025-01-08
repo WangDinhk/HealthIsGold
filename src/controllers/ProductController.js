@@ -79,26 +79,30 @@ const getDetailsProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
-        // Extract filter params from query string
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.max(1, parseInt(req.query.limit) || 8);
+        
         const filters = {
-            manufacturer: req.query.manufacturer?.split(','),
-            country: req.query.country?.split(','),
+            manufacturer: req.query.manufacturer?.split(',').filter(Boolean),
+            country: req.query.country?.split(',').filter(Boolean),
+            target: req.query.target?.split(',').filter(Boolean),
             discount: req.query.discount ? Number(req.query.discount) : null,
-            priceRange: req.query.priceRange?.split('-').map(Number),
-            target: req.query.target?.split(',')
+            priceRange: req.query.priceRange ? req.query.priceRange.split('-').map(Number) : null
         };
 
-        const response = await ProductService.getAllProduct(
-            Number(page),
-            Number(limit),
-            null, // sort option
-            filters
+        // Remove empty filters
+        Object.keys(filters).forEach(key => 
+            !filters[key] || (Array.isArray(filters[key]) && !filters[key].length) 
+                ? delete filters[key] 
+                : null
         );
+
+        const response = await ProductService.getAllProduct(page, limit, filters);
         return res.status(200).json(response);
-    } catch (e) {
-        return res.status(404).json({
-            message: e.message
+    } catch (error) {
+        return res.status(500).json({
+            status: "ERR",
+            message: error.message
         });
     }
 };

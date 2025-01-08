@@ -119,59 +119,70 @@ const getDetailsProduct = (id) => {
   });
 };
 
-const getAllProduct = async (currentPage, limit = 10, sortOption, filters = {}) => {
+const getAllProduct = async (page = 1, limit = 8, filters = {}) => {
   try {
-    const skip = (currentPage - 1) * limit;
+    const skip = (page - 1) * limit;
     
     // Build filter query
     const filterQuery = {};
-    
-    if (filters.target && Array.isArray(filters.target) && filters.target.length > 0) {
-      filterQuery.target = { $in: filters.target };
-    }
-    
-    if (filters.manufacturer && Array.isArray(filters.manufacturer) && filters.manufacturer.length > 0) {
-      filterQuery.manufacturer = { $in: filters.manufacturer };
-    }
-    
-    if (filters.country && Array.isArray(filters.country) && filters.country.length > 0) {
-      filterQuery.country = { $in: filters.country };
-    }
-    
-    if (filters.priceRange && Array.isArray(filters.priceRange) && filters.priceRange.length === 2) {
+    if (filters.manufacturer?.length) filterQuery.manufacturer = { $in: filters.manufacturer };
+    if (filters.country?.length) filterQuery.country = { $in: filters.country };
+    if (filters.target?.length) filterQuery.target = { $in: filters.target };
+    if (filters.discount) filterQuery.discount = { $gte: Number(filters.discount) };
+    if (filters.priceRange?.length === 2) {
       filterQuery.price = {
-        $gte: filters.priceRange[0],
-        $lte: filters.priceRange[1]
+        $gte: Number(filters.priceRange[0]),
+        $lte: Number(filters.priceRange[1])
       };
     }
 
-    if (filters.discount) {
-      filterQuery.discount = { $gte: filters.discount };
+    // Thêm sort để đảm bảo thứ tự nhất quán
+    const sortCriteria = {
+      createdAt: -1,  // Sort by creation date descending
+      _id: 1          // Then by _id to đảm bảo thứ tự ổn định
+    };
+
+    // Execute queries in parallel với sort và distinct
+    const [totalCount, products] = await Promise.all([
+      Product.countDocuments(filterQuery),
+      Product.find(filterQuery)
+        .sort(sortCriteria)
+        .skip(skip)
+        .limit(limit)
+        .collation({ locale: 'vi' })  // Thêm collation để sắp xếp đúng tiếng Việt
+        .lean()
+        .exec()
+    ]);
+
+    // Kiểm tra trùng lặp bằng Set (debug)
+    const productIds = new Set();
+    const duplicates = products.filter(product => {
+      if (productIds.has(product._id.toString())) {
+        console.log('Duplicate found:', product._id);
+        return true;
+      }
+      productIds.add(product._id.toString());
+      return false;
+    });
+
+    if (duplicates.length > 0) {
+      console.warn('Found duplicate products:', duplicates.length);
     }
 
-    const totalProduct = await Product.countDocuments(filterQuery);
-    
-    const allProduct = await Product.find(filterQuery)
-      .skip(skip)
-      .limit(limit)
-      .sort(sortOption ? { [sortOption[0]]: sortOption[1] } : {});
-          
     return {
       status: "Ok",
-      message: "Success", 
-      data: allProduct,
+      message: "Success",
+      data: products,
       pagination: {
-        total: totalProduct,
-        currentPage,
-        totalPages: Math.ceil(totalProduct / limit),
-        pageSize: limit
+        total: totalCount,
+        pageSize: limit,
+        current: page,
+        totalPages: Math.ceil(totalCount / limit)
       }
     };
-  } catch (e) {
-    return {
-      status: "ERR",
-      message: e.message,
-    };
+  } catch (error) {
+    console.error("Error in getAllProduct:", error);
+    throw error;
   }
 };
 
@@ -246,7 +257,6 @@ const getFilterOptions = async () => {
       }
     ]);
 
-    console.log('Filter options:', { manufacturers, countries }); // Add this debug log
 
     return {
       status: "OK",
