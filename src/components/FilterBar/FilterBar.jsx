@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Collapse, Checkbox, Radio, Slider, Space, Spin } from 'antd';
+import { Collapse, Checkbox, Radio, Slider, Space, Spin, Button } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import * as ProductService from '../../service/ProductService';
 import {
@@ -17,13 +17,15 @@ const { Panel } = Collapse;
 const INITIAL_VISIBLE_ITEMS = 3; // Number of items to show initially
 const ITEMS_PER_LOAD = 3; // Number of additional items to show each time
 
+const INITIAL_FILTERS = {
+  manufacturer: [],
+  country: [],
+  discount: [],
+  priceRange: [0, 1000000]
+};
+
 const FilterBar = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState({
-    manufacturer: [],
-    country: [],
-    discount: null,
-    priceRange: [0, 1000000]
-  });
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
 
   // State for expanded sections
   const [expanded, setExpanded] = useState({
@@ -54,6 +56,15 @@ const FilterBar = ({ onFilterChange }) => {
     // Call parent's onFilterChange whenever filters change
     onFilterChange(filters);
   }, [filters, onFilterChange]);
+
+  const handleResetFilters = () => {
+    setFilters(INITIAL_FILTERS);
+    setVisibleItems({
+      manufacturer: INITIAL_VISIBLE_ITEMS,
+      country: INITIAL_VISIBLE_ITEMS
+    });
+    onFilterChange(INITIAL_FILTERS);
+  };
 
   const formatPrice = (value) => `${value.toLocaleString('vi-VN')}đ`;
 
@@ -116,6 +127,14 @@ const FilterBar = ({ onFilterChange }) => {
           <path d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm3 6a1 1 0 0 1 1-1h10a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1zm3 6a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1z" fill="currentColor"/>
         </svg>
         <span>Lọc sản phẩm</span>
+        <Button 
+          type="primary" 
+          size="small" 
+          onClick={handleResetFilters}
+          style={{ marginLeft: 'auto' }}
+        >
+          Reset
+        </Button>
       </WrapperHead>
 
       <WrapperBody>
@@ -155,10 +174,10 @@ const FilterBar = ({ onFilterChange }) => {
                 onChange={(e) => handleFilterChange('discount', e.target.value)}
               >
                 <Space direction="vertical" size={12}>
+                  <Radio value={5}>Từ 5% trở lên</Radio>
                   <Radio value={10}>Từ 10% trở lên</Radio>
-                  <Radio value={20}>Từ 20% trở lên</Radio>
-                  <Radio value={30}>Từ 30% trở lên</Radio>
-                  <Radio value={50}>Từ 50% trở lên</Radio>
+                  <Radio value={15}>Từ 15% trở lên</Radio>
+
                 </Space>
               </Radio.Group>
             </Space>

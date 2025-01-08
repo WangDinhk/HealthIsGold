@@ -2,29 +2,22 @@ import axios from "axios";
 import { axiosJWT } from "./UserService";
 
 export const getAllProduct = async (page = 1, limit = 8, signal, filters = {}) => {
-    // Remove empty filter values
-    const cleanFilters = Object.fromEntries(
-        Object.entries(filters).filter(([_, value]) => {
-            if (Array.isArray(value)) return value.length > 0;
-            if (typeof value === 'number') return true;
-            return value;
-        })
-    );
+    console.log('Fetching page:', page); // Debug log
 
     const queryParams = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
-        ...(cleanFilters.target?.length && { target: cleanFilters.target }),
-        ...(cleanFilters.manufacturer?.length && { manufacturer: cleanFilters.manufacturer }),
-        ...(cleanFilters.country?.length && { country: cleanFilters.country }),
-        ...(cleanFilters.discount && { discount: cleanFilters.discount }),
-        ...(cleanFilters.priceRange && { priceRange: cleanFilters.priceRange.join('-') })
+        ...(filters.target?.length && { target: filters.target }),
+        ...(filters.manufacturer?.length && { manufacturer: filters.manufacturer }),
+        ...(filters.country?.length && { country: filters.country }),
+        ...(filters.discount && { discount: filters.discount }),
+        ...(filters.priceRange && { priceRange: filters.priceRange.join('-') })
     });
 
-    const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/product/get-all?${queryParams.toString()}`,
-        { signal }
-    );
+    const url = `${process.env.REACT_APP_API_URL}/product/get-all?${queryParams.toString()}`;
+    console.log('Fetching URL:', url); // Debug log
+
+    const res = await axios.get(url, { signal });
     return res.data;
 }
 

@@ -12,20 +12,15 @@ export const WrapperNavBar = styled.div`
 export const WrapperHead = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  background: linear-gradient(to right, #fafafa, #ffffff);
+  padding: 16px;
+  border-bottom: 1px solid #e8e8e8;
+  
+  svg {
+    margin-right: 8px;
+  }
   
   span {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-    letter-spacing: 0.3px;
-  }
-
-  svg {
-    color: #1890ff;
+    font-weight: 500;
   }
 `;
 
