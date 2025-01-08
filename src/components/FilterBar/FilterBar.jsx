@@ -50,6 +50,11 @@ const FilterBar = ({ onFilterChange }) => {
     }));
   };
 
+  useEffect(() => {
+    // Call parent's onFilterChange whenever filters change
+    onFilterChange(filters);
+  }, [filters, onFilterChange]);
+
   const formatPrice = (value) => `${value.toLocaleString('vi-VN')}đ`;
 
   const renderFilterItems = (items, type) => {

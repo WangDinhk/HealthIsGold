@@ -2,13 +2,23 @@ import axios from "axios";
 import { axiosJWT } from "./UserService";
 
 export const getAllProduct = async (page = 1, limit = 8, signal, filters = {}) => {
+    // Remove empty filter values
+    const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, value]) => {
+            if (Array.isArray(value)) return value.length > 0;
+            if (typeof value === 'number') return true;
+            return value;
+        })
+    );
+
     const queryParams = new URLSearchParams({
-        page,
-        limit,
-        ...(filters.target?.length && { target: filters.target.join(',') }),
-        ...(filters.manufacturer?.length && { manufacturer: filters.manufacturer.join(',') }),
-        ...(filters.country?.length && { country: filters.country.join(',') }),
-        ...(filters.priceRange && { priceRange: filters.priceRange })
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(cleanFilters.target?.length && { target: cleanFilters.target }),
+        ...(cleanFilters.manufacturer?.length && { manufacturer: cleanFilters.manufacturer }),
+        ...(cleanFilters.country?.length && { country: cleanFilters.country }),
+        ...(cleanFilters.discount && { discount: cleanFilters.discount }),
+        ...(cleanFilters.priceRange && { priceRange: cleanFilters.priceRange.join('-') })
     });
 
     const res = await axios.get(
