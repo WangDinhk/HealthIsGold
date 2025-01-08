@@ -165,6 +165,18 @@ const testFilters = async (req, res) => {
     }
 };
 
+const searchProducts = async (req, res) => {
+    try {
+        const { keyword } = req.query;
+        const response = await ProductService.searchProducts(keyword);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e.message
+        });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -173,5 +185,6 @@ module.exports = {
     getAllProduct,
     getProductsByType, // Add this new export
     getFilterOptions,
-    testFilters
+    testFilters,
+    searchProducts,
 };

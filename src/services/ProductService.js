@@ -277,6 +277,68 @@ const getFilterOptions = async () => {
   }
 };
 
+const searchProducts = async (keyword) => {
+    try {
+        console.log('Searching with keyword:', keyword);
+        
+        // Create regex pattern with word boundaries for more precise matching
+        const regex = new RegExp(`\\b${keyword}`, 'i');
+        
+        const products = await Product.find({
+            $or: [
+                { name: { $regex: regex } },
+                { description: { $regex: regex } },
+                { manufacturer: { $regex: regex } },
+                { country: { $regex: regex } },
+                { type: { $regex: regex } }
+            ]
+        })
+        .sort({ name: 1 }) // Sort results by name
+        .collation({ locale: 'vi' }) // Add Vietnamese collation for better sorting
+        .lean();
+
+        // Score and sort results by relevance
+        const scoredProducts = products.map(product => {
+            let score = 0;
+            const lowerKeyword = keyword.toLowerCase();
+            
+            // Higher score for exact name matches
+            if (product.name.toLowerCase().includes(lowerKeyword)) {
+                score += 10;
+                // Even higher for matches at the start of name
+                if (product.name.toLowerCase().startsWith(lowerKeyword)) {
+                    score += 5;
+                }
+            }
+            
+            // Medium score for manufacturer matches
+            if (product.manufacturer?.toLowerCase().includes(lowerKeyword)) {
+                score += 5;
+            }
+            
+            // Lower score for description matches
+            if (product.description?.toLowerCase().includes(lowerKeyword)) {
+                score += 3;
+            }
+
+            return { ...product, searchScore: score };
+        })
+        .filter(product => product.searchScore > 0) // Only keep relevant results
+        .sort((a, b) => b.searchScore - a.searchScore); // Sort by relevance
+
+        console.log('Found products:', scoredProducts.length);
+        
+        return {
+            status: "OK",
+            message: "SUCCESS",
+            data: scoredProducts.map(({ searchScore, ...product }) => product) // Remove score before sending
+        };
+    } catch (e) {
+        console.error('Search error:', e);
+        throw new Error(e.message);
+    }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -285,5 +347,6 @@ module.exports = {
   getAllProduct,
   getProductsByType, // Add this new export
   getFilterOptions ,
+  searchProducts,
 };
 

@@ -9,5 +9,6 @@ router.use('/delete/:id', ProductController.deleteProduct)
 router.get('/get-all', ProductController.getAllProduct)
 router.get('/get-by-type/:type', ProductController.getProductsByType)
 router.get('/filter-options', ProductController.getFilterOptions)
+router.get('/search', ProductController.searchProducts)
 
 module.exports = router
