@@ -12,4 +12,5 @@ routes.delete('/delete-user/:id',IsAdminMiddleWare,userController.deleteUser);
 routes.get('/getAllUser',IsAdminMiddleWare,userController.getAllUser);
 routes.get('/getDetailUser/:id',User_AdminMiddleWare,userController.getDetailUser);
 routes.post('/refreshToken',userController.refreshToken);
+routes.post('/auth/google-auth',userController.googleLogin);
 module.exports=routes;

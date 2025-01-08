@@ -166,12 +166,15 @@ const getDetailUser=async(id) =>{
         };
     }
 }
-
+const findUserByEmail = async (email) => {
+    return await User.findOne({ email });
+};
 module.exports = {
     createUser,
     signInUser,
     updateUser,
     deleteUser,
     getAllUser,
-    getDetailUser
+    getDetailUser,
+    findUserByEmail
 };
