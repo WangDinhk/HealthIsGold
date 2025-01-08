@@ -11,7 +11,8 @@ import { jwtDecode } from "jwt-decode";
 import {useDispatch} from 'react-redux'
 import { updateUser } from "../../redux/slides/userSlide";
 import * as message from '../../components/Message/Message'
-
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -58,6 +59,53 @@ const SignInPage = () => {
   const handleSignIn = () => {
     mutation.mutate({ email, password });
   };
+
+
+  const handleSuccess = async (response) => {
+    try {
+      // Lấy token Google từ response
+      const googleToken = response.credential; // Nếu dùng @react-oauth/google
+      console.log("googleToken",googleToken)
+      // Gửi token Google lên server
+      const res = await UserService.googleAuth(googleToken );
+  
+      // Nhận Access Token và Refresh Token từ server
+      const { accessToken, refreshToken } = res.data;
+      console.log("res.data",res.data)
+      // Lưu token vào localStorage
+      // localStorage.setItem("accessToken", accessToken);
+      // localStorage.setItem("refreshToken", refreshToken);
+      // const emailGG = res.data.email;
+      // const passwordGG = res.data.password;
+      // mutation.mutate({ emailGG, passwordGG });
+      setEmail(res.data.email);
+      // const ggPassword = jwtDecode(res.data.password)
+      setPassword(googleToken);
+      // console.log("password",ggPassword)
+      // handleSignIn();
+      const user = {
+        email: res.data.email,
+        password: googleToken
+      }
+      UserService.loginUser(user);
+      handleGetDetailsUser(res.data._id,accessToken);
+      // Tải lại trang và quay về trang chủ
+      navigate('/');
+      window.location.reload(); // Tải lại trang
+
+
+      message.success();
+    
+
+      
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Đăng nhập thất bại. Vui lòng thử lại.");
+    }
+  };
+  const handleError =()=>{
+    alert("Đăng nhập thất bại. Vui lòng thử lại.");
+  }
   return (
     <div
       style={{
@@ -132,6 +180,24 @@ const SignInPage = () => {
               }}
             />
         </WrapperContainer>
+        {/* login google */}
+      <div style={{
+              color: '#fff', // Màu chữ
+              padding: '10px 20px', // Khoảng cách bên trong
+              marginTop: '-45px',
+              marginBottom:'10px',
+              borderRadius: '50px !important', // Bo góc
+              border: 'none', // Xóa đường viền
+              cursor: 'pointer', // Con trỏ khi hover
+            }}>
+          <GoogleLogin
+            onSuccess= {handleSuccess}
+            onError={handleError}
+          />
+        </div>
+
+        {/* end login google */}
+
         <div style={{ paddingLeft: "50px" }}>
           <WrapperTextLight>Quên mật khẩu ?</WrapperTextLight>
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>

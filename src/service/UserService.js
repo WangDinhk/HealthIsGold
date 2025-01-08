@@ -29,6 +29,14 @@ export const getDetailsUser = async (id, accessToken) => {
   return res.data;
 };
 
+export const googleAuth = async (token) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/auth/google-auth`,
+    {token}
+  );
+  return res.data;
+};
+
 
 //
 
