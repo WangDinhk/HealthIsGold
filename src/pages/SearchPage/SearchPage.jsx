@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Row, Col, Spin, message } from 'antd';
+import { useSearchParams } from 'react-router-dom';
+import { Spin, message } from 'antd';
+import { SearchOutlined, WarningOutlined, InboxOutlined } from '@ant-design/icons';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import { searchProducts } from '../../service/ProductService';
+import { 
+    WrapperSearchPage, 
+    WrapperSearchHeader, 
+    WrapperSearchResults,
+    LoadingWrapper,
+    ErrorMessage,
+    EmptyResult
+} from './style';
 
 const SearchPage = () => {
     const [searchParams] = useSearchParams();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
     const keyword = searchParams.get('keyword') || '';
 
     useEffect(() => {
@@ -42,33 +50,35 @@ const SearchPage = () => {
         fetchProducts();
     }, [keyword]);
 
-    const handleProductClick = (productId) => {
-        navigate(`/product/${productId}`);
-    };
-
     return (
-        <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ margin: '20px 0' }}>
+        <WrapperSearchPage>
+            <WrapperSearchHeader>
                 {keyword && (
-                    <h2>Kết quả tìm kiếm cho "{keyword}" ({products.length} sản phẩm)</h2>
+                    <h2>
+                        <SearchOutlined style={{ fontSize: '24px', color: '#2167DD' }} />
+                        Kết quả tìm kiếm cho 
+                        <span className="keyword-highlight">"{keyword}"</span>
+                        <span className="result-count">({products.length} sản phẩm)</span>
+                    </h2>
                 )}
-            </div>
+            </WrapperSearchHeader>
             
-            {loading ? (
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <Spin size="large" />
-                </div>
-            ) : error ? (
-                <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
-                    {error}
-                </div>
-            ) : (
-                <Row gutter={[16, 16]}>
-                    {products.map((product) => (
-                        <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
-                            <div onClick={() => handleProductClick(product._id)} 
-                                 style={{ cursor: 'pointer' }}>
-                                <CardComponent 
+            <WrapperSearchResults>
+                {loading ? (
+                    <LoadingWrapper>
+                        <Spin size="large" tip="Đang tìm kiếm..." />
+                    </LoadingWrapper>
+                ) : error ? (
+                    <ErrorMessage>
+                        <WarningOutlined style={{ fontSize: '20px' }} />
+                        {error}
+                    </ErrorMessage>
+                ) : (
+                    <div className="homepage-style">
+                        {products.map((product) => (
+                            <div key={product._id} className="card-item">
+                                <CardComponent
+                                    _id={product._id}  
                                     countInStock={product.countInStock}
                                     description={product.description}
                                     image={product.image}
@@ -77,21 +87,25 @@ const SearchPage = () => {
                                     rating={product.rating}
                                     type={product.type}
                                     discount={product.discount}
-                                    selled={product.selled}
-                                    id={product._id}
+                                    unit={product.unit}
+                                    quantity={product.quantity}
                                 />
                             </div>
-                        </Col>
-                    ))}
-                </Row>
-            )}
+                        ))}
+                    </div>
+                )}
 
-            {!loading && products.length === 0 && keyword && (
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    Không tìm thấy sản phẩm phù hợp với từ khóa "{keyword}"
-                </div>
-            )}
-        </div>
+                {!loading && products.length === 0 && keyword && (
+                    <EmptyResult>
+                        <InboxOutlined className="empty-icon" />
+                        <div className="empty-text">
+                            Không tìm thấy sản phẩm phù hợp với từ khóa 
+                            <span className="keyword">"{keyword}"</span>
+                        </div>
+                    </EmptyResult>
+                )}
+            </WrapperSearchResults>
+        </WrapperSearchPage>
     );
 };
 
