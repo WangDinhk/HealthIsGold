@@ -70,17 +70,16 @@ const SignInPage = () => {
       const res = await UserService.googleAuth(googleToken );
   
       // Nhận Access Token và Refresh Token từ server
-      const { accessToken, refreshToken } = res.data;
+      const { accessToken } = res;
       console.log("res.data",res.data)
       // Lưu token vào localStorage
-      // localStorage.setItem("accessToken", accessToken);
-      // localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("accessToken", accessToken);
       // const emailGG = res.data.email;
       // const passwordGG = res.data.password;
       // mutation.mutate({ emailGG, passwordGG });
-      setEmail(res.data.email);
-      // const ggPassword = jwtDecode(res.data.password)
-      setPassword(googleToken);
+      // setEmail(res.data.email);
+      // // const ggPassword = jwtDecode(res.data.password)
+      // setPassword(googleToken);
       // console.log("password",ggPassword)
       // handleSignIn();
       const user = {
@@ -88,16 +87,13 @@ const SignInPage = () => {
         password: googleToken
       }
       UserService.loginUser(user);
-      handleGetDetailsUser(res.data._id,accessToken);
-      // Tải lại trang và quay về trang chủ
+      handleGetDetailsUser(res.data._id,res.accessToken);
+
+      // Tải lại trang và điều hướng đến trang chủ ngay lập tức
       navigate('/');
-      window.location.reload(); // Tải lại trang
-
-
-      message.success();
-    
-
-      
+      // window.location.reload();
+      // message.success();
+  
     } catch (error) {
       console.error("Error during login:", error);
       alert("Đăng nhập thất bại. Vui lòng thử lại.");
