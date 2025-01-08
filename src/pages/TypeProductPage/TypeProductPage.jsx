@@ -4,7 +4,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import { useQuery } from '@tanstack/react-query';
 import * as ProductService from '../../service/ProductService';
 import CardComponent from '../../components/CardComponent/CardComponent';
-import NavBarComponentLeft from '../../components/NavBarComponentLeft/NavBarComponentLeft';
+import FilterBar from '../../components/FilterBar/FilterBar';
 import { WrapperNavBar, WrapperProducts } from './style';
 
 const TypeProductPage = () => {
@@ -37,7 +37,7 @@ const TypeProductPage = () => {
         <div style={{width: '100%', background: '#edf0f3', padding: '20px 120px'}}>
             <Row style={{ flexWrap: 'nowrap' }}>
                 <WrapperNavBar span={6}>
-                    <NavBarComponentLeft onFilterChange={handleFilterChange} />
+                    <FilterBar onFilterChange={handleFilterChange} />
                 </WrapperNavBar>
                 <Col span={18}>
                     {isLoading ? (
