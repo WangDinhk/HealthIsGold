@@ -196,17 +196,25 @@ const OrderPage = () => {
     }
   ];
 
-  const handleSubmitOrder = async (values) => { // Chuyển sang momo sandbox nếu được và xử lý đơn hàng sau khi thanh toán( Implement tất cả tại đây  )
+  const handleSubmitOrder = async (values) => {
     console.log('Form values:', values);
     // TODO: Implement order submission
+    // Momo app test: https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/
+    // Napas:   
+    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	    
+    //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     
+    // Credit Cards:
+    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP	    
+    //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)	    
     if (payment === 'banking') {
+      var partnerCode = 'HIGMomo';
       var orderInfo = {
-        "OrderID": 'AcSC2',
-        "Money": 12000
+        "OrderID": partnerCode + new Date().getTime(),
+        "Money": totalAmount
       }
       const response = await CartService.createMomoPayment(orderInfo);
       console.log(response)
-      const payUrl = response.payUrl; // Đảm bảo đúng đường dẫn trả về từ API
+      const payUrl = response.payUrl;
       window.location.href = payUrl;
     }
     else {
@@ -261,7 +269,7 @@ const OrderPage = () => {
             >
               <Select onChange={handlePaymentChange}>
                 <Select.Option value="cod">Thanh toán khi nhận hàng</Select.Option>
-                <Select.Option value="banking">Chuyển khoản ngân hàng</Select.Option>
+                <Select.Option value="banking">Chuyển khoản qua MOMO</Select.Option>
               </Select>
             </Form.Item>
           </Form>
