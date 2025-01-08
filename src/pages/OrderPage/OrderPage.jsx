@@ -7,7 +7,6 @@ import { WrapperOrder, OrderInfo, CartItems, PaymentInfo } from './style';
 import * as CartService from '../../service/CartService';
 import Loading from '../../components/LoadingComponent/Loading';
 import { updateQuantitySuccess, removeFromCartSuccess } from '../../redux/slides/cartSlide';
-import { useNavigate } from "react-router-dom";
 
 const OrderPage = () => {
   const [form] = Form.useForm();
@@ -15,7 +14,6 @@ const OrderPage = () => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const [payment, setPayment] = useState('cod')
-  const navigate = useNavigate();
 
   const { isLoading, data: cartData } = useQuery({
     queryKey: ['cart', user?.id],
@@ -201,14 +199,14 @@ const OrderPage = () => {
     // TODO: Implement order submission
     // Momo app test: https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/
     // Napas:   
-    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	    
-    //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     
+    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	          SDT  
+    //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     (Tùy ý, đúng đầu số là được)
     // Credit Cards:
     //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP	    
     //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)	    
     if (payment === 'banking') {
-      var partnerCode = 'HIGMomo';
-      var orderInfo = {
+      const partnerCode = 'HIGMomo';
+      const orderInfo = {
         "OrderID": partnerCode + new Date().getTime(),
         "Money": totalAmount
       }
@@ -216,6 +214,10 @@ const OrderPage = () => {
       console.log(response)
       const payUrl = response.payUrl;
       window.location.href = payUrl;
+
+      if (response.resultCode === 0) {
+        form.submit()
+      }
     }
     else {
       form.submit()
