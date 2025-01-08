@@ -133,3 +133,31 @@ export const EmptyResult = styled.div`
         border-radius: 4px;
     }
 `
+
+export const PaginationWrapper = styled.div`
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    
+    .ant-pagination {
+        .ant-pagination-item-active {
+            border-color: #2167DD;
+            a {
+                color: #2167DD;
+            }
+        }
+        
+        .ant-pagination-item:hover {
+            border-color: #2167DD;
+            a {
+                color: #2167DD;
+            }
+        }
+        
+        .ant-pagination-next:hover .ant-pagination-item-link,
+        .ant-pagination-prev:hover .ant-pagination-item-link {
+            border-color: #2167DD;
+            color: #2167DD;
+        }
+    }
+`;

@@ -67,9 +67,13 @@ export const getFilterOptions = async () => {
     return res.data;
 }
 
-export const searchProducts = async (keyword) => {
+export const searchProducts = async (keyword, page = 1, limit = 10) => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/search`, {
-        params: { keyword }
+        params: { 
+            keyword,
+            page,
+            limit
+        }
     });
     return res.data;
 }
