@@ -47,3 +47,11 @@ export const removeCartItem = async (userId, productId) => {
     });
     return res.data;
 };
+
+export const createMomoPayment = async (orderInfo) => {
+    if (!orderInfo) {
+        throw new Error(`Đơn hàng không hợp lệ`);
+    }
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/payment/create-payment-momo`, orderInfo);
+    return res.data;
+}
