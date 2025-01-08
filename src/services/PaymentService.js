@@ -11,7 +11,6 @@ const createMomoPayment = async (orderInfo) => {
     var partnerCode = 'MOMO';
     var redirectUrl = 'http://localhost:3000';
     var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var ipnUrl = 'http://localhost:3001/payment/callback';
     var requestType = "payWithMethod";
     var amount = Money;
     //var orderId = partnerCode + new Date().getTime();
