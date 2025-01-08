@@ -79,17 +79,26 @@ const getDetailsProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const { page = 1, limit = 10, sort, filter } = req.query; // Thay đổi từ 8 thành 10
+        const { page = 1, limit = 10 } = req.query;
+        // Extract filter params from query string
+        const filters = {
+            manufacturer: req.query.manufacturer?.split(','),
+            country: req.query.country?.split(','),
+            discount: req.query.discount ? Number(req.query.discount) : null,
+            priceRange: req.query.priceRange?.split('-').map(Number),
+            target: req.query.target?.split(',')
+        };
+
         const response = await ProductService.getAllProduct(
             Number(page),
             Number(limit),
-            sort,
-            filter
+            null, // sort option
+            filters
         );
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e,
+            message: e.message
         });
     }
 };

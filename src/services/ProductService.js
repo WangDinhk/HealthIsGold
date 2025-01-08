@@ -126,23 +126,27 @@ const getAllProduct = async (currentPage, limit = 10, sortOption, filters = {}) 
     // Build filter query
     const filterQuery = {};
     
-    if (filters.target?.length) {
-      filterQuery.target = { $in: filters.target.split(',') };
+    if (filters.target && Array.isArray(filters.target) && filters.target.length > 0) {
+      filterQuery.target = { $in: filters.target };
     }
     
-    if (filters.manufacturer?.length) {
-      filterQuery.manufacturer = { $in: filters.manufacturer.split(',') };
+    if (filters.manufacturer && Array.isArray(filters.manufacturer) && filters.manufacturer.length > 0) {
+      filterQuery.manufacturer = { $in: filters.manufacturer };
     }
     
-    if (filters.country?.length) {
-      filterQuery.country = { $in: filters.country.split(',') };
+    if (filters.country && Array.isArray(filters.country) && filters.country.length > 0) {
+      filterQuery.country = { $in: filters.country };
     }
     
-    if (filters.priceRange) {
-      const [min, max] = filters.priceRange.split('-');
-      filterQuery.price = {};
-      if (min !== '0') filterQuery.price.$gte = Number(min);
-      if (max !== 'max') filterQuery.price.$lte = Number(max);
+    if (filters.priceRange && Array.isArray(filters.priceRange) && filters.priceRange.length === 2) {
+      filterQuery.price = {
+        $gte: filters.priceRange[0],
+        $lte: filters.priceRange[1]
+      };
+    }
+
+    if (filters.discount) {
+      filterQuery.discount = { $gte: filters.discount };
     }
 
     const totalProduct = await Product.countDocuments(filterQuery);
@@ -156,10 +160,12 @@ const getAllProduct = async (currentPage, limit = 10, sortOption, filters = {}) 
       status: "Ok",
       message: "Success", 
       data: allProduct,
-      total: totalProduct,
-      currentPage,
-      totalPages: Math.ceil(totalProduct / limit),
-      pageSize: limit
+      pagination: {
+        total: totalProduct,
+        currentPage,
+        totalPages: Math.ceil(totalProduct / limit),
+        pageSize: limit
+      }
     };
   } catch (e) {
     return {
@@ -270,4 +276,4 @@ module.exports = {
   getProductsByType, // Add this new export
   getFilterOptions ,
 };
-  
+
