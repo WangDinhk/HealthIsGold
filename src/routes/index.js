@@ -8,6 +8,7 @@ import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage";
+import SearchPage from "../pages/SearchPage/SearchPage";
 
 export const routes = [
   {
@@ -49,6 +50,11 @@ export const routes = [
   {
     path: "/product/:id",
     page: ProductDetailsPage,
+    isShowHeader: true
+  },
+  {
+    path: "/search",
+    page: SearchPage,
     isShowHeader: true
   },
   {
