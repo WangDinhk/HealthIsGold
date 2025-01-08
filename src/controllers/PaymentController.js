@@ -1,4 +1,6 @@
 const PaymentService = require('../services/PaymentService');
+const express = require("express");
+const app = express();
 
 const createPayment = async (req, res) => {
     //console.log(req.body)
@@ -28,6 +30,13 @@ const createPayment = async (req, res) => {
         });
       }
 };
+
+const resultPayment = async (req, res) => {
+  console.log("callback:: ");
+  console.log(req.body);
+
+  return res.status(200).json(res.body)
+}
     
 module.exports = { createPayment };
 

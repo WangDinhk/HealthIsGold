@@ -2,8 +2,6 @@ const axios = require('axios')
 // Service momo payment
 const createMomoPayment = async (orderInfo) => {
     const { OrderID, Money} = orderInfo
-
-
     //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
     //parameters
     //Connection link
@@ -13,6 +11,7 @@ const createMomoPayment = async (orderInfo) => {
     var partnerCode = 'MOMO';
     var redirectUrl = 'http://localhost:3000';
     var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+    var ipnUrl = 'http://localhost:3001/payment/callback';
     var requestType = "payWithMethod";
     var amount = Money;
     //var orderId = partnerCode + new Date().getTime();
@@ -72,27 +71,3 @@ const createMomoPayment = async (orderInfo) => {
 };
 
 module.exports = { createMomoPayment };
-
-// class PaymentService {
-//     async createPayment(orderData) {
-//       // Giả lập xử lý thanh toán
-//       const { orderId, amount, paymentMethod } = orderData;
-      
-//       if (!orderId || !amount || !paymentMethod) {
-//         throw new Error('Thiếu thông tin đơn hàng!');
-//       }
-  
-//       // Giả lập kết quả thanh toán
-//       return {
-//         status: 'success',
-//         message: 'Thanh toán thành công!',
-//         orderId,
-//         amount,
-//         paymentMethod,
-//         paymentId: `PAY-${Date.now()}`,
-//         timestamp: new Date().toISOString(),
-//       };
-//     }
-//   }
-  
-//   module.exports = new PaymentService();

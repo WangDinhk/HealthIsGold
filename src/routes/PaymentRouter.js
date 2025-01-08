@@ -4,7 +4,6 @@ const PaymentController = require('../controllers/PaymentController')
 
 // Route xử lý tạo thanh toán
 router.post('/create-payment-momo', PaymentController.createPayment);
-
 module.exports = router;
 
 // src/routes/PaymentRouter.js
