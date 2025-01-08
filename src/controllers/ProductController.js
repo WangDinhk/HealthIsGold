@@ -167,8 +167,17 @@ const testFilters = async (req, res) => {
 
 const searchProducts = async (req, res) => {
     try {
-        const { keyword } = req.query;
-        const response = await ProductService.searchProducts(keyword);
+        const { keyword, page = 1, limit = 10 } = req.query;
+        console.log('Controller received:', { keyword, page, limit });
+        
+        const parsedPage = parseInt(page);
+        const parsedLimit = parseInt(limit);
+
+        const response = await ProductService.searchProducts(
+            keyword, 
+            parsedPage, 
+            parsedLimit
+        );
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
