@@ -102,11 +102,11 @@ const ProfilePage = () => {
     }
 
     return (
-        <div style={{ width: '1270px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ width: '1500px', margin: '0 auto', padding: '20px' }}>
             <WrapperHeader>Thông tin người dùng</WrapperHeader>
             <Loading isLoading={isLoading}>
                 <WrapperContentProfile>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'left', justifyContent: 'left', marginBottom: '20px' }}>
                         <div style={{ position: 'relative' }}>
                             {avatar && (
                                 <img 
@@ -131,22 +131,53 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
+                    <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
                     {/* Form fields */}
-                    <WrapperInput>
-                        <WrapperLabel htmlFor='name'>Họ và tên</WrapperLabel>
-                        <div style={{ flex: 1 }}>
+                        {/* <WrapperInput style={{ flex: 1 }}>
+                            <WrapperLabel htmlFor='name'>Họ và tên</WrapperLabel>
+                            <div style={{ flex: 1 }}>
+                                <InputForm
+                                    style={{ width: '100%' }}
+                                    id='name'
+                                    value={name}
+                                    handleOnchange={handleOnchangeName}
+                                />
+                            </div>
+                        </WrapperInput> */}
+                        <WrapperInput style={{ display: 'block', marginBottom: '20px' }}>
+                            <WrapperLabel 
+                                htmlFor='name' 
+                                style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}
+                            >
+                                Họ và tên
+                            </WrapperLabel>
                             <InputForm
                                 style={{ width: '100%' }}
                                 id='name'
                                 value={name}
                                 handleOnchange={handleOnchangeName}
                             />
-                        </div>
-                    </WrapperInput>
-                    
-                    <WrapperInput>
-                        <WrapperLabel htmlFor='email'>Email</WrapperLabel>
-                        <div style={{ flex: 1 }}>
+                        </WrapperInput>
+                        
+                        {/* <WrapperInput style={{ flex: 1 }}>
+                            <WrapperLabel htmlFor='email'>Email</WrapperLabel>
+                            <div style={{ flex: 1 }}>
+                                <InputForm
+                                    style={{ width: '100%' }}
+                                    id='email'
+                                    value={email}
+                                    handleOnchange={handleOnchangeEmail}
+                                    disabled
+                                />
+                            </div>
+                        </WrapperInput> */}
+                        <WrapperInput style={{ display: 'block', marginBottom: '20px' }}>
+                            <WrapperLabel 
+                                htmlFor='email' 
+                                style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}
+                            >
+                                Email
+                            </WrapperLabel>
                             <InputForm
                                 style={{ width: '100%' }}
                                 id='email'
@@ -154,32 +185,62 @@ const ProfilePage = () => {
                                 handleOnchange={handleOnchangeEmail}
                                 disabled
                             />
-                        </div>
-                    </WrapperInput>
+                        </WrapperInput>
+                    </div>
 
-                    <WrapperInput>
-                        <WrapperLabel htmlFor='phone'>Số điện thoại</WrapperLabel>
-                        <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+                        {/* <WrapperInput style={{ flex: 1 }}>
+                            <WrapperLabel htmlFor='phone'>Số điện thoại</WrapperLabel>
+                            <div style={{ flex: 1 }}>
+                                <InputForm
+                                    style={{ width: '100%' }}
+                                    id='phone'
+                                    value={phone}
+                                    handleOnchange={handleOnchangePhone}
+                                />
+                            </div>
+                        </WrapperInput> */}
+                        <WrapperInput style={{ display: 'block', marginBottom: '20px' }}>
+                            <WrapperLabel 
+                                htmlFor='phone' 
+                                style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}
+                            >
+                                Số điện thoại
+                            </WrapperLabel>
                             <InputForm
                                 style={{ width: '100%' }}
                                 id='phone'
                                 value={phone}
                                 handleOnchange={handleOnchangePhone}
                             />
-                        </div>
-                    </WrapperInput>
+                        </WrapperInput>
 
-                    <WrapperInput>
-                        <WrapperLabel htmlFor='address'>Địa chỉ</WrapperLabel>
-                        <div style={{ flex: 1 }}>
+                        {/* <WrapperInput style={{ flex: 1 }}>
+                            <WrapperLabel htmlFor='address'>Địa chỉ</WrapperLabel>
+                            <div style={{ flex: 1 }}>
+                                <InputForm
+                                    style={{ width: '100%' }}
+                                    id='address'
+                                    value={address}
+                                    handleOnchange={handleOnchangeAddress}
+                                />
+                            </div>
+                        </WrapperInput> */}
+                        <WrapperInput style={{ display: 'block', marginBottom: '20px' }}>
+                            <WrapperLabel 
+                                htmlFor='address' 
+                                style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}
+                            >
+                                Địa chỉ
+                            </WrapperLabel>
                             <InputForm
                                 style={{ width: '100%' }}
                                 id='address'
                                 value={address}
                                 handleOnchange={handleOnchangeAddress}
                             />
-                        </div>
-                    </WrapperInput>
+                        </WrapperInput>
+                    </div>
 
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                         <ButtonComponent
