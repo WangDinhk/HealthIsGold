@@ -554,8 +554,11 @@ const AdminProduct = () => {
           pagination={{
             current: page,
             pageSize: limit,
-            total: products?.total || 0,
-            onChange: handlePageChange
+            total: products?.pagination?.total || 0,
+            onChange: handlePageChange,
+            showSizeChanger: false,
+            showQuickJumper: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} sản phẩm`
           }}
         />
       </div>
