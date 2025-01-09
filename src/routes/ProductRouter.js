@@ -10,5 +10,6 @@ router.get('/get-all', ProductController.getAllProduct)
 router.get('/get-by-type/:type', ProductController.getProductsByType)
 router.get('/filter-options', ProductController.getFilterOptions)
 router.get('/search', ProductController.searchProducts)
+router.get('/newest', ProductController.getNewestProducts)
 
 module.exports = router

@@ -186,6 +186,19 @@ const searchProducts = async (req, res) => {
     }
 };
 
+const getNewestProducts = async (req, res) => {
+    try {
+        const limit = 10;
+        const response = await ProductService.getNewestProducts(limit);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message
+        });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -196,4 +209,5 @@ module.exports = {
     getFilterOptions,
     testFilters,
     searchProducts,
+    getNewestProducts,
 };

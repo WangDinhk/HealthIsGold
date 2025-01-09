@@ -323,6 +323,24 @@ const searchProducts = async (keyword, page = 1, limit = 10) => {
     }
 };
 
+const getNewestProducts = async (limit = 10) => {
+  try {
+    const products = await Product.find({})
+      .sort({ createdAt: -1 })  // Sort by creation date in descending order
+      .limit(limit)
+      .lean()
+      .exec();
+
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: products
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -332,5 +350,6 @@ module.exports = {
   getProductsByType, // Add this new export
   getFilterOptions ,
   searchProducts,
+  getNewestProducts,
 };
 
