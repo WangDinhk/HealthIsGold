@@ -4,10 +4,12 @@ const success = (mes='Success') => {
     message.success(mes);
   };
 
-const error = (mes='Sai mật khẩu hoặc Email') => {
-message.error(mes);
+  const error = (mes = "Sai mật khẩu hoặc Email", duration = 3) => {
+    message.error({
+        content: mes,
+        duration,
+    });
 };
-
 const warning = (mes='Warning') => {
 message.warning(mes);
 };

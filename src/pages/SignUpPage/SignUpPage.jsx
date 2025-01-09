@@ -12,7 +12,7 @@ import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import * as UserService from "../../service/UserService";
 import * as message from '../../components/Message/Message'
-
+import { error } from "../../components/Message/Message";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -33,7 +33,7 @@ const SignUpPage = () => {
       message.success();
       handleNavigateSignIn();
     }else if(isError){
-      message.error();
+      // message.error();
     }
   },[isSuccess,isError])
 
@@ -46,11 +46,19 @@ const SignUpPage = () => {
   const handleOnchangeRetypePassword = (e) => {
     setRetypePassword(e.target.value);
   };
-
+/////////////
   const handleSignUp = () => {
-    mutation.mutate({email, password, confirmPassword});
+    mutation.mutate({email, password, confirmPassword},{
+      onError: (errorResponse) => {
+        // Lấy thông báo lỗi từ backend hoặc dùng thông báo mặc định
+        const errorMessage = errorResponse?.response?.data?.message ;
+        console.log("lỗi: ",errorMessage);
+        // Gọi hàm error từ file message.js
+        error(errorMessage);
+    },
+    });
   };
-
+//////////
   return (
     <div
       style={{
@@ -125,8 +133,9 @@ const SignUpPage = () => {
             />
           </div>
 
-          {data?.status === 'ERR' &&
-          <span style={{ color: "red" }}>{data?.message}</span>}
+          {/* {data?.status === 'ERR' &&
+          <span style={{ color: "red" }}>{data?.message}</span>} */}
+          
             <ButtonComponent
               disabled={!(email && password && confirmPassword)}
               onClick={handleSignUp}
