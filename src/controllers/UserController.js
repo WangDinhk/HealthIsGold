@@ -1,5 +1,7 @@
 const UserService = require("../services/UserService");
 const JWTService = require("../services/JwtService");
+const { OAuth2Client } = require('google-auth-library');
+
 const { response } = require("express");
 const createUser = async (req, res) => {
   const { name, email, password, confirmPassword, phone } = req.body;
@@ -184,6 +186,59 @@ const logoutUser = (req, res) => {
     });
   }
 };
+const client_id= process.env.GG_CLIENT_ID;
+const client = new OAuth2Client(client_id);
+async function verifyToken(token) {
+const ticket = await client.verifyIdToken({
+  idToken: token,
+  audience: client_id,
+})
+const payload = ticket.getPayload();
+return payload;
+};
+
+const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ status: "ERR", message: "Token is required" });
+    }
+    // Verify the Google token
+    const payload = await verifyToken(token);
+    let user = await UserService.findUserByEmail(payload.email);
+    // If user does not exist, create a new user
+    if (!user) {
+      user = await UserService.createUser({
+        email: payload.email,
+        name: payload.name || "No Name",
+        password: token, // Password is empty as it is Google login
+        phone: '', // You can customize how phone number is handled
+      });
+    }
+    console.log('USER',user);
+    // Generate access and refresh tokens
+    const accessToken = JWTService.genneralAccessToken({ id: user._id, isAdmin: user.isAdmin });
+    const refreshToken = JWTService.genneralRefreshToken({ id: user._id, isAdmin: user.isAdmin });
+    // Set refresh token as HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // Set to true in production if using https
+      sameSite: "strict",
+    });
+    
+    // Return response with user data and access token
+    return res.status(200).json({
+      status: "OK",
+      message: "User signed in successfully",
+      data: user,
+      accessToken, // Send the access token to the client
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ status: "ERR", message: e.message || "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createUser,
   signInUser,
@@ -192,5 +247,6 @@ module.exports = {
   getAllUser,
   getDetailUser,
   refreshToken,
-  logoutUser
+  logoutUser,
+  googleLogin
 };
