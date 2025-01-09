@@ -170,7 +170,7 @@ const getAllProduct = async (page = 1, limit = 8, filters = {}) => {
     }
 
     return {
-      status: "Ok",
+      status: "OK",
       message: "Success",
       data: products,
       pagination: {
