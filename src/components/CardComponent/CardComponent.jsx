@@ -16,7 +16,7 @@ import {
   WrapperQuantity,
   WrapperImageContainer,
 } from "./style";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 
 const CardComponent = (props) => {
   const queryClient = useQueryClient();
@@ -35,6 +35,12 @@ const CardComponent = (props) => {
     quantity,
   } = props;
 
+  const { data: cartData } = useQuery({
+    queryKey: ['cart', user?.id],
+    queryFn: () => CartService.getUserCart(user?.id),
+    enabled: !!user?.id
+  });
+
   const handleCardClick = () => {
     navigate(`/product/${_id}`);
   };
@@ -50,7 +56,21 @@ const CardComponent = (props) => {
       dispatch(setLoadingCart(true));
       const res = await CartService.addToCart(user.id, _id, 1);
       if (res.status === "OK") {
+        // Update Redux state
         dispatch(addToCartSuccess(res.data));
+        
+        // Update React Query cache
+        queryClient.setQueryData(['cart', user.id], (oldData) => {
+          if (!oldData) return { data: res.data };
+          return {
+            ...oldData,
+            data: res.data
+          };
+        });
+
+        // Invalidate and refetch cart data
+        queryClient.invalidateQueries(['cart', user.id]);
+        
         message.success("Thêm vào giỏ hàng thành công");
       }
     } catch (error) {
