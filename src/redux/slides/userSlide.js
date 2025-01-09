@@ -16,7 +16,11 @@ export const userSlide = createSlice({
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const { name = '', email = '', phone = '', address = '', avatar = '', accessToken = '', _id = '',isAdmin=false } = action.payload;
+      console.log("Updating user in Redux:", {
+        currentState: state,
+        newData: action.payload
+      });
+      const { name = '', email = '', phone = '', address = '', avatar = '', accessToken = '', _id = '', isAdmin = false } = action.payload;
       
       state.name = name;
       state.email = email;
@@ -25,7 +29,7 @@ export const userSlide = createSlice({
       state.avatar = avatar;
       state.accessToken = accessToken;
       state.id = _id;
-      state.isAdmin = true;
+      state.isAdmin = isAdmin === true;
     },
 
     resetUser: (state) => {

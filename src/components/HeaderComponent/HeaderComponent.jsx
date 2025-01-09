@@ -23,6 +23,15 @@ import * as CartService from "../../service/CartService";
 const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  
+  // Enhanced debugging logs
+  useEffect(() => {
+    console.log("Complete user object:", user);
+    console.log("isAdmin value:", user?.isAdmin);
+    console.log("isAdmin type:", typeof user?.isAdmin);
+    console.log("isAdmin strict equality check:", user?.isAdmin === true);
+  }, [user]);
+
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
   const handleNavigateLogin = () => {
@@ -67,11 +76,20 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
       <WrapperContentPopup onClick={() => navigate("/profile-user")}>
         Thông tin người dùng
       </WrapperContentPopup>
-      {user.isAdmin && (
-        <WrapperContentPopup onClick={() => navigate("/system/admin")}>
-          Quản lí hệ thống
-        </WrapperContentPopup>
-      )}
+      {(() => {
+        const isAdminUser = Boolean(user?.isAdmin);
+        console.log("Rendering admin menu check:", {
+          rawIsAdmin: user?.isAdmin,
+          convertedIsAdmin: isAdminUser,
+          strictCheck: user?.isAdmin === true
+        });
+        
+        return user?.isAdmin === true ? (
+          <WrapperContentPopup onClick={() => navigate("/system/admin")}>
+            Quản lí hệ thống
+          </WrapperContentPopup>
+        ) : null;
+      })()}
     </div>
   );
   useEffect(() => {

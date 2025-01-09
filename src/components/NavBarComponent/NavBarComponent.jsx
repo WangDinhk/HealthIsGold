@@ -284,34 +284,7 @@ const NavBarComponent = () => {
     </>
   );
 
-  const healthItems = createProductMenu(
-    <>
-      {createMenuItem(
-        "cancer-page",
-        "Chuyên trang ung thư",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/48x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/icon_Menu_c5fc94ebc9.png",
-        "Chuyên trang ung thư"
-      )}
-      {createMenuItem(
-        "health-page",
-        "Chuyên trang bệnh & sức khỏe",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/48x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/Chuyen_trang_9f4523a8b6.png",
-        "Chuyên trang bệnh & sức khỏe"
-      )}
-      {createMenuItem(
-        "promotion-news",
-        "Tin khuyến mãi",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/48x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/Tin_khuyen_mai_87bca39cdb.png",
-        "Tin khuyến mãi"
-      )}
-      {createMenuItem(
-        "media",
-        "Truyền Thông",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/48x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/Truyen_thong_3daad9cfc8.png",
-        "Truyền Thông"
-      )}
-    </>
-  );
+
 
   return (
     <div>
@@ -382,18 +355,13 @@ const NavBarComponent = () => {
         <WrapperDropdown>
           <WrapperButton to="/">Bệnh</WrapperButton>
         </WrapperDropdown>
-        <Dropdown 
-          overlay={healthItems}
-          onVisibleChange={(visible) => !visible && setShowProducts(false)}
-          placement="bottomLeft"
-          trigger={['hover']}
-        >
+        
           <WrapperDropdown>
             <WrapperButton to="/">
-              Góc sức khỏe <StyledDownOutlined />
+              Góc sức khỏe 
             </WrapperButton>
           </WrapperDropdown>
-        </Dropdown>
+          
         <WrapperDropdown>
           <WrapperButton to="/">Hệ thống nhà thuốc</WrapperButton>
         </WrapperDropdown>

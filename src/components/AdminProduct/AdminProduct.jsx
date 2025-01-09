@@ -1,14 +1,13 @@
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  SearchOutlined,
+import { 
+  EditOutlined, 
+  PlusOutlined, 
+  DeleteOutlined, 
+  SearchOutlined 
 } from "@ant-design/icons";
 import { Button, Modal, Form, Space } from "antd";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react"; // Combine useEffect here
 import { WrapperHeader, WrapperUploadFile } from "./style";
 import TableComponent from "../TableComponent/TableComponent";
-import { useState } from "react";
 import InputComponent from "../InputComponent/InputComponent";
 import { getBase64 } from "../../utils";
 import create from "@ant-design/icons/lib/components/IconFont";
@@ -17,19 +16,28 @@ import * as ProductService from "../../service/ProductService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../LoadingComponent/Loading";
 import * as message from "../Message/Message";
-import { useEffect } from "react";
 import imageCompression from "browser-image-compression";
 import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useSelector } from "react-redux";
 import ModalComponent from "../ModalComponent/ModalComponent";
+import { useNavigate } from 'react-router-dom';
+
 const AdminProduct = () => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state?.user);
+  
+  useEffect(() => {
+    if (!user?.isAdmin) {
+      navigate('/'); // Redirect non-admin users to home page
+    }
+  }, [user?.isAdmin]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelected, setRowSelected] = useState("");
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
-  const user = useSelector((state) => state?.user);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -236,40 +244,19 @@ const AdminProduct = () => {
       sorter: (a, b) => a.price - b.price,
       filters: [
         {
-          text: ">= 2",
+          text: ">= 100000",
           value: ">=",
         },
         {
-          text: "<= 2",
+          text: "<= 100000",
           value: "<=",
         },
       ],
       onFilter: (value, record) => {
         if (value === ">=") {
-          return record.price >= 2;
+          return record.price >= 100000;
         }
-        return record.price <= 2;
-      },
-    },
-    {
-      title: "Rating",
-      dataIndex: "rating",
-      sorter: (a, b) => a.rating - b.rating,
-      filters: [
-        {
-          text: ">= 2",
-          value: ">=",
-        },
-        {
-          text: "<= 2",
-          value: "<=",
-        },
-      ],
-      onFilter: (value, record) => {
-        if (value === ">=") {
-          return record.rating >= 2;
-        }
-        return record.rating <= 2;
+        return record.price <= 100000;
       },
     },
     {
