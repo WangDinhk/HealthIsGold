@@ -69,25 +69,38 @@ const SignInPage = () => {
       // Nhận Access Token và Refresh Token từ server
       const accessToken = JSON.stringify(res.accessToken);
 
-      console.log("res.data", res.data);
+      console.log("res.data", res);
       // Lưu token vào localStorage
       // localStorage.setItem("accessToken", accessToken);
       // localStorage.setItem("refreshToken", refreshToken);
       // const emailGG = res.data.email;
       // const passwordGG = res.data.password;
       // mutation.mutate({ emailGG, passwordGG });
-      localStorage.setItem("accessToken", accessToken);
 
       // console.log("password",ggPassword)
       // handleSignIn();
-      const user = {
-        email: res.data.email,
-        password: googleToken,
-      };
-      
-      UserService.loginUser(user);
-      handleGetDetailsUser(res.data._id, res.accessToken);
+      // const user = {
+      //   email: res.data.email,
+      //   password: googleToken,
+      // };
+      // console.log("res.data._id",res.data._id)
+      // const idGG= res.data._id;
+      // UserService.loginUser(user);
+      // handleGetDetailsUser(decoded?.id, res.accessToken);
+      // navigate("/");
       navigate("/");
+      console.log("data", data);
+      localStorage.setItem("accessToken", accessToken);
+      if (accessToken) {
+        const decoded = jwtDecode(accessToken);
+        console.log("decoded", decoded);
+        console.log("decoded.id", decoded?.id);
+        console.log("accessToken",accessToken)
+        // if (decoded?.id) {
+        //   handleGetDetailsUser(decoded?.id, accessToken);
+        // }
+      }
+      window.location.reload();
     } catch (error) {
       console.error("Error during login:", error);
       alert("Đăng nhập thất bại. Vui lòng thử lại.");
