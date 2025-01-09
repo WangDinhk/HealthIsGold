@@ -18,10 +18,11 @@ Các role user chính:
 
 Trang web gồm các màn hình chính:
 
-- Trang chủ: Hiện thông tin các dược phẩm 
+- Trang chủ: Hiện thông tin các sản phẩm mới, và xem sản phẩm theo danh mục 
 - Thông tin chi tiết của người dùng: hiện thông tin của người dung có thể sửa ( yêu cầu đăng nhập)
-- Quản lý: dành cho quản lý( yêu cầu đăng nhập) , có thể thực hiện các thao tác thêm, xóa, sửa với người dung và sản phẩm.
-
+- Trang sản phẩm: hiện đầy đủ loại sản phẩm, chi tiết sản phẩm và chức năng filter sản phẩm
+- Trang thanh toán: Bao gồm giỏ hàng và Phần thanh toán online
+- Quản lý: dành cho quản lý (yêu cầu đăng nhập) , có thể thực hiện các thao tác thêm, xóa, sửa với người dung và sản phẩm.
 
 ### THIẾT KẾ KIẾN TRÚC
 Tổng quan:
@@ -43,7 +44,7 @@ Component Diagram:
 ![Alt text](./componentDiagram.png)
 
 ### THIẾT KẾ DỮ LIỆU
-Sơ dồ dữ liệu:
+Sơ đồ dữ liệu:
 
 ![Alt text](./so_do_du_lieu.png)
 
@@ -91,3 +92,11 @@ npm start
 ### HƯỚNG DẪN TRIỂN KHAI
 - Triển khai trên môi trường cục bộ (local): 
 - Truy cập vào localhost: http://localhost:3000 (Frontend) và http://localhost:3001 (Backend)
+
+### VIDEO DEMO WEBSITE 
+
+[VIDEO](https://www.youtube.com/watch?v=5Y1RAmfi9Ts)
+
+### KẾ HOẠCH LÀM VIỆC NHÓM
+
+[JIRA](https://lequangvinh1272022-1728397641304.atlassian.net/jira/software/projects/KAN/boards/1/timeline?shared=&atlOrigin=eyJpIjoiNzEyZTc4ZTljY2QzNGI1ZDg1NWNlODkyYzJkOGFkZmEiLCJwIjoiaiJ9)
