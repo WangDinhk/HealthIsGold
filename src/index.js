@@ -7,10 +7,14 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const queryClient = new QueryClient();
+const clientID = process.env.REACT_APP_GG_CLIENT_ID;
+
 root.render(
+<GoogleOAuthProvider clientId={clientID}>
 
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
@@ -18,6 +22,8 @@ root.render(
     </Provider>
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
+  </GoogleOAuthProvider>
+
 
 );
 

@@ -1,5 +1,12 @@
 import axios from "axios";
 export const axiosJWT = axios.create();
+export const googleAuth = async (token) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/auth/google-auth`,
+    {token}
+  );
+  return res.data;
+};
 
 export const loginUser = async (data) => {
   const res = await axios.post(
