@@ -5,7 +5,7 @@ import {
   WrapperHeaderAccount,
   WrapperHeaderText,
 } from "./Style";
-import { Button, Col, Badge, Popover, Flex } from "antd";
+import {  Col, Badge, Popover } from "antd";
 import {
   UserOutlined,
   CaretDownOutlined,
@@ -14,7 +14,6 @@ import {
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { click } from "@testing-library/user-event/dist/click";
 import * as UserService from "../../service/UserService";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";

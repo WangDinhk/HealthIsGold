@@ -91,7 +91,6 @@ const AdminProduct = () => {
   const mutationUpdate = useMutationHook((data) => {
     const { id, token, ...rests } = data;
     const res = ProductService.updateProduct(id, token, { ...rests });
-    console.log("Kết quả trả về từ API:", res);
     return res;
   });
   const mutationDeleted = useMutationHook((data) => {
@@ -125,7 +124,6 @@ const AdminProduct = () => {
     isError: isErrorDeleted,
   } = mutationUpdate;
 
-  console.log("dataUpdated", dataUpdated);
   const queryProduct = useQuery({
     queryKey: ['products-admin', page, limit],
     queryFn: () => ProductService.getAllProduct(page, limit),
@@ -224,8 +222,6 @@ const AdminProduct = () => {
     },
   });
 
-  // ==================================
-  console.log("data", products);
   const columns = [
     {
       title: "Name",
@@ -291,7 +287,6 @@ const AdminProduct = () => {
     products?.data?.map((product) => {
       return { ...product, key: product._id };
     });
-  console.log("dataTable:", dataTable);
 
   useEffect(() => {
     if (isSuccess && data?.status === "OK") {
@@ -431,7 +426,6 @@ const AdminProduct = () => {
       fetchGetDetailsProduct(rowSelected);
     }
   }, [rowSelected]);
-  // console.log("stateProductDetails",stateProductDetails);
   const handleDetailsProduct = () => {
     if (rowSelected) {
       setIsLoadingUpdate(true);
@@ -507,7 +501,6 @@ const AdminProduct = () => {
       {
         onSuccess: (data) => {
           console.log("Mutation thành công, dữ liệu trả về:", data);
-          // setDataUpdated(data); // Cập nhật state
         },
         onError: (error) => {
           console.error("Mutation thất bại:", error);

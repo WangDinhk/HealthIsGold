@@ -2,7 +2,6 @@ import axios from "axios";
 import { axiosJWT } from "./UserService";
 
 export const getAllProduct = async (page = 1, limit = 8, signal, filters = {}) => {
-    console.log('Fetching page:', page); // Debug log
 
     const queryParams = new URLSearchParams({
         page: page.toString(),
@@ -15,7 +14,6 @@ export const getAllProduct = async (page = 1, limit = 8, signal, filters = {}) =
     });
 
     const url = `${process.env.REACT_APP_API_URL}/product/get-all?${queryParams.toString()}`;
-    console.log('Fetching URL:', url); // Debug log
 
     const res = await axios.get(url, { signal });
     return res.data;

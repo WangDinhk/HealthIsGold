@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import { DownOutlined } from "@ant-design/icons";
+import { Menu as AntMenu } from "antd"; // Add this import
 
 export const WrapperListDropdown = styled.ul`
   width: 100%;
@@ -55,4 +56,102 @@ export const ItemImg = styled.img`
   height: auto;
   padding-bottom: 10px;
   padding-top: 10px;
+`;
+
+export const WrapperMenu = styled(AntMenu)`
+  background: white;
+  border-radius: 4px;
+  min-width: 280px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .ant-menu-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    
+    &:hover {
+      background-color: #f6f9fc;
+      color: #2167DD;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-top: 2px solid #999;
+      border-right: 2px solid #999;
+      transform: translateY(-50%) rotate(45deg);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    &:hover::after {
+      opacity: 1;
+      right: 12px;
+    }
+  }
+`;
+
+export const MenuContainer = styled.div`
+  display: flex;
+  position: relative;
+`;
+
+export const WrapperProductList = styled.div`
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background: white;
+  width: 600px;
+  min-height: 400px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+
+  ${({ isVisible }) => isVisible && `
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  `}
+
+  .product-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+  }
+`;
+
+export const ProductOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  pointer-events: none;
+`;
+
+export const WrapperMenuItems = styled.div`
+  min-width: 200px;
 `;
