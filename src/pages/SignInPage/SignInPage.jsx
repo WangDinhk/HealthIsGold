@@ -186,20 +186,24 @@ const SignInPage = () => {
         </WrapperContainer>
         <div
           style={{
-            color: "#fff", // Màu chữ
-            padding: "10px 20px", // Khoảng cách bên trong
-            marginTop: "-45px",
-            marginBottom: "10px",
-            marginLeft: "85px",
-            borderRadius: "50px !important", // Bo góc
-            border: "none", // Xóa đường viền
-            cursor: "pointer", // Con trỏ khi hover
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            marginTop: "-35px",
+            marginBottom: "15px",
           }}
         >
-          <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+          <GoogleLogin 
+            onSuccess={handleSuccess} 
+            onError={handleError}
+            style={{ width: "100%" }}
+            size="large"
+            width="350"
+            borderRadius="10"
+            useOneTap
+          />
         </div>
         <div style={{ paddingLeft: "50px" }}>
-          <WrapperTextLight>Quên mật khẩu ?</WrapperTextLight>
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <p style={{ fontSize: "15px", margin: 0 }}>
               Bạn chưa có tài khoản ?

@@ -37,9 +37,8 @@ const HomePage = () => {
   const limit = 12; // items per page
 
   const { isLoading, data, isFetching } = useQuery({
-    queryKey: ['products', page],
-    queryFn: ({ signal }) => ProductService.getAllProduct(page, limit, signal),
-    keepPreviousData: true,
+    queryKey: ['newest-products'],
+    queryFn: () => ProductService.getNewestProducts(),
     staleTime: 5 * 60 * 1000, // Cache 5 phút
     cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
     retry: 1
@@ -70,7 +69,7 @@ const HomePage = () => {
               src="https://cdn.nhathuoclongchau.com.vn/unsafe/320x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/smalls/san_pham_ban_chay_website_320x41_3x_88c599649c.png"
               alt="sanphambanchay"
             />
-            <WrapperPannerContent>Sản phẩm bán chạy</WrapperPannerContent>
+            <WrapperPannerContent>Sản phẩm mới nhất</WrapperPannerContent>
           </div>
 
           <WrapperBody>

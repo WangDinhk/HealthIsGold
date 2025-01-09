@@ -75,3 +75,8 @@ export const searchProducts = async (keyword, page = 1, limit = 10) => {
     });
     return res.data;
 }
+
+export const getNewestProducts = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/newest`);
+    return res.data;
+}

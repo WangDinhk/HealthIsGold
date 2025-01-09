@@ -4,6 +4,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import InputComponent from '../InputComponent/InputComponent';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const ButtonInputSearch = (props) => { 
     const { 
@@ -22,10 +23,15 @@ const ButtonInputSearch = (props) => {
     const navigate = useNavigate();
 
     const handleSearch = () => {
+        if (!searchValue.trim()) {
+            message.warning('Vui lòng nhập từ khóa tìm kiếm');
+            return;
+        }
+        
         if (onSearch) {
             onSearch(searchValue);
         } else {
-            navigate(`/search?keyword=${encodeURIComponent(searchValue)}`);
+            navigate(`/search?keyword=${encodeURIComponent(searchValue.trim())}`);
         }
     };
 

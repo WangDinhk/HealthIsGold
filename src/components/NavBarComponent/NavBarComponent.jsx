@@ -99,12 +99,7 @@ const NavBarComponent = () => {
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/ho_tro_dieu_tri_level_2_00d86ca048.png",
         "Hỗ trợ điều trị"
       )}
-      {createMenuItem(
-        "digestive-support",
-        "Hồ trợ tiêu hóa",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/ho_tro_tieu_hoa_level_2_df7385ed6e.png",
-        "Hồ trợ tiêu hóa"
-      )}
+      
       {createMenuItem(
         "brain-support",
         "Thần kinh não",
@@ -116,12 +111,6 @@ const NavBarComponent = () => {
         "Hỗ trợ làm đẹp",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/ho_tro_lam_dep_level_2_87dfb56752.png",
         "Hỗ trợ làm đẹp"
-      )}
-      {createMenuItem(
-        "heart-health",
-        "Sức khỏe tim mạch",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/suc_khoe_tim_mach_level_2_1fc9d156fd.png",
-        "Sức khỏe tim mạch"
       )}
       {createMenuItem(
         "nutrition",
@@ -151,12 +140,6 @@ const NavBarComponent = () => {
         "Giải pháp làn da",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/giai_phap_lan_da_level_2_24c57abcd0.png",
         "Giải pháp làn da"
-      )}
-      {createMenuItem(
-        "hair-care",
-        "Chăm sóc tóc - da dầu",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/cham_soc_toc_da_dau_level_2_8ad8c93cf9.png",
-        "Chăm sóc tóc - da dầu"
       )}
       {createMenuItem(
         "makeup",
@@ -206,12 +189,6 @@ const NavBarComponent = () => {
         "Chăm sóc răng miệng"
       )}
       {createMenuItem(
-        "household-items",
-        "Đồ dùng gia đình",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/do_dung_gia_dinh_level_2_782f681291.png",
-        "Đồ dùng gia đình"
-      )}
-      {createMenuItem(
         "general-goods",
         "Hàng tổng hợp",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/hang_tong_hop_level_2_c302f72c95.png",
@@ -235,22 +212,28 @@ const NavBarComponent = () => {
   const medicineItems = createProductMenu(
     <>
       {createMenuItem(
-        "medicine-search",
-        "Tra cứu thuốc",
+        "cancer",
+        "Thuốc điều trị ung thư",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/Icon_tra_cuu_thuoc_6de870355e.png",
-        "Tra cứu thuốc"
+        "Thuốc điều trị ung thư"
       )}
       {createMenuItem(
-        "drug-search",
-        "Tra cứu dược chất",
+        "nerve",
+        "Thuốc thần kinh",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/icon_tra_cuu_duoc_lieu_e454df36e0.png",
-        "Tra cứu dược chất"
+        "Thuốc thần kinh"
       )}
       {createMenuItem(
-        "herb-search",
-        "Tra cứu dược liệu",
+        "heart",
+        "Thuốc tim mạch & máu",
         "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/icon_tra_cuu_duoc_chat_bdcb6acdde.png",
-        "Tra cứu dược liệu"
+        "Thuốc tim mạch & máu"
+      )}
+      {createMenuItem(
+        "antibiotic",
+        "Thuốc kháng sinh",
+        "https://cdn.nhathuoclongchau.com.vn/unsafe/24x24/https://cms-prod.s3-sgn09.fptcloud.com/smalls/icon_tra_cuu_duoc_chat_bdcb6acdde.png",
+        "Thuốc kháng sinh"
       )}
     </>
   );
