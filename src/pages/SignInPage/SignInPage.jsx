@@ -70,7 +70,7 @@ const SignInPage = () => {
       const res = await UserService.googleAuth(googleToken );
   
       // Nhận Access Token và Refresh Token từ server
-      const { accessToken } = res;
+      const accessToken  = JSON.stringify(res.accessToken);
       console.log("res.data",res.data)
       // Lưu token vào localStorage
       localStorage.setItem("accessToken", accessToken);
