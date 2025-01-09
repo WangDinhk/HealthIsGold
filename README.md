@@ -57,11 +57,11 @@ Chi tiết :  (Xem rõ nét hơn ở [đây](https://viewer.diagrams.net/?tags=%
 - Tải source code bên Backend :
   
 ```terminal
-git clone --branch BE6 https://github.com/WangDinhk/HealthIsGold.git
+git clone --branch BE5 https://github.com/WangDinhk/HealthIsGold.git
 ```
 - Tải source code bên Frontend :
 ```terminal
-git clone --branch FE6 https://github.com/WangDinhk/HealthIsGold.git
+git clone --branch FE5 https://github.com/WangDinhk/HealthIsGold.git
 ```
 
 - Cài đặt các dependency: 
