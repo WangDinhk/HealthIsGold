@@ -26,7 +26,7 @@ Trang web gồm các màn hình chính:
 ### THIẾT KẾ KIẾN TRÚC
 Tổng quan:
 -	Áp dụng kiến trúc MVC : Phân tách logic hiển thị (View), logic điều khiển (Controller), và logic xử lý dữ liệu (Model)
--	Hỗ trợ cơ chế plugin thanh toán Paypal
+-	Hỗ trợ cơ chế plugin thanh toán Momo
 Chi tiết :  (Xem rõ nét hơn ở [đây](https://www.figma.com/design/PWMPWzKTRswU7ngkBfr8WJ/The-C4-model-for-Figma-(Community)?node-id=103-401&p=f))
 
 Context Diagram:
@@ -54,11 +54,11 @@ Sơ dồ dữ liệu:
 - Tải source code bên Backend :
   
 ```terminal
-git clone --branch Backend https://github.com/WangDinhk/HealthIsGold.git
+git clone --branch BE6 https://github.com/WangDinhk/HealthIsGold.git
 ```
 - Tải source code bên Frontend :
 ```terminal
-git clone --branch Frontend https://github.com/WangDinhk/HealthIsGold.git
+git clone --branch FE6 https://github.com/WangDinhk/HealthIsGold.git
 ```
 
 - Cài đặt các dependency: 
@@ -86,4 +86,4 @@ npm start
 ```
 ### HƯỚNG DẪN TRIỂN KHAI
 - Triển khai trên môi trường cục bộ (local): 
-- Truy cập vào localhost: http://localhost:3001
+- Truy cập vào localhost: http://localhost:3000 (Frontend) và http://localhost:3001 (Backend)
