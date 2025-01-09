@@ -8,10 +8,11 @@ import * as UserService from "../../service/UserService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import { jwtDecode } from "jwt-decode";
-import {useDispatch} from 'react-redux'
+import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlide";
-import * as message from '../../components/Message/Message'
-
+import * as message from "../../components/Message/Message";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -21,31 +22,29 @@ const SignInPage = () => {
   };
 
   const mutation = useMutationHook((data) => UserService.loginUser(data));
-  
 
-  const {data, isLoading, isSuccess,isError} = mutation;
-  useEffect(()=>{
-    if(isSuccess){
-      navigate('/');
-      console.log('data',data);
-      localStorage.setItem('accessToken',JSON.stringify(data?.accessToken));
-      if(data?.accessToken){
+  const { data, isLoading, isSuccess, isError } = mutation;
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/");
+      console.log("data", data);
+      localStorage.setItem("accessToken", JSON.stringify(data?.accessToken));
+      if (data?.accessToken) {
         const decoded = jwtDecode(data?.accessToken);
-        console.log('decoded',decoded);
-        if(decoded?.id){
-          handleGetDetailsUser(decoded?.id,data?.accessToken)
+        console.log("decoded", decoded);
+        if (decoded?.id) {
+          handleGetDetailsUser(decoded?.id, data?.accessToken);
         }
       }
-    }
-    else if(isError){
+    } else if (isError) {
       message.error();
     }
-  },[isSuccess,isError])
+  }, [isSuccess, isError]);
 
-  const handleGetDetailsUser = async (id,token)=>{
-    const res= await UserService.getDetailsUser(id,token);
-    dispatch(updateUser({...res?.data,accessToken : token}))
-  }
+  const handleGetDetailsUser = async (id, token) => {
+    const res = await UserService.getDetailsUser(id, token);
+    dispatch(updateUser({ ...res?.data, accessToken: token }));
+  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -57,6 +56,44 @@ const SignInPage = () => {
   };
   const handleSignIn = () => {
     mutation.mutate({ email, password });
+  };
+  ///
+  const handleSuccess = async (response) => {
+    try {
+      // Lấy token Google từ response
+      const googleToken = response.credential; // Nếu dùng @react-oauth/google
+      console.log("googleToken", googleToken);
+      // Gửi token Google lên server
+      const res = await UserService.googleAuth(googleToken);
+
+      // Nhận Access Token và Refresh Token từ server
+      const accessToken = JSON.stringify(res.accessToken);
+
+      console.log("res.data", res.data);
+      // Lưu token vào localStorage
+      // localStorage.setItem("accessToken", accessToken);
+      // localStorage.setItem("refreshToken", refreshToken);
+      // const emailGG = res.data.email;
+      // const passwordGG = res.data.password;
+      // mutation.mutate({ emailGG, passwordGG });
+      localStorage.setItem("accessToken", accessToken);
+
+      // console.log("password",ggPassword)
+      // handleSignIn();
+      const user = {
+        email: res.data.email,
+        password: googleToken,
+      };
+      UserService.loginUser(user);
+      handleGetDetailsUser(res.data._id, res.accessToken);
+      navigate("/");
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Đăng nhập thất bại. Vui lòng thử lại.");
+    }
+  };
+  const handleError = () => {
+    alert("Đăng nhập thất bại. Vui lòng thử lại.");
   };
   return (
     <div
@@ -109,29 +146,43 @@ const SignInPage = () => {
               handleOnchange={handleOnchangePassword}
             />
           </div>
-          {data?.status === 'ERR' &&
-          <span style={{ color: "red" }}>{data?.message}</span>}
-            <ButtonComponent
-              disabled={!(email && password)}
-              onClick={handleSignIn}
-              size={40}
-              styleButton={{
-                backgroundColor: "rgb(33, 112, 250)",
-                color: "white",
-                borderRadius: 20,
-                width: "100%",
-                height: 40,
-                fontSize: 20,
-                marginTop: 20,
-              }}
-              textButton={"Tiếp tục"}
-              styleTextButton={{
-                color: "white",
-                fontSize: "15px",
-                fontWeight: "700",
-              }}
-            />
+          {data?.status === "ERR" && (
+            <span style={{ color: "red" }}>{data?.message}</span>
+          )}
+          <ButtonComponent
+            disabled={!(email && password)}
+            onClick={handleSignIn}
+            size={40}
+            styleButton={{
+              backgroundColor: "rgb(33, 112, 250)",
+              color: "white",
+              borderRadius: 20,
+              width: "100%",
+              height: 40,
+              fontSize: 20,
+              marginTop: 20,
+            }}
+            textButton={"Tiếp tục"}
+            styleTextButton={{
+              color: "white",
+              fontSize: "15px",
+              fontWeight: "700",
+            }}
+          />
         </WrapperContainer>
+        <div
+          style={{
+            color: "#fff", // Màu chữ
+            padding: "10px 20px", // Khoảng cách bên trong
+            marginTop: "-45px",
+            marginBottom: "10px",
+            borderRadius: "50px !important", // Bo góc
+            border: "none", // Xóa đường viền
+            cursor: "pointer", // Con trỏ khi hover
+          }}
+        >
+          <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+        </div>
         <div style={{ paddingLeft: "50px" }}>
           <WrapperTextLight>Quên mật khẩu ?</WrapperTextLight>
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
