@@ -27,6 +27,7 @@ Trang web gồm các màn hình chính:
 Tổng quan:
 -	Áp dụng kiến trúc MVC : Phân tách logic hiển thị (View), logic điều khiển (Controller), và logic xử lý dữ liệu (Model)
 -	Hỗ trợ cơ chế plugin thanh toán Momo
+
 Chi tiết :  ( Xem rõ nét hơn ở [đây](https://www.figma.com/design/PWMPWzKTRswU7ngkBfr8WJ/The-C4-model-for-Figma-(Community)?node-id=103-401&p=f))
 
 Context Diagram:
