@@ -47,7 +47,9 @@ export const ProductPrice = styled.div`
   
   .unit {
     color: #666;
-    margin-left: 8px;
+    margin-left: 12px;
+    font-size: 2rem; 
+    vertical-align: middle;
   }
 `;
 
@@ -105,6 +107,7 @@ export const RelatedProducts = styled.div`
 
     span {
       color: #666;
+      font-size: 1.3rem; // Increased from default
     }
   }
 

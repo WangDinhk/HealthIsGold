@@ -2,13 +2,10 @@ import axios from "axios";
 import { axiosJWT } from "./UserService";
 
 export const getDashboardData = async () => {
-  try {
-    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/admin/dashboard`);
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    throw error;
-  }
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/admin/dashboard-stats`
+  );
+  return res.data;
 };
 
 export const getAdminStats = async () => {
