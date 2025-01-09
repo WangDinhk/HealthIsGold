@@ -84,6 +84,7 @@ const SignInPage = () => {
         email: res.data.email,
         password: googleToken,
       };
+      
       UserService.loginUser(user);
       handleGetDetailsUser(res.data._id, res.accessToken);
       navigate("/");
