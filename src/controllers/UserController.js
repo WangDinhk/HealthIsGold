@@ -8,6 +8,14 @@ const createUser = async (req, res) => {
 
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isMail = regex.test(email);
+  const existingUser = await UserService.findUserByEmail(email);
+  if (existingUser) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "Email đã tồn tại", // Thông báo email đã tồn tại
+    });
+  }
+
 
   //if (!name || !email || !password || !confirmPassword || !phone) {
 
@@ -220,19 +228,31 @@ const googleLogin = async (req, res) => {
     const accessToken = JWTService.genneralAccessToken({ id: user._id, isAdmin: user.isAdmin });
     const refreshToken = JWTService.genneralRefreshToken({ id: user._id, isAdmin: user.isAdmin });
     // Set refresh token as HTTP-only cookie
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false, // Set to true in production if using https
-      sameSite: "strict",
-    });
-    
+    const body = {
+      email: payload.email,
+      password : token,
+    }
+    try {
+      const resp = await UserService.signInUser(body);
+      const { refreshToken, ...newReponse } = resp;
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        // httpOnly: false, //TEST
+  
+        secure: false,
+        samesite: "strict",
+      });
+      console.log("Cookie sent:", refreshToken);
+  
+      return res.status(200).json(newReponse); // Trả về thông tin người dùng hoặc token
+    } catch (e) {
+      return res.status(500).json({
+        status: "ERR",
+        message: e.message || "Internal Server Error",
+      });
+    }
     // Return response with user data and access token
-    return res.status(200).json({
-      status: "OK",
-      message: "User signed in successfully",
-      data: user,
-      accessToken, // Send the access token to the client
-    });
+  
   } catch (e) {
     console.error(e);
     return res.status(500).json({ status: "ERR", message: e.message || "Internal Server Error" });
