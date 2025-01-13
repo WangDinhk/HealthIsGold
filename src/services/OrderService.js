@@ -23,13 +23,17 @@ module.exports = {
             };
         }
         let orders;
-        console.log(user.isAdmin);
         if (user.isAdmin ==true) {
             orders=await Order.find({});
         } else {
             orders = await Order.find({ user: userId }).populate("orderItem.product");
         }
         return orders;
+    },
+    
+    getDetailOrder: async (id) => {
+        const order = await Order.findById(id).populate("orderItem.product"); 
+        return order;
     }
 
 }

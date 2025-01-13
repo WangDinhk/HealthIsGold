@@ -22,6 +22,11 @@ module.exports= {
         })
     },
     getDetailOrder: async (req,res) => {
-
+        const id = req.params.id;
+        const data=await OrderService.getDetailOrder(id);
+        return res.status(200).json({
+            messgage:"Ok",
+            data:data
+        })
     }
 }
