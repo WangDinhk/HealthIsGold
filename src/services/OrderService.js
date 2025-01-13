@@ -1,4 +1,5 @@
 const Order = require("../models/OrderProduct");
+const User = require("../models/UserModel");
 module.exports = {
     createOrder: async ( userId, orderItem, shipAddress, paymentMethod, totalPrice ) => {
         const order = new Order({
@@ -22,11 +23,13 @@ module.exports = {
             };
         }
         let orders;
-        if (user.role === "admin") {
-            orders = await Order.find({}).populate("user").populate("orderItem.product");
+        console.log(user.isAdmin);
+        if (user.isAdmin ==true) {
+            orders=await Order.find({});
         } else {
             orders = await Order.find({ user: userId }).populate("orderItem.product");
         }
+        return orders;
     }
 
 }

@@ -13,7 +13,13 @@ module.exports= {
         })
     },
     getAllOrder: async (req,res) => {
-
+        const decoded = jwt.verify( req.cookies.refreshToken, process.env.REFRESH_TOKEN);
+        const userId = decoded.id;
+        const data=await OrderService.getAllOrder (userId);
+        return res.status(200).json({
+            messgage:"Ok",
+            data:data
+        })
     },
     getDetailOrder: async (req,res) => {
 
