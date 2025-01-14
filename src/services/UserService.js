@@ -82,6 +82,40 @@ const signInUser = async ({ email, password }) => {
         };
     }
 };
+const signInUserByGG = async ({ email}) => {
+    try {
+        // Tìm người dùng theo email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return {
+                status: "ERR",
+                message: "Email not found"
+            };
+        }
+        const accessToken =token.genneralAccessToken({
+            id: user.id,
+            isAdmin:user.isAdmin
+        });
+
+        const refreshToken = token.genneralRefreshToken({
+            id: user.id,
+            isAdmin: user.isAdmin
+        });
+        // Nếu thông tin đăng nhập hợp lệ, trả về thông tin người dùng (có thể bao gồm token nếu cần)
+        return {
+            status: "OK",
+            message: "Sign in successful",
+            accessToken,
+            refreshToken
+        };
+    } catch (e) {
+        return {
+            status: "ERR",
+            message: "Error signing in",
+            error: e.message
+        };
+    }
+};
 
 const updateUser = async (userId, userData) => {
     try {
@@ -172,6 +206,7 @@ const findUserByEmail = async (email) => {
 module.exports = {
     createUser,
     signInUser,
+    signInUserByGG,
     updateUser,
     deleteUser,
     getAllUser,
