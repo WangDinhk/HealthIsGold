@@ -6,8 +6,8 @@ module.exports= {
     createOrder: async (req,res) => {
         const decoded = jwt.verify( req.cookies.refreshToken, process.env.REFRESH_TOKEN);
         const userId = decoded.id;
-        const {  orderItem, shipAddress, paymentMethod, totalPrice } = req.body;
-        await OrderService.createOrder ( userId, orderItem, shipAddress, paymentMethod, totalPrice );
+        const {  orderItem, shipAddress, PaymentMethod, totalPrice } = req.body;
+        await OrderService.createOrder ( userId, orderItem, shipAddress, PaymentMethod, totalPrice );
         return res.status(200).json({
             message: "Create order success"
         })
