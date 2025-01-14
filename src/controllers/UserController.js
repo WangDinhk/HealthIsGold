@@ -204,6 +204,15 @@ const ticket = await client.verifyIdToken({
 const payload = ticket.getPayload();
 return payload;
 };
+function generateRandomPassword() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const passwordLength = 12;
+  let randomPassword = "";
+  for (let i = 0; i < passwordLength; i++) {
+    randomPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return randomPassword;
+}
 
 const googleLogin = async (req, res) => {
   try {
@@ -219,7 +228,7 @@ const googleLogin = async (req, res) => {
       user = await UserService.createUser({
         email: payload.email,
         name: payload.name || "No Name",
-        password: token, // Password is empty as it is Google login
+        password: generateRandomPassword(), // Password is empty as it is Google login
         phone: '', // You can customize how phone number is handled
       });
     }
@@ -229,11 +238,12 @@ const googleLogin = async (req, res) => {
     const refreshToken = JWTService.genneralRefreshToken({ id: user._id, isAdmin: user.isAdmin });
     // Set refresh token as HTTP-only cookie
     const body = {
-      email: payload.email,
-      password : token,
+      email: payload.email
     }
+    console.log(refreshToken);
     try {
-      const resp = await UserService.signInUser(body);
+      const resp = await UserService.signInUserByGG(body);
+      console.log(resp);
       const { refreshToken, ...newReponse } = resp;
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
