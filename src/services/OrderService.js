@@ -13,15 +13,17 @@ module.exports = {
 
         });
         for (const item of orderItem) {
-            const product = await Product.findById(item.id);
+            // const product = await Product.findById(item.product);
+            const product = await Product.findById(item.product);
             if (product) {
                 if (product.countInStock < item.quantity) {
                     throw new Error(`Not enough stock for product: ${product.name}`);
                 }
-                product.countInStock -= item.amount; 
+                console.log(product.countInStock);
+                product.countInStock -= item.quantity; 
                 await product.save(); 
             } else {
-                throw new Error(`Product not found: ${item.productId}`);
+                throw new Error(`Product not found: ${item.product}`);
             }
         }
         await order.save();
