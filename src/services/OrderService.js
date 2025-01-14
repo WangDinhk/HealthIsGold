@@ -1,11 +1,11 @@
 const Order = require("../models/OrderProduct");
 const User = require("../models/UserModel");
 module.exports = {
-    createOrder: async ( userId, orderItem, shipAddress, paymentMethod, totalPrice ) => {
+    createOrder: async ( userId, orderItem, shipAddress, PaymentMethod, totalPrice ) => {
         const order = new Order({
             orderItem,
             shipAddress,
-            paymentMethod,
+            PaymentMethod,
             totalPrice,
             user: userId, 
             paidAt: new Date(),
