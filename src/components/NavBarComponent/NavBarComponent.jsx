@@ -270,7 +270,7 @@ const NavBarComponent = () => {
 
 
   return (
-    <div>
+    <div >
       <WrapperListDropdown>
         <Dropdown 
           overlay={functionalFoodItems}

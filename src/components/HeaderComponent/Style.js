@@ -1,14 +1,17 @@
 import { Row } from "antd";
 import styled from "styled-components";
 
+
+
 export const WrapperHeader = styled(Row)`
   padding: 10px 120px;
-  background-color: rgb(33 103 221);
+  // background: linear-gradient(to top, rgb(33, 103, 221), #5386E4);
   align-items: center;
   gap: 16px;
   flex-wrap: nowrap;
-  height: 80px;
+  height: 120px;
 `;
+
 export const WrapperHeaderText = styled.div`
   color: white;
   justify-content: left;
@@ -17,7 +20,11 @@ export const WrapperHeaderText = styled.div`
   margin: 10px;
 `;
 export const WrapperHeaderAccount = styled.div`
+
   display: flex;
+  padding-top: 15px;
+  align-items: center;
+
   justify-content: left;
   align-items: center;
   color: white;
@@ -36,9 +43,13 @@ export const WrapperHeaderSmall = styled.span`
 `;
 export const WrapperContentPopup = styled.p`
   cursor: pointer;
+  margin:0px;
+  display: flex;
+  gap: 7px;
+  padding:10px;
   &:hover {
-    background: rgb(26,148,255);
-    color:#fff;
-
+    background-color: #EBEFF9;
+    
+    color:rgb(33 103 221);
   }
 `;

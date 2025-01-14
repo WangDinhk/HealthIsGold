@@ -10,6 +10,8 @@ import {
   UserOutlined,
   CaretDownOutlined,
   ShoppingCartOutlined,
+  LogoutOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
@@ -71,9 +73,11 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
   const content = (
     <div>
       <WrapperContentPopup onClick={handleLogout}>
+      <LogoutOutlined />
         Đăng xuất
       </WrapperContentPopup>
       <WrapperContentPopup onClick={() => navigate("/profile-user")}>
+      <UserOutlined />
         Thông tin người dùng
       </WrapperContentPopup>
       {(() => {
@@ -86,6 +90,7 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
         
         return user?.isAdmin === true ? (
           <WrapperContentPopup onClick={() => navigate("/system/admin")}>
+            <ShopOutlined />
             Quản lí hệ thống
           </WrapperContentPopup>
         ) : null;
@@ -99,7 +104,16 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
 
   
   return (
-    <div>
+    <div
+    style={{
+      backgroundImage: "url('https://cms-prod.s3-sgn09.fptcloud.com/dk_76091224ce.png')",
+      backgroundSize: "cover", // Để ảnh phủ kín toàn bộ
+      backgroundPosition: "center", // Căn chỉnh ảnh
+      backgroundRepeat: "no-repeat", // Không lặp ảnh
+      width: "100%",
+    }}
+    >
+
       <WrapperHeader gutter={16} style={{ justifyContent: "space-between" }}>
         <Col span={5}>
           <WrapperHeaderText 
@@ -112,24 +126,22 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
 
         {!isHiddenSearch && (
           <Col span={12}>
-            <ButtonInputSearch
-              size="large"
-              textButton="Search"
-              placeHolder="Input search text"
-            />
+  <ButtonInputSearch size="large" textButton="Search" placeHolder="Input search text" />
           </Col>
         )}
 
         <Col span={7} style={{ display: "flex", gap: "20px" }}>
           <Loading isLoading={loading}>
             <WrapperHeaderAccount>
+              <div style={{ display: "flex", gap: "10px" ,alignItems:"center", marginBottom:"5px",}}>
               {userAvatar ? (
                 <img
                   src={userAvatar}
                   alter="avatar"
                   style={{
-                    height: "30px",
-                    width: "30px",
+                    height: "40px",
+                    width: "40px",
+                    marginBottom:"5px",
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
@@ -139,8 +151,23 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
               )}
               {user?.accessToken ? (
                 <>
-                  <Popover content={content} trigger="click">
-                    <div style={{ cursor: "pointer" }}>
+                  <Popover content={content} trigger="click" 
+                  overlayStyle={{
+                    backgroundColor: "#f0f0f0", // Màu nền của toàn bộ popover
+                    borderRadius: "10px",       // Bo góc cho toàn bộ popover
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)", // Hiệu ứng đổ bóng
+                    padding:"0px",   
+                    maxWidth: "200px",          // Giới hạn chiều rộng tối đa
+                    overflow: "hidden", 
+                  }}
+                  overlayInnerStyle={{
+                    padding: "0px", 
+                    margin:"0px",
+                    color: "#333",             // Màu chữ của nội dung
+                    fontSize: "14px",          // Kích thước chữ
+                  }}>
+                    <div style={{ cursor: "pointer",
+                    }}>
                       {userName?.length ? userName : user?.email}
                     </div>
                   </Popover>
@@ -159,17 +186,36 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
                   </div>
                 </div>
               )}
+              </div>
             </WrapperHeaderAccount>
           </Loading>
 
           {!isHiddenCart && (
             <WrapperHeaderAccount onClick={handleNavigateCart} style={{ cursor: 'pointer' }}>
+              <div
+              style={{
+                display:"flex",
+                gap:"7px",
+                alignItems: "center",
+                background:"#264FD4",
+                padding:"5px",
+                paddingLeft:"10px",
+                paddingRight:"10px",
+                borderRadius:"20px",
+position:"absolute",
+top:"18px"
+
+
+              }}
+              >
               <Badge count={cartItemCount} size="small">
                 <ShoppingCartOutlined
-                  style={{ fontSize: "30px", color: "white" }}
+                  style={{ fontSize: "30px", color: "white"
+ }}
                 />
               </Badge>
               <span>Giỏ hàng</span>
+              </div>
             </WrapperHeaderAccount>
           )}
         </Col>

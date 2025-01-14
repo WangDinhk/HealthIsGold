@@ -45,7 +45,9 @@ const ButtonInputSearch = (props) => {
        <div style={{display:'flex'}}>
             <InputComponent 
                 size={size} 
-                style={{backgroundColor:backgroundColorInput}} 
+                style={{backgroundColor:backgroundColorInput,height:"40px", borderRadius: '18px',
+                    borderBottomRightRadius: '0px',
+                    borderStartEndRadius: '0px',}} 
                 bordered={bordered} 
                 placeholder={placeHolder}
                 value={searchValue}
@@ -59,6 +61,11 @@ const ButtonInputSearch = (props) => {
                 textButton={textButton}
                 styleTextButton={{color: colorButton}}
                 onClick={handleSearch}
+                style={{backgroundColor:backgroundColorInput,height:"40px", borderRadius: '18px',
+                    borderBottomLeftRadius: '0px',
+                    borderBottomRightRadius: '20px',
+
+                    borderStartStartRadius: '0px',}} 
             />
        </div>
     );

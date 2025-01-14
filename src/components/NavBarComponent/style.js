@@ -12,6 +12,7 @@ export const WrapperListDropdown = styled.ul`
   padding-top: 5px;
   justify-content: space-between;
   align-items: center;
+
 `;
 
 export const WrapperDropdown = styled.li`
@@ -33,8 +34,8 @@ export const WrapperButton = styled(Link)`
   font-weight: 500;
   font-size: 15px;
   background: #fff;
-  border: 1px solid #fff;
-  border-radius: 7px;
+  border-bottom:2px solid  #EFEFEF;
+
   height: 44px;
   display: flex;
   align-items: center;
@@ -44,6 +45,10 @@ export const WrapperButton = styled(Link)`
   &:hover {
     color: #265ade;
     box-shadow: 0px 4px 8px #265ade;
+      border-radius: 7px;
+
+    border-bottom:1px solid  #fff;
+
 
     .anticon-down {
       transform: rotate(-180deg);

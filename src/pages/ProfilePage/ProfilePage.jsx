@@ -102,10 +102,11 @@ const ProfilePage = () => {
     }
 
     return (
-        <div style={{ width: '1270px', margin: '0 auto', padding: '20px' }}>
-            <WrapperHeader>Thông tin người dùng</WrapperHeader>
+        <div style={{  margin: '0 auto', padding: '20px' ,background:'#EEF0F3'}}>
             <Loading isLoading={isLoading}>
                 <WrapperContentProfile>
+                <WrapperHeader>Thông tin người dùng</WrapperHeader>
+
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                         <div style={{ position: 'relative' }}>
                             {avatar && (
@@ -121,6 +122,7 @@ const ProfilePage = () => {
                                     alt="avatar"
                                 />
                             )}
+                            
                             <WrapperUploadFile 
                                 onChange={handleOnchangeAvatar} 
                                 maxCount={1}
@@ -189,7 +191,7 @@ const ProfilePage = () => {
                                 backgroundColor: 'rgb(26, 148, 255)',
                                 height: '40px',
                                 width: '160px',
-                                borderRadius: '4px',
+                                borderRadius: '20px',
                             }}
                             textButton={'Cập nhật thông tin'}
                             styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}

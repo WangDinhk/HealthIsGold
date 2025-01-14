@@ -25,29 +25,35 @@ export const WrapperReportText = styled.div`
 `;
 
 export const WrapperPriceText = styled.div`
-  font-weight: 500;
-  color: rgb(255, 66, 78);
   font-size: 16px;
-  margin: 8px 0;
+  color: #264fd4;
+  font-weight: 500;
+  display: flex;
+  align-items: baseline;
 `;
 
 export const WrapperOldPrice = styled.div`
-  color: rgb(128, 128, 137);
-  text-decoration: line-through;
-  font-size: 12px;
-  margin-bottom: 8px;
+  font-size: 14px;
+  color: rgb(128; 128; 137);
+  font-weight: 350;
+  text-decoration-line: line-through;
 `;
 
-export const WrapperDiscountText = styled.span`
+export const WrapperDiscountText = styled.div`
+  background: linear-gradient(295deg, #cd1a0c 0%, #ff5246 98.45%);
+  width: 50px;
+  height: 23px;
+  top: -1px;
+  left: -1px;
+  border-top-left-radius: 1.1rem;
+  border-bottom-right-radius: 1.1rem;
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #ff0000;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 12px;
 `;
 
 export const WrapperCardStyle = styled(Card)`
@@ -59,6 +65,9 @@ export const WrapperCardStyle = styled(Card)`
   }
   &:hover img {
     transform: scale(1.1);
+  }
+     &:hover {
+    border: 1px solid blue; /* Thêm border màu xanh khi hover */
   }
   position: relative;
   background: #fff;
@@ -95,16 +104,18 @@ export const WrapperImageStyle = styled.img`
 
 export const WrapperBuyButton = styled(Button)`
   width: 100%;
-  height: 34px;
-  border-radius: 4px;
+  height: 40px;
+  border-radius: 30px;
+  margin: 20px 0 2px;
+
   border: none;
-  background: ${props => props.disabled ? '#ccc' : '#1a94ff'};
+  background: ${props => props.disabled ? '#ccc' : '#3A65D9'};
   color: #fff;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 16px;
   &:hover {
     opacity: 0.8;
-    background: ${props => props.disabled ? '#ccc' : '#1a94ff'} !important;
+    background: ${props => props.disabled ? '#ccc' : '#3A65D9'} !important;
     color: #fff !important;
   }
   &:disabled {
@@ -112,8 +123,13 @@ export const WrapperBuyButton = styled(Button)`
   }
 `;
 
+
 export const WrapperQuantity = styled.div`
-  font-size: 12px;
-  color: rgb(128, 128, 137);
-  margin-bottom: 8px;
+  width: 150px;
+  height: 26px;
+  background: #eef0f3;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #4b4f61;
 `;

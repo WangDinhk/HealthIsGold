@@ -4,7 +4,9 @@ import styled from "styled-components"
 export const WrapperHeader = styled.h1`
     color: #000;
     font-size: 20px;
-    margin: 4px 0;
+    padding:20px;
+    text-align: center;
+    border-bottom: 1px solid #EEF0F3;
 `
 
 export const WrapperContentProfile = styled.div`
@@ -14,6 +16,7 @@ export const WrapperContentProfile = styled.div`
     width: 800px;
     margin: 0 auto;
     padding: 40px;
+    padding-top:0px;
     border-radius: 16px;
     gap: 20px;
     background: #fff;

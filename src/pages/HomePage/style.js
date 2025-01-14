@@ -13,7 +13,6 @@ export const SlideImageContainer = styled.div`
   width: 100%;
   background-color: #efefef;
   padding: 24px 120px;
-  margin-bottom: 25px;
 `;
 
 export const WrapperPanner = styled.img`

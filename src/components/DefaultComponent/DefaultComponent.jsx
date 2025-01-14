@@ -7,6 +7,7 @@ const DefaultComponent = ({ children }) => {
     <div>
       <HeaderComponent />
       <NavBarComponent />
+      
 
       {children}
     </div>

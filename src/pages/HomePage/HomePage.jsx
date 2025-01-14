@@ -52,7 +52,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div>
+      <div style={{backgroundColor:"#EBE9FD"}}>
         <SlideImageContainer>
           <SliderComponent
             arrImages={[slider1, slider2, slider3, slider4, slider5]}
@@ -60,7 +60,7 @@ const HomePage = () => {
         </SlideImageContainer>
         <div
           style={{
-            background: "#FBF3E9",
+            background: "#EBE9FD",
             position: "relative",
           }}
         >
