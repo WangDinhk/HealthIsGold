@@ -164,11 +164,34 @@ const removeFromCart = async (userId, productId) => {
         throw new Error(e.message);
     }
 };
+const deleteCart = async (userId) => {
+    try {
+        const cart = await Cart.findOne({ userId, status: 'active' });
+
+        if (!cart) {
+            return {
+                status: "ERR",
+                message: "Cart not found",
+            };
+        }
+
+        // Xóa giỏ hàng
+        await Cart.deleteOne({ _id: cart._id });
+
+        return {
+            status: "OK",
+            message: "Cart deleted successfully",
+        };
+    } catch (e) {
+        throw new Error(e.message);
+    }
+};
 
 module.exports = {
     createCart,
     addToCart,
     updateCartItem,
     getUserCart,
-    removeFromCart
+    removeFromCart,
+    deleteCart, // Thêm hàm mới
 };

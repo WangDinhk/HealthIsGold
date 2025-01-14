@@ -83,10 +83,34 @@ const removeFromCart = async (req, res) => {
         });
     }
 };
+const deleteCart = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "User ID is required",
+            });
+        }
+
+        const response = await CartService.deleteCart(userId);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: "ERR",
+            message: e.message,
+        });
+    }
+};
 
 module.exports = {
     addToCart,
     updateCartItem,
     getUserCart,
-    removeFromCart
+    removeFromCart,
+    deleteCart, // Thêm hàm mới
 };
+
+
+
