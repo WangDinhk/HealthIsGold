@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 const getRefreshToken = () => {
   return Cookies.get("refreshToken");
 };
-export const createOrder = async (orderItem, shipAddress, paymentMethod, totalPrice) => {
+export const createOrder = async (orderItem, shipAddress, PaymentMethod, totalPrice) => {
     try {
       const refreshToken = getRefreshToken(); // Lấy refreshToken từ cookie
   
@@ -14,7 +14,7 @@ export const createOrder = async (orderItem, shipAddress, paymentMethod, totalPr
         {
           orderItem, // Danh sách sản phẩm trong đơn hàng
           shipAddress, // Địa chỉ giao hàng
-          paymentMethod, // Phương thức thanh toán
+          PaymentMethod, // Phương thức thanh toán
           totalPrice, // Tổng giá trị đơn hàng
         },
         {
