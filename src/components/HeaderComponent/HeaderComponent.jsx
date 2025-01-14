@@ -151,7 +151,7 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
               )}
               {user?.accessToken ? (
                 <>
-                  <Popover content={content} trigger="click" 
+                  <Popover content={content} trigger="hover" 
                   overlayStyle={{
                     backgroundColor: "#f0f0f0", // Màu nền của toàn bộ popover
                     borderRadius: "10px",       // Bo góc cho toàn bộ popover

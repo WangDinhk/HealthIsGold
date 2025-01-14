@@ -1,24 +1,38 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Form, Input, Select, Table, InputNumber, Popconfirm, message } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
-import { WrapperOrder, OrderInfo, CartItems, PaymentInfo } from './style';
-import * as CartService from '../../service/CartService';
-import Loading from '../../components/LoadingComponent/Loading';
-import { updateQuantitySuccess, removeFromCartSuccess } from '../../redux/slides/cartSlide';
+import React, { useState, useMemo, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Button,
+  Form,
+  Input,
+  Select,
+  Table,
+  InputNumber,
+  Popconfirm,
+  message,
+} from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { WrapperOrder, OrderInfo, CartItems, PaymentInfo } from "./style";
+import * as CartService from "../../service/CartService";
+import Loading from "../../components/LoadingComponent/Loading";
+import {
+  updateQuantitySuccess,
+  removeFromCartSuccess,
+} from "../../redux/slides/cartSlide";
+import { deleteCart } from "../../service/UserService";
+import { createOrder } from "../../service/OrderService";
 
 const OrderPage = () => {
   const [form] = Form.useForm();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const [payment, setPayment] = useState('cod')
+  const [payment, setPayment] = useState("cod");
 
   const { isLoading, data: cartData } = useQuery({
-    queryKey: ['cart', user?.id],
+    queryKey: ["cart", user?.id],
     queryFn: () => CartService.getUserCart(user?.id),
-    enabled: !!user?.id
+    enabled: !!user?.id,
   });
 
   const updateQuantityMutation = useMutation({
@@ -26,17 +40,16 @@ const OrderPage = () => {
       CartService.updateCartItemQuantity(user?.id, productId, quantity),
     onSuccess: (_, variables) => {
       dispatch(updateQuantitySuccess(variables));
-      queryClient.invalidateQueries(['cart', user?.id]);
-    }
+      queryClient.invalidateQueries(["cart", user?.id]);
+    },
   });
 
   const removeItemMutation = useMutation({
-    mutationFn: (productId) =>
-      CartService.removeCartItem(user?.id, productId),
+    mutationFn: (productId) => CartService.removeCartItem(user?.id, productId),
     onSuccess: (_, productId) => {
       dispatch(removeFromCartSuccess(productId));
-      queryClient.invalidateQueries(['cart', user?.id]);
-    }
+      queryClient.invalidateQueries(["cart", user?.id]);
+    },
   });
 
   const [localCartItems, setLocalCartItems] = useState([]);
@@ -50,40 +63,44 @@ const OrderPage = () => {
   const totalAmount = useMemo(() => {
     return localCartItems.reduce((total, item) => {
       // Tính giá sau khi giảm giá
-      const discountedPrice = item.price * (1 - (item.product.discount || 0) / 100);
-      return total + (discountedPrice * item.quantity);
+      const discountedPrice =
+        item.price * (1 - (item.product.discount || 0) / 100);
+      return total + discountedPrice * item.quantity;
     }, 0);
   }, [localCartItems]);
 
   const handleQuantityChange = async (productId, quantity) => {
-    const product = localCartItems.find(item => item.product._id === productId);
+    const product = localCartItems.find(
+      (item) => item.product._id === productId
+    );
     if (!product) return;
 
     try {
       if (quantity > product.product.countInStock) {
-        message.error(`Chỉ còn ${product.product.countInStock} sản phẩm trong kho`);
+        message.error(
+          `Chỉ còn ${product.product.countInStock} sản phẩm trong kho`
+        );
         return;
       }
 
       if (quantity <= 0) {
-        message.error('Số lượng phải lớn hơn 0');
+        message.error("Số lượng phải lớn hơn 0");
         return;
       }
 
-      setLocalCartItems(prev => prev.map(item =>
-        item.product._id === productId
-          ? { ...item, quantity }
-          : item
-      ));
+      setLocalCartItems((prev) =>
+        prev.map((item) =>
+          item.product._id === productId ? { ...item, quantity } : item
+        )
+      );
 
       await updateQuantityMutation.mutateAsync({
         productId,
         quantity,
-        countInStock: product.product.countInStock
+        countInStock: product.product.countInStock,
       });
-
     } catch (error) {
-      message.error('Không thể cập nhật số lượng: ' + error.message);
+      message.error("Không thể cập nhật số lượng: " + error.message);
       // Reset to previous state on error
       setLocalCartItems(cartData?.data?.items || []);
     }
@@ -94,55 +111,65 @@ const OrderPage = () => {
   };
 
   const handleRemoveItem = (productId) => {
-    setLocalCartItems(prev => prev.filter(item => item.product._id !== productId));
+    setLocalCartItems((prev) =>
+      prev.filter((item) => item.product._id !== productId)
+    );
 
     removeItemMutation.mutate(productId);
   };
 
   const columns = [
     {
-      title: 'Sản phẩm',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Sản phẩm",
+      dataIndex: "name",
+      key: "name",
       render: (text, record) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src={record.image} alt={text} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img
+            src={record.image}
+            alt={text}
+            style={{ width: "50px", height: "50px", objectFit: "contain" }}
+          />
           <span>{text}</span>
         </div>
       ),
     },
     {
-      title: 'Đơn giá',
-      dataIndex: 'price',
-      key: 'price',
+      title: "Đơn giá",
+      dataIndex: "price",
+      key: "price",
       render: (price, record) => {
         const discountedPrice = price * (1 - (record.discount || 0) / 100);
         return (
           <div>
-            <div>{new Intl.NumberFormat('vi-VN', {
-              style: 'currency',
-              currency: 'VND'
-            }).format(discountedPrice)}</div>
+            <div>
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(discountedPrice)}
+            </div>
             {record.discount > 0 && (
-              <div style={{
-                textDecoration: 'line-through',
-                color: '#999',
-                fontSize: '12px'
-              }}>
-                {new Intl.NumberFormat('vi-VN', {
-                  style: 'currency',
-                  currency: 'VND'
+              <div
+                style={{
+                  textDecoration: "line-through",
+                  color: "#999",
+                  fontSize: "12px",
+                }}
+              >
+                {new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
                 }).format(price)}
               </div>
             )}
           </div>
-        )
+        );
       },
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      title: "Số lượng",
+      dataIndex: "quantity",
+      key: "quantity",
       render: (_, record) => (
         <div>
           <InputNumber
@@ -151,32 +178,35 @@ const OrderPage = () => {
             value={record.quantity}
             onChange={(value) => handleQuantityChange(record.key, value)}
           />
-          <div style={{ fontSize: '12px', color: '#888' }}>
+          <div style={{ fontSize: "12px", color: "#888" }}>
             Còn {record.countInStock} sản phẩm
           </div>
         </div>
       ),
     },
     {
-      title: 'Thành tiền',
-      dataIndex: 'total',
-      key: 'total',
+      title: "Thành tiền",
+      dataIndex: "total",
+      key: "total",
       render: (_, record) => {
-        const item = localCartItems.find(item => item.product._id === record.key);
+        const item = localCartItems.find(
+          (item) => item.product._id === record.key
+        );
         if (!item) return null;
 
-        const discountedPrice = item.price * (1 - (item.product.discount || 0) / 100);
+        const discountedPrice =
+          item.price * (1 - (item.product.discount || 0) / 100);
         const total = discountedPrice * item.quantity;
 
-        return new Intl.NumberFormat('vi-VN', {
-          style: 'currency',
-          currency: 'VND'
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
         }).format(total);
       },
     },
     {
-      title: 'Thao tác',
-      key: 'action',
+      title: "Thao tác",
+      key: "action",
       render: (_, record) => (
         <Popconfirm
           title="Bạn có chắc muốn xóa sản phẩm này?"
@@ -184,47 +214,83 @@ const OrderPage = () => {
           okText="Có"
           cancelText="Không"
         >
-          <Button
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-          />
+          <Button type="text" danger icon={<DeleteOutlined />} />
         </Popconfirm>
       ),
-    }
+    },
   ];
 
   const handleSubmitOrder = async (values) => {
-    console.log('Form values:', values);
+    console.log("Form values:", values);
+    ////////////////////////////////////////////////
+    try {
+      const orderItem = localCartItems.map((item) => ({
+        product: item.product._id,
+        name: item.product.name,
+        image: item.product.image,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+  
+      const shipAddress = values.address;
+      const paymentMethod = values.payment;
+      const totalPrice = totalAmount;
+  
+      const response = await createOrder(
+        orderItem,
+        shipAddress,
+        paymentMethod,
+        totalPrice
+      );
+      // await handleDeleteCart();
+  
+      message.success("Đơn hàng đã được tạo thành công!");
+      console.log("Order response:", response);
+  
+      form.resetFields();
+    } catch (error) {
+      message.error("Không thể tạo đơn hàng: " + error.message);
+      console.error("Error submitting order:", error);
+    }
+
+    ///////////////////////////////////////////////
     // TODO: Implement order submission
     // Momo app test: https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/
-    // Napas:   
-    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	          SDT  
+    // Napas:
+    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	          SDT
     //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     (Tùy ý, đúng đầu số là được)
     // Credit Cards:
-    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP	    
-    //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)	    
-    if (payment === 'banking') {
-      const partnerCode = 'HIGMomo';
-      const orderInfo = {
-        "OrderID": partnerCode + new Date().getTime(),
-        "Money": totalAmount
-      }
-      const response = await CartService.createMomoPayment(orderInfo);
-      console.log(response)
-      const payUrl = response.payUrl;
-      window.location.href = payUrl;
+    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP
+    //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)
+    // if (payment === "banking") {
+    //   const partnerCode = "HIGMomo";
+    //   const orderInfo = {
+    //     OrderID: partnerCode + new Date().getTime(),
+    //     Money: totalAmount,
+    //   };
+    //   const response = await CartService.createMomoPayment(orderInfo);
+    //   console.log(response);
+    //   const payUrl = response.payUrl;
+    //   window.location.href = payUrl;
 
-      if (response.resultCode === 0) {
-        form.submit()
-      }
-    }
-    else {
-      form.submit()
-    }
-
+    //   if (response.resultCode === 0) {
+    //     form.submit();
+    //   }
+    // } else {
+    //   form.submit();
+    // }
   };
-
+  const handleDeleteCart = async () => {
+    try {
+      await deleteCart(user?.id); // Gọi API xóa giỏ hàng
+      setLocalCartItems([]); // Xóa dữ liệu giỏ hàng trên giao diện
+      queryClient.invalidateQueries(["cart", user?.id]); // Làm mới dữ liệu giỏ hàng
+      console.log("Giỏ hàng đã được xóa thành công!");
+    } catch (error) {
+      console.log("Không thể xóa giỏ hàng: " + error.message);
+    }
+  };
+  
   return (
     <Loading isLoading={isLoading}>
       <WrapperOrder>
@@ -243,7 +309,7 @@ const OrderPage = () => {
             <Form.Item
               name="name"
               label="Họ tên"
-              rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}
+              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
             >
               <Input />
             </Form.Item>
@@ -251,7 +317,9 @@ const OrderPage = () => {
             <Form.Item
               name="phone"
               label="Số điện thoại"
-              rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập số điện thoại" },
+              ]}
             >
               <Input />
             </Form.Item>
@@ -259,7 +327,7 @@ const OrderPage = () => {
             <Form.Item
               name="address"
               label="Địa chỉ"
-              rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
@@ -267,11 +335,20 @@ const OrderPage = () => {
             <Form.Item
               name="payment"
               label="Phương thức thanh toán"
-              rules={[{ required: true, message: 'Vui lòng chọn phương thức thanh toán' }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn phương thức thanh toán",
+                },
+              ]}
             >
               <Select onChange={handlePaymentChange}>
-                <Select.Option value="cod">Thanh toán khi nhận hàng</Select.Option>
-                <Select.Option value="banking">Chuyển khoản qua MOMO</Select.Option>
+                <Select.Option value="cod">
+                  Thanh toán khi nhận hàng
+                </Select.Option>
+                <Select.Option value="banking">
+                  Chuyển khoản qua MOMO
+                </Select.Option>
               </Select>
             </Form.Item>
           </Form>
@@ -281,7 +358,7 @@ const OrderPage = () => {
           <h2>Giỏ hàng</h2>
           <Table
             columns={columns}
-            dataSource={localCartItems.map(item => ({
+            dataSource={localCartItems.map((item) => ({
               key: item.product._id,
               name: item.product.name,
               image: item.product.image,
@@ -289,7 +366,7 @@ const OrderPage = () => {
               discount: item.product.discount,
               quantity: item.quantity,
               countInStock: item.product.countInStock,
-              total: item.price * item.quantity
+              total: item.price * item.quantity,
             }))}
             pagination={false}
             summary={() => (
@@ -299,9 +376,9 @@ const OrderPage = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell>
                   <strong>
-                    {new Intl.NumberFormat('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND'
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
                     }).format(totalAmount)}
                   </strong>
                 </Table.Summary.Cell>
@@ -316,12 +393,21 @@ const OrderPage = () => {
               onClick={handleSubmitOrder}
               disabled={!cartData?.data?.items?.length}
             >
-              {payment === 'banking' ? 'Thanh toán đơn hàng' : 'Đặt hàng'}
+              {payment === "banking" ? "Thanh toán đơn hàng" : "Đặt hàng"}
             </Button>
           </PaymentInfo>
         </CartItems>
       </WrapperOrder>
-    </Loading >
+      <Button
+  type="danger"
+  size="large"
+  onClick={handleDeleteCart}
+  disabled={!cartData?.data?.items?.length}
+>
+  Xóa toàn bộ giỏ hàng
+</Button>
+
+    </Loading>
   );
 };
 

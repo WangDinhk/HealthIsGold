@@ -53,7 +53,6 @@ export const refreshToken = async () => {
     {},
     {
       withCredentials: true, // Đảm bảo cookie được gửi cùng request
-
     }
   );
   return res.data;
@@ -102,6 +101,13 @@ export const getAllUser = async (accessToken) => {
       },
     }
   );
+  return res.data;
+};
+
+export const deleteCart = async (userId) => {
+  const res = await axios.delete(`${process.env.REACT_APP_API_URL}/cart/delete`, {
+      data: { userId } // Truyền userId trong body
+  });
   return res.data;
 };
 

@@ -93,6 +93,7 @@ export const RelatedProducts = styled.div`
   margin: 40px auto;
   max-width: 1270px;
   padding: 0 15px;
+  
 
   .related-header {
     display: flex;
