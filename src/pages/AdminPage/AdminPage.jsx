@@ -39,6 +39,7 @@ const AdminPage = () => {
   const handleClick = ({ key }) => {
     setKeySelected(key);
     console.log("keyyyyyyyyyyyyyyyyyy", key);
+    
   };
 
   return (

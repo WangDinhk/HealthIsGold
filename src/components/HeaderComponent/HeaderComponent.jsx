@@ -82,7 +82,7 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
       <UserOutlined />
         Thông tin người dùng
       </WrapperContentPopup>
-      <WrapperContentPopup onClick={() => navigate("/order-history")}>
+      <WrapperContentPopup onClick={() => (window.location.href = 'http://localhost:3000/order-history')}>
       <ShoppingOutlined />
 Xem đơn hàng của bạn      </WrapperContentPopup>
       {(() => {
@@ -92,7 +92,6 @@ Xem đơn hàng của bạn      </WrapperContentPopup>
           convertedIsAdmin: isAdminUser,
           strictCheck: user?.isAdmin === true
         });
-        
         return user?.isAdmin === true ? (
           <WrapperContentPopup onClick={() => navigate("/system/admin")}>
             <ShopOutlined />
