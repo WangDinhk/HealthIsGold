@@ -222,15 +222,15 @@ const OrderPage = () => {
     },
   ];
   const navigate = useNavigate(); // Khởi tạo điều hướng
-    ///////////////////////////////////////////////
-    // TODO: Implement order submission
-    // Momo app test: https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/
-    // Napas:
-    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	          SDT
-    //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     (Tùy ý, đúng đầu số là được)
-    // Credit Cards:
-    //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP
-    //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)
+  ///////////////////////////////////////////////
+  // TODO: Implement order submission
+  // Momo app test: https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/
+  // Napas:
+  //          Tên	                Số thẻ	             Hạn ghi trên thẻ	            OTP	          SDT
+  //      NGUYEN VAN A	    9704 0000 0000 0018	             03/07	                OTP	     (Tùy ý, đúng đầu số là được)
+  // Credit Cards:
+  //          Tên	                Số thẻ	             Hạn ghi trên thẻ	     CVC           OTP
+  //      NGUYEN VAN A	    5200 0000 0000 1096	             05/25	         111       (Được cho)
   // const handleSubmitOrder = async (values) => {
   //   console.log("Form values:", values);
   //   ////////////////////////////////////////////////
@@ -252,14 +252,14 @@ const OrderPage = () => {
   //       console.log(response);
   //       const payUrl = response.payUrl;
   //       window.location.href = payUrl;
-  
+
   //       if (response.resultCode === 0) {
   //         form.submit();
   //       }
   //     } else {
   //       form.submit();
   //     }
-  
+
   //     const shipAddress = values.address;
   //     const paymentMethod = values.payment;
   //     const totalPrice = totalAmount;
@@ -273,10 +273,10 @@ const OrderPage = () => {
   //     navigate("/");
 
   //     await handleDeleteCart();
-  
+
   //     message.success("Đơn hàng đã được tạo thành công!");
   //     console.log("Order response:", response);
-  
+
   //     form.resetFields();
   //   } catch (error) {
   //     message.error("Không thể tạo đơn hàng: " + error.message);
@@ -285,7 +285,7 @@ const OrderPage = () => {
   // };
   const handleSubmitOrder = async (values) => {
     console.log("Form values:", values);
-  
+
     try {
       const orderItem = localCartItems.map((item) => ({
         product: item.product._id,
@@ -294,7 +294,7 @@ const OrderPage = () => {
         price: item.price,
         quantity: item.quantity,
       }));
-  
+
       if (payment === "banking") {
         // Tạo thông tin thanh toán MoMo
         const partnerCode = "HIGMomo";
@@ -303,17 +303,16 @@ const OrderPage = () => {
           Money: totalAmount,
           returnUrl: `${window.location.origin}/payment-result`, // URL callback sau khi thanh toán
         };
-  
+
         const response = await CartService.createMomoPayment(orderInfo);
         console.log(response);
-  
+
         if (response.payUrl) {
           await processOrder(values, orderItem);
 
           // Chuyển hướng đến trang thanh toán MoMo
           window.location.href = response.payUrl;
           await handleDeleteCart();
-
         } else {
           throw new Error("Không thể tạo liên kết thanh toán.");
         }
@@ -326,25 +325,34 @@ const OrderPage = () => {
       console.error("Error submitting order:", error);
     }
   };
-  
+
   // Hàm xử lý đơn hàng sau khi thanh toán thành công
   const processOrder = async (values, orderItem) => {
     const shipAddress = values.address;
     const paymentMethod = values.payment;
     const totalPrice = totalAmount;
-  
+    const phone = values.phone;
+    const name = values.name;
+
     console.log("Loại thanh toán:", paymentMethod);
-  
-    const response = await createOrder(orderItem, shipAddress, paymentMethod, totalPrice);
+
+    const response = await createOrder(
+      orderItem,
+      shipAddress,
+      paymentMethod,
+      totalPrice,
+      phone,
+      name
+    );
     await handleDeleteCart();
-  
+
     message.success("Đơn hàng đã được tạo thành công!");
     console.log("Order response:", response);
-  
+
     form.resetFields();
     navigate("/");
   };
-  
+
   const handleDeleteCart = async () => {
     try {
       await deleteCart(user?.id); // Gọi API xóa giỏ hàng
@@ -355,80 +363,82 @@ const OrderPage = () => {
       console.log("Không thể xóa giỏ hàng: " + error.message);
     }
   };
-  
+
   return (
     <Loading isLoading={isLoading}>
       <WrapperOrder>
         <OrderInfo>
           <h2>Thông tin đặt hàng</h2>
           <Form
-  form={form}
-  layout="vertical"
-  initialValues={{
-    name: user?.name,
-    phone: user?.phone,
-    address: user?.address,
-    payment: "cod", // Giá trị mặc định
-  }}
-  onFinish={handleSubmitOrder} // Chạy khi submit form
->
-  <Form.Item
-    name="name"
-    label="Họ tên"
-    rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
-  >
-    <Input />
-  </Form.Item>
+            form={form}
+            layout="vertical"
+            initialValues={{
+              name: user?.name,
+              phone: user?.phone,
+              address: user?.address,
+              payment: "cod", // Giá trị mặc định
+            }}
+            onFinish={handleSubmitOrder} // Chạy khi submit form
+          >
+            <Form.Item
+              name="name"
+              label="Họ tên"
+              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+            >
+              <Input />
+            </Form.Item>
 
-  <Form.Item
-    name="phone"
-    label="Số điện thoại"
-    rules={[
-      { required: true, message: "Vui lòng nhập số điện thoại" },
-    ]}
-  >
-    <Input />
-  </Form.Item>
+            <Form.Item
+              name="phone"
+              label="Số điện thoại"
+              rules={[
+                { required: true, message: "Vui lòng nhập số điện thoại" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
 
-  <Form.Item
-    name="address"
-    label="Địa chỉ"
-    rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-  >
-    <Input.TextArea rows={4} />
-  </Form.Item>
+            <Form.Item
+              name="address"
+              label="Địa chỉ"
+              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
 
-  <Form.Item
-    name="payment"
-    label="Phương thức thanh toán"
-    rules={[
-      {
-        required: true,
-        message: "Vui lòng chọn phương thức thanh toán",
-      },
-    ]}
-  >
-    <Select onChange={handlePaymentChange}>
-      <Select.Option value="cod">Thanh toán khi nhận hàng</Select.Option>
-      <Select.Option value="banking">Chuyển khoản qua MOMO</Select.Option>
-    </Select>
-  </Form.Item>
+            <Form.Item
+              name="payment"
+              label="Phương thức thanh toán"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn phương thức thanh toán",
+                },
+              ]}
+            >
+              <Select onChange={handlePaymentChange}>
+                <Select.Option value="cod">
+                  Thanh toán khi nhận hàng
+                </Select.Option>
+                <Select.Option value="banking">
+                  Chuyển khoản qua MOMO
+                </Select.Option>
+              </Select>
+            </Form.Item>
 
-  {/* Nút submit form */}
-  <Form.Item>
-    <Button
-      type="primary"
-      htmlType="submit" // Kích hoạt onFinish khi nhấn
-      size="large"
-      style={{width:"180px", marginLeft:"80px"}}
-      disabled={!cartData?.data?.items?.length}
-
-    >
-      {payment === "banking" ? "Thanh toán đơn hàng" : "Đặt hàng"}
-    </Button>
-  </Form.Item>
-</Form>
-
+            {/* Nút submit form */}
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit" // Kích hoạt onFinish khi nhấn
+                size="large"
+                style={{ width: "180px", marginLeft: "80px" }}
+                disabled={!cartData?.data?.items?.length}
+              >
+                {payment === "banking" ? "Thanh toán đơn hàng" : "Đặt hàng"}
+              </Button>
+            </Form.Item>
+          </Form>
         </OrderInfo>
 
         <CartItems>
@@ -462,11 +472,8 @@ const OrderPage = () => {
               </Table.Summary.Row>
             )}
           />
-
         </CartItems>
       </WrapperOrder>
- 
-
     </Loading>
   );
 };

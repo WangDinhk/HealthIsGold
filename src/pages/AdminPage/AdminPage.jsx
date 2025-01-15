@@ -1,20 +1,23 @@
 import { Menu } from "antd";
 import React, { useState } from "react";
-import { 
+import {
   AppstoreOutlined,
-  TeamOutlined
+  ShoppingOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
 import { getItem } from "../../utils";
 import AdminUser from "../../components/AdminUser/AdminUser";
 import AdminProduct from "../../components/AdminProduct/AdminProduct";
-import { useSelector } from 'react-redux';
-import { WrapperContentAdmin } from './style';
+import { useSelector } from "react-redux";
+import { WrapperContentAdmin } from "./style";
+import AdminOrder from "../../components/AdminOrder/AdminOrder";
 
 const AdminPage = () => {
   const items = [
     getItem("Người dùng", "user", <TeamOutlined />),
     getItem("Sản phẩm", "product", <AppstoreOutlined />),
+    getItem("Quản lý đơn hàng", "order", <ShoppingOutlined />),
   ];
 
   const [keySelected, setKeySelected] = useState("user");
@@ -26,6 +29,8 @@ const AdminPage = () => {
         return <AdminUser />;
       case "product":
         return <AdminProduct />;
+      case "order":
+        return <AdminOrder />;
       default:
         return <></>;
     }
@@ -33,6 +38,7 @@ const AdminPage = () => {
 
   const handleClick = ({ key }) => {
     setKeySelected(key);
+    console.log("keyyyyyyyyyyyyyyyyyy", key);
   };
 
   return (
@@ -46,16 +52,14 @@ const AdminPage = () => {
             minHeight: "100vh",
             boxShadow: "1px 1px 2px #ccc",
             backgroundColor: "#001529",
-            color: "white"
+            color: "white",
           }}
           items={items}
           onClick={handleClick}
           selectedKeys={[keySelected]}
           theme="dark"
         />
-        <WrapperContentAdmin>
-          {renderPage(keySelected)}
-        </WrapperContentAdmin>
+        <WrapperContentAdmin>{renderPage(keySelected)}</WrapperContentAdmin>
       </div>
     </>
   );
