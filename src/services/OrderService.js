@@ -2,7 +2,7 @@ const Order = require("../models/OrderProduct");
 const User = require("../models/UserModel");
 const Product = require("../models/ProductModel");
 module.exports = {
-    createOrder: async ( userId, orderItem, shipAddress, PaymentMethod, totalPrice ) => {
+    createOrder: async ( userId, orderItem, shipAddress, PaymentMethod, totalPrice, phone) => {
         const order = new Order({
             orderItem,
             shipAddress,
@@ -10,6 +10,7 @@ module.exports = {
             totalPrice,
             user: userId, 
             paidAt: new Date(),
+            phone
 
         });
         for (const item of orderItem) {

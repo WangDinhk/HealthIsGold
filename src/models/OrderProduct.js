@@ -19,6 +19,8 @@ const orderSchema = new mongoose.Schema({
     totalPrice: { type: Number, require: true},
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true},
     paidAt: { type: Date},
+    phone: { type: String, require:true},
+    status: { type: String, default:'Chưa xác nhận'}
 },
     {
         timestamps: true,
