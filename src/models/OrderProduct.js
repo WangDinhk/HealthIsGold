@@ -20,7 +20,8 @@ const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true},
     paidAt: { type: Date},
     phone: { type: String, require:true},
-    status: { type: String, default:'Chưa xác nhận'}
+    status: { type: String, default:'Chưa xác nhận'},
+    name :{ type: String, require:true}
 },
     {
         timestamps: true,
