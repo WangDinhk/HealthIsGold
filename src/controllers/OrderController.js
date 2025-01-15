@@ -28,5 +28,13 @@ module.exports= {
             messgage:"Ok",
             data:data
         })
+    },
+    
+    updateOrder: async (req,res) => {
+        const id = req.params.id;
+        await OrderService.updateOrder(id);
+        return res.status(200).json({
+            messgage:"Ok",
+        })
     }
 }

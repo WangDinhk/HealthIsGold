@@ -50,6 +50,19 @@ module.exports = {
     getDetailOrder: async (id) => {
         const order = await Order.findById(id).populate("orderItem.product"); 
         return order;
+    },
+
+    updateOrder: async (id) => {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            id,
+            { status: "Đã xác nhận" }, 
+            { new: true } 
+          );
+        return {
+            success: true,
+            message: "Cập nhật trạng thái đơn hàng thành công.",
+            data: updatedOrder,
+          };
     }
 
 }
