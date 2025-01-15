@@ -9,6 +9,7 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
+import OrderHistoryPage from "../pages/OrderHistoryPage/OrderHistoryPage"
 
 export const routes = [
   {
@@ -39,6 +40,11 @@ export const routes = [
   {
     path: "/profile-user",
     page: ProfilePage,
+    isShowHeader: true
+  },
+  {
+    path: "/order-history",
+    page: OrderHistoryPage,
     isShowHeader: true
   },
   {

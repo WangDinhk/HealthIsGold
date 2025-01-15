@@ -27,7 +27,7 @@ const getRefreshToken = () => {
 };
 const refreshToken = getRefreshToken(); // Lấy refreshToken từ cookie
 
-const AdminOrder = () => {
+const UserOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelected, setRowSelected] = useState("");
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
@@ -215,25 +215,6 @@ const AdminOrder = () => {
     {
       title: "Trạng thái",
       dataIndex: "status",
-      render: (status, record) => {
-        const isPending = status === "Chưa xác nhận";
-        return (
-          <span
-            style={{
-              color: isPending ? "blue" : "gray",
-              cursor: isPending ? "pointer" : "default",
-            }}
-            onClick={(e) => {
-              if (!isPending) return; // Ngăn nhấp nếu không phải "Chưa xác nhận"
-              e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
-              setRowSelected(record._id); // Lưu lại ID của dòng được chọn
-              setIsModalOpenDelete(true); // Mở popup xác nhận xóa
-            }}
-          >
-            {status}
-          </span>
-        );
-      },
     },
     
     
@@ -620,7 +601,6 @@ let a=[];  // ==================================
 
   return (
     <div>
-      <WrapperHeader> Quản Lí Đơn Hàng </WrapperHeader>
 
       <div style={{ marginTop: "20px" }}>
         <TableComponent
@@ -681,4 +661,4 @@ let a=[];  // ==================================
   );
 };
 
-export default AdminOrder;
+export default UserOrder;

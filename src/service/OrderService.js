@@ -68,3 +68,9 @@ export const getDetailOrder = async (orderId) => {
   );
   return res.data;
 };
+export const UpdateOrder = async (orderId) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/order/update/${orderId}`
+  );
+  return res.data;
+};

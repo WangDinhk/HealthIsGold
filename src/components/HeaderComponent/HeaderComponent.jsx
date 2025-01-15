@@ -12,6 +12,7 @@ import {
   ShoppingCartOutlined,
   LogoutOutlined,
   ShopOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
@@ -81,6 +82,9 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
       <UserOutlined />
         Thông tin người dùng
       </WrapperContentPopup>
+      <WrapperContentPopup onClick={() => navigate("/order-history")}>
+      <ShoppingOutlined />
+Xem đơn hàng của bạn      </WrapperContentPopup>
       {(() => {
         const isAdminUser = Boolean(user?.isAdmin);
         console.log("Rendering admin menu check:", {
