@@ -308,6 +308,8 @@ const OrderPage = () => {
         console.log(response);
   
         if (response.payUrl) {
+          await processOrder(values, orderItem);
+
           // Chuyển hướng đến trang thanh toán MoMo
           window.location.href = response.payUrl;
           await handleDeleteCart();
@@ -418,7 +420,9 @@ const OrderPage = () => {
       type="primary"
       htmlType="submit" // Kích hoạt onFinish khi nhấn
       size="large"
+      style={{width:"180px", marginLeft:"80px"}}
       disabled={!cartData?.data?.items?.length}
+
     >
       {payment === "banking" ? "Thanh toán đơn hàng" : "Đặt hàng"}
     </Button>
@@ -461,14 +465,7 @@ const OrderPage = () => {
 
         </CartItems>
       </WrapperOrder>
-      <Button
-  type="danger"
-  size="large"
-  onClick={handleDeleteCart}
-  disabled={!cartData?.data?.items?.length}
->
-  Xóa toàn bộ giỏ hàng
-</Button>
+ 
 
     </Loading>
   );

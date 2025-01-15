@@ -9,16 +9,23 @@ export const WrapperHeader = styled(Row)`
   align-items: center;
   gap: 16px;
   flex-wrap: nowrap;
-  height: 120px;
+  height: 130px;
 `;
 
 export const WrapperHeaderText = styled.div`
-  color: white;
-  justify-content: left;
-  font-size: 24px;
-  font-weight: bold;
+  display: flex;
+  align-items: center; // Căn giữa chiều dọc
   margin: 10px;
+  margin-left: 30px;
+
+  cursor: pointer;
+
+  img {
+    width: 180px; // Tuỳ chỉnh kích thước logo
+    height: 130px;
+  }
 `;
+
 export const WrapperHeaderAccount = styled.div`
 
   display: flex;

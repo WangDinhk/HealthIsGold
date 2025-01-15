@@ -21,6 +21,7 @@ import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
 import { useQuery } from "@tanstack/react-query";
 import * as CartService from "../../service/CartService";
+import logo from '../../assets/images/HEALTH1.png';
 
 const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
   const navigate = useNavigate();
@@ -116,12 +117,13 @@ const HeaderComponent = ({ isHiddenCart = false, isHiddenSearch = false }) => {
 
       <WrapperHeader gutter={16} style={{ justifyContent: "space-between" }}>
         <Col span={5}>
-          <WrapperHeaderText 
-            onClick={handleNavigateHome}
-            style={{ cursor: 'pointer' }}
-          >
-            HEALTH IS GOLD
-          </WrapperHeaderText>
+        <WrapperHeaderText onClick={handleNavigateHome}>
+  <img 
+    src={logo} 
+    alt="Logo" 
+  />
+</WrapperHeaderText>
+
         </Col>
 
         {!isHiddenSearch && (
