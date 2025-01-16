@@ -265,7 +265,7 @@ const AdminOrder = () => {
 const totalAmount = (stateUserDetails?.orderItem || []).reduce((total, item) => {
   const discountedPrice =
     item.price * (1 - (item.product?.discount || 0) / 100);
-  return total + discountedPrice * (item.product?.discount || 0);// đổi discount thành biến số lượng
+  return total + discountedPrice * (item.quantity || 0);// đổi discount thành biến số lượng
 }, 0);
 
 // Cấu hình cột của bảng
@@ -319,7 +319,7 @@ const columnss = [
   },
   {
     title: "Số lượng",
-    dataIndex: ["product", "discount"], // Truy cập quantity bên trong product đổi discount thành biến số lượng
+    dataIndex: ["quantity"], // Truy cập quantity bên trong product đổi discount thành biến số lượng
     key: "quantity",
   },
   {
@@ -331,7 +331,7 @@ const columnss = [
       return new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
-      }).format(discountedPrice * (record.product?.discount || 0));// mai có số lượng thì thay vô discount dòng này
+      }).format(discountedPrice * (record.quantity || 0));// mai có số lượng thì thay vô discount dòng này
     },
   },
 ];
