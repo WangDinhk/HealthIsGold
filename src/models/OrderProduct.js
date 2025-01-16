@@ -3,25 +3,25 @@ const mongoose = require('mongoose')
 const orderSchema = new mongoose.Schema({
     orderItem: [
         {
-            name: { type: String, require: true},
-            amount: { type: Number, require: true},
-            image: { type: String, require: true},
-            price: { type: Number, require: true},
+            name: { type: String, required: true},
+            quantity: { type: Number, required: true},
+            image: { type: String, required: true},
+            price: { type: Number, required: true},
             product: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
-                require: true,
+                required: true,
             },
         },
     ],
-    shipAddress: { type: String, require: true},
-    PaymentMethod: { type: String, require: true},
-    totalPrice: { type: Number, require: true},
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true},
+    shipAddress: { type: String, required: true},
+    PaymentMethod: { type: String, required: true},
+    totalPrice: { type: Number, required: true},
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     paidAt: { type: Date},
-    phone: { type: String, require:true},
+    phone: { type: String, required:true},
     status: { type: String, default:'Chưa xác nhận'},
-    name :{ type: String, require:true}
+    name :{ type: String, required:true}
 },
     {
         timestamps: true,

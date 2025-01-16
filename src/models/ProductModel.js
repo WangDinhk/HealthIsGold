@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
         discount: { type: Number, required: true },
         countInStock: { type: Number, required: true },
         manufacturer: { type: String, required: true },     //Hãng sản xuất
-        description: { type: String, required: true },
+        description: { type: String},
         unit: {type: String, required: true},   //Đơn vị tính
         country: {type: String, required: true},    //Xuất xứ
         target: {type: String, required: true}, //Đối tượng sử dụng
